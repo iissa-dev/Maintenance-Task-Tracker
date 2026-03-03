@@ -8,7 +8,7 @@ namespace Core.Entities
 		public int Id { get; set; }
 
 		[Required]
-		public CategoryTypes CategoryType { get; set; }
+		public string Name { get; set; } = string.Empty;
 
 		public ICollection<MaintenanceRequest> MaintenanceRequests { get; set; } 
 			= new List<MaintenanceRequest>();

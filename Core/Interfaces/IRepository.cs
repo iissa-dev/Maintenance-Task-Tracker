@@ -1,4 +1,6 @@
-﻿namespace Core.Interfaces
+﻿using System.Linq.Expressions;
+
+namespace Core.Interfaces
 {
 	public interface IRepository<T> where T : class
 	{
@@ -9,5 +11,7 @@
 		void Update(T entity);	
 		Task Delete(int id);
 		Task SaveChangesAsync();
+
+		Task<bool> ExistsAsync(Expression<Func<T, bool>> predicate);
 	}
 }

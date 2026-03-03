@@ -1,9 +1,12 @@
 using AutoMapper;
 using Core.Exceptions;
+using Core.Interfaces;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi;
+using Repositories;
 using Repositories.Data;
+using Services;
 using Services.Profiles;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -25,6 +28,8 @@ builder.Services.AddSwaggerGen(options =>
 
 builder.Services.AddAutoMapper(typeof(CategoryProfile));
 
+builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+builder.Services.AddScoped<ICategoryService, CategoryServcie>();
 
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();

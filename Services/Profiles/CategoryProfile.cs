@@ -1,4 +1,7 @@
 ﻿using AutoMapper;
+using Core.DTOs;
+using Core.Entities;
+using Core.Enums;
 
 namespace Services.Profiles
 {
@@ -6,7 +9,9 @@ namespace Services.Profiles
 	{
 		public CategoryProfile()
 		{
-			CreateMap<Core.Entities.Category, Core.DTOs.CategoryDto>().ReverseMap();
+			// Entity → DTO
+			CreateMap<Core.Entities.Category, Core.DTOs.CategoryDto>()
+				.ReverseMap();
 		}
 	}
 }

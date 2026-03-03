@@ -30,12 +30,30 @@ namespace Repositories.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("CategoryType")
-                        .HasColumnType("int");
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
                     b.ToTable("Category");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Name = "Electrical"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Name = "Plumbing"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Name = "HVAC"
+                        });
                 });
 
             modelBuilder.Entity("Core.Entities.MaintenanceRequest", b =>
@@ -47,9 +65,6 @@ namespace Repositories.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int>("CategoryId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("CategoryType")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("CreatedAt")

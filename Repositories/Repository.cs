@@ -1,10 +1,9 @@
-﻿using Core.Exceptions;
+﻿using Core.Enums;
+using Core.Exceptions;
 using Core.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Repositories.Data;
-using Core.Enums;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+using System.Linq.Expressions;
 
 namespace Repositories
 {
@@ -19,68 +18,23 @@ namespace Repositories
 			_dbSet = _context.Set<T>();
 		}
 
-		public async Task AddAsync(T entity)
-		{
-			try
-			{
-				await _dbSet.AddAsync(entity);
-			}
-			catch (DbUpdateException ex)
-			{
-				throw new AppException(AppError.InternalServerError, "Failed to add entity.", ex);
-			}
-		}
+		public async Task AddAsync(T entity) => await _dbSet.AddAsync(entity);
+	
 
-		public async Task<IEnumerable<T>> GetAllAsync()
-		{
-			try
-			{
-				return await _dbSet.ToListAsync();
-			}
-			catch (DbUpdateException ex)
-			{
-				throw new AppException(AppError.InternalServerError, "Failed to retrieve entities.", ex);
-			}
-		}
+		public async Task<IEnumerable<T>> GetAllAsync() => await _dbSet.ToListAsync();
+	
 
-		public async Task<T?> GetByIdAsync(int id)
-		{
-			try
-			{
-				return await _dbSet.FindAsync(id);
-			}
-			catch (DbUpdateException ex)
-			{
-				throw new AppException(AppError.InternalServerError, "Failed to retrieve entity.", ex);
-			}
-		}
+		public async Task<T?> GetByIdAsync(int id) =>  await _dbSet.FindAsync(id);
+			
 
-		public void Update(T entity)
-		{
-			try
-			{
-				_dbSet.Update(entity);
-			}
-			catch (DbUpdateException ex)
-			{
-				throw new AppException(AppError.InternalServerError, "Failed to update entity.", ex);
-			}
-		}
+		public void Update(T entity) => _dbSet.Update(entity);
 
 		public async Task Delete(int id)
 		{
-			try
+			var entity = await _dbSet.FindAsync(id);
+			if (entity != null)
 			{
-				var entity = await _dbSet.FindAsync(id);
-				if (entity != null)
-				{
-					_dbSet.Remove(entity);
-				}
-
-			}
-			catch (DbUpdateException ex)
-			{
-				throw new AppException(AppError.InternalServerError, "Failed to delete entity.", ex);
+				_dbSet.Remove(entity);
 			}
 		}
 
@@ -92,8 +46,13 @@ namespace Repositories
 			}
 			catch (DbUpdateException ex)
 			{
-				throw new AppException(AppError.InternalServerError, "Failed to save changes.", ex);
+				throw new AppException(AppError.InternalServerError, "Database operation failed.", ex);
 			}
+		}
+
+		public async Task<bool> ExistsAsync(Expression<Func<T, bool>> predicate)
+		{
+			return await _dbSet.AnyAsync(predicate);
 		}
 	}
 }

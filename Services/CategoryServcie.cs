@@ -1,5 +1,7 @@
-﻿using Core.DTOs;
+﻿using AutoMapper;
+using Core.DTOs;
 using Core.Entities;
+using Core.Enums;
 using Core.Interfaces;
 
 namespace Services
@@ -7,34 +9,75 @@ namespace Services
 	public class CategoryServcie : ICategoryService
 	{
 		private readonly IRepository<Category> _repository;
-		public CategoryServcie(IRepository<Category> repository)
+		private readonly IMapper _mapper;
+		public CategoryServcie(IRepository<Category> repository, IMapper mapper)
 		{
 			_repository = repository;
+			_mapper = mapper;
 		}
 
-		public Task AddAsync(CategoryDto category)
+		public async Task<Result> AddAsync(CategoryDto category)
 		{
-			throw new NotImplementedException();
+			if(await _repository.ExistsAsync(c => c.Name == category.Name))
+			{
+				return Result.Failure("Category already exists.", AppError.Conflict);
+			}
+
+			await _repository.AddAsync(_mapper.Map<Category>(category));
+			await _repository.SaveChangesAsync();
+			return Result.Success("Category added successfully.");
 		}
 
-		public Task DeleteAsync(int id)
+		public async Task<Result> DeleteAsync(int id)
 		{
-			throw new NotImplementedException();
+			if(await _repository.ExistsAsync(c => c.Id == id))
+			{
+				return Result.Failure("Category not found.", AppError.NotFound);
+			}
+
+			await _repository.Delete(id);
+			await _repository.SaveChangesAsync();
+			return Result.Success("Category deleted successfully.");
 		}
 
-		public Task<IEnumerable<Category>> GetAllAsync()
+		public async Task<Result> UpdateAsync(CategoryDto category)
 		{
-			throw new NotImplementedException();
+			var existingCategory = await _repository.GetByIdAsync(category.Id);
+
+			if(existingCategory == null)
+			{
+				return Result.Failure("Category not found.", AppError.NotFound);
+			}
+
+			var entity = _mapper.Map<Category>(category);
+
+			_repository.Update(entity);
+			await _repository.SaveChangesAsync();
+			return Result.Success("Category updated successfully.");
+		}
+		
+
+		public async Task<Result<IEnumerable<CategoryDto>>> GetAllAsync()
+		{
+			var categories = await _repository.GetAllAsync();
+
+			var dto = _mapper.Map<IEnumerable<CategoryDto>>(categories);
+
+			return Result<IEnumerable<CategoryDto>>.Success(dto);
 		}
 
-		public Task<Category> GetByIdAsync(int id)
+		public async Task<Result<CategoryDto>> GetByIdAsync(int id)
 		{
-			throw new NotImplementedException();
-		}
+			var category = await _repository.GetByIdAsync(id);
 
-		public Task UpdateAsync(CategoryDto category)
-		{
-			throw new NotImplementedException();
+			if(category == null)
+			{
+				return Result<CategoryDto>.Failure("Category not found.", AppError.NotFound);
+			}
+
+			var dto = _mapper.Map<CategoryDto>(category);
+
+			return Result<CategoryDto>.Success(dto);
 		}
 	}
 }
