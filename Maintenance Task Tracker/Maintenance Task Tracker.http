@@ -1,0 +1,6 @@
+@Maintenance_Task_Tracker_HostAddress = http://localhost:5049
+
+GET {{Maintenance_Task_Tracker_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

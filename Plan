@@ -1,0 +1,77 @@
+لوحة تحكم (Dashboard): أشوف فيها كل طلبات الصيانة الحالية.
+
+إضافة طلب: (اسم العميل، نوع المشكلة، درجة الأهمية: Low, Medium, High).
+
+تحديث الحالة: الموظف يقدر يغير حالة الطلب من "Pending" إلى "In Progress" أو "Completed".
+
+حذف الطلب: إذا كان الطلب ملغى.
+
+جدول الـ Category (كهرباء، سباكة، تكييف).
+
+جدول الـ MaintenanceRequest (الطلب نفسه).
+
+
+1 Pages
+ -- Dashboard For Admin 
+ -- Request Page for admin and employee => add new request update stauts delete request 
+
+
+
+2 Tables
+ -- Category 
+    Id
+    CategoryType (smallInt) (enums)
+ -- MaintenanceRequest 
+    Id
+    Status (smallInt) (enums)
+    CustomerName => will be a table if i complete devlopment 
+    Description
+    CreatedAt
+    categoryId (fk)
+
+
+Each Category may has many Request
+
+
+
+-- start with Upload library 
+
+downoladd => swagger, swaggerGen, SwaggerUI , Auto Mapper,
+ entity framework and entity framework design and entity framework tools
+
+Add connection string into appsettings.json file => not in env you now  
+
+test the asp.net default api (work good) 
+set swagger configuration using Microsoft docs  
+
+
+Adding Global Error Handling
+Create AppError Enums (from errors)
+Create AppEception For custom errors 
+
+
+Create Structure
+
+Maintenance Task Tracker
+    APi Layer (Maintenance Task Tracker)/
+        Controllers
+    Core/
+        DTos/
+        Enums/
+        Entities/
+        Exceptions/
+        Interfaces/
+            Service/
+            Repository/
+        Reults/
+    Repositories/
+        Config/
+            MaintenanceRequestConfig
+        Date/
+            AppDbContext
+        Migrations/
+        Reposotry(genrec for crud)
+    Servcies/
+        profies/
+        cateforyProfile
+    CategoryService

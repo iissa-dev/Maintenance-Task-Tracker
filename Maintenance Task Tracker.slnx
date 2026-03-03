@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="Core/Core.csproj" Id="64ea3313-1de0-44d5-8da8-dc095750cd76" />
+  <Project Path="Maintenance Task Tracker/Maintenance Task Tracker.csproj" />
+  <Project Path="Repositories/Repositories.csproj" Id="857a9333-a7ad-4d05-b933-16ddbb456875" />
+  <Project Path="Services/Services.csproj" Id="26cf1134-61b8-49c7-8299-274a33329edc" />
+</Solution>
