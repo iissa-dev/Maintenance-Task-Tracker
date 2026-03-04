@@ -1,0 +1,43 @@
+﻿using Core.Entities;
+using Core.Enums;
+using Core.Interfaces.Repository;
+using Microsoft.EntityFrameworkCore;
+using Repositories.Data;
+
+namespace Repositories
+{
+	public class RequestRepository : IRequestRepository
+	{
+		private readonly AppDbContext _context;
+
+		public RequestRepository(AppDbContext context)
+		{
+			_context = context;
+		}
+
+		public async Task<IQueryable<MaintenanceRequest>> GetAllAsync(int pageNumber, int pageSize)
+		{
+			return _context.MaintenanceRequest
+				.Include(r => r.Category).AsQueryable();
+		}
+
+		public async Task<MaintenanceRequest?> GetByIdAsync(int id)
+		{
+			return await _context.MaintenanceRequest
+				.Include(r => r.Category)
+				.FirstOrDefaultAsync(r => r.Id == id);
+		}
+
+		public async Task UpdateStatusAsync(int id, int status)
+		{
+			if(!Enum.IsDefined(typeof(RequestStatus), status))
+				throw new ArgumentException("Invalid status value.", nameof(status));
+
+			var statusEnum = (RequestStatus)status;
+
+			await _context.MaintenanceRequest
+				.Where(r => r.Id == id)
+				.ExecuteUpdateAsync(r => r.SetProperty(req => req.Status, statusEnum));
+		}
+	}
+}

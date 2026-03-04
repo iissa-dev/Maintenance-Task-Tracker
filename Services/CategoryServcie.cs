@@ -2,7 +2,8 @@
 using Core.DTOs;
 using Core.Entities;
 using Core.Enums;
-using Core.Interfaces;
+using Core.Interfaces.Repository;
+using Core.Interfaces.Service;
 
 namespace Services
 {
@@ -49,7 +50,7 @@ namespace Services
 				return Result.Failure("Category not found.", AppError.NotFound);
 			}
 
-			var entity = _mapper.Map<Category>(category);
+			var entity = _mapper.Map(category, existingCategory);
 
 			_repository.Update(entity);
 			await _repository.SaveChangesAsync();

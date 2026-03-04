@@ -1,6 +1,6 @@
 ﻿using Core.Enums;
 using Core.Exceptions;
-using Core.Interfaces;
+using Core.Interfaces.Repository;
 using Microsoft.EntityFrameworkCore;
 using Repositories.Data;
 using System.Linq.Expressions;

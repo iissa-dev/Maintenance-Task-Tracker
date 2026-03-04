@@ -1,7 +1,7 @@
 ﻿using Core.DTOs;
 using Core.Entities;
 
-namespace Core.Interfaces
+namespace Core.Interfaces.Service
 {
 	public interface ICategoryService
 	{

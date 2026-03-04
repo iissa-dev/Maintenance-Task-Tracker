@@ -22,8 +22,7 @@ namespace Repositories.Data
 
 			modelBuilder.Entity<Category>().HasData(
 				new Category { Id = 1, Name = "Electrical" },
-				new Category { Id = 2, Name = "Plumbing" },
-				new Category { Id = 3, Name = "HVAC" }
+				new Category { Id = 2, Name = "Plumbing" }
 			);
 		}
 	}

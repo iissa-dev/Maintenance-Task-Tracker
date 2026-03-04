@@ -1,6 +1,7 @@
 using AutoMapper;
 using Core.Exceptions;
-using Core.Interfaces;
+using Core.Interfaces.Repository;
+using Core.Interfaces.Service;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi;
@@ -27,8 +28,11 @@ builder.Services.AddSwaggerGen(options =>
 });
 
 builder.Services.AddAutoMapper(typeof(CategoryProfile));
+builder.Services.AddAutoMapper(typeof(RequestProfile));
 
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+builder.Services.AddScoped<IRequestService, RequestService>();
+builder.Services.AddScoped<IRequestRepository, RequestRepository>();
 builder.Services.AddScoped<ICategoryService, CategoryServcie>();
 
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
