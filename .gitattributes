@@ -1,0 +1,5 @@
+ClientApp/**/*.tsx linguist-detectable=true
+ClientApp/**/*.ts linguist-detectable=true
+ClientApp/**/*.css linguist-detectable=true
+
+wwwroot/**/* linguist-vendored=true
