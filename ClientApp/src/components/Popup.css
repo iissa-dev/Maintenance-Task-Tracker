@@ -1,0 +1,54 @@
+.popap-container .content {
+  animation: popup 0.6s cubic-bezier(0.17, 0.54, 0.18, 1.23);
+  box-shadow: 0 0 90px #000000c2;
+  border: 2px solid #cccccc77;
+}
+
+.popap-container .content .close-btn svg {
+  position: absolute;
+  top: -14px;
+  right: -14px;
+  cursor: pointer;
+  font-size: 25px;
+  width: 25px;
+  height: 25px;
+  color: red;
+  border: 1px solid white;
+  border-radius: 50%;
+  box-shadow: 0 0 10px #000;
+}
+
+.popap-container .content .status-icon svg {
+  font-size: 40px;
+  margin: 0 auto 20px;
+  display: block;
+}
+
+.text-shadow-sm {
+  text-shadow: 0 0 2px #000;
+}
+
+.popap-container .content .btns input {
+  background-color: transparent;
+  border-radius: 6px;
+  padding: 6px 14px;
+  border: none;
+  font-weight: bold;
+  color: white;
+  cursor: pointer;
+}
+.popap-container .content .btns input:nth-of-type(1) {
+  box-shadow: 0 0px 5px #0077ff72;
+}
+
+@keyframes popup {
+  0% {
+    transform: scale(0);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
+}

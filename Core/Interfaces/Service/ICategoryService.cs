@@ -11,5 +11,7 @@ namespace Core.Interfaces.Service
 		Task<Result> AddAsync(CategoryDto category);
 		Task<Result> UpdateAsync(CategoryDto category);
 		Task<Result> DeleteAsync(int id);
+
+		Task<Result<IEnumerable<CategoryWithRequestCountDto>>> GetTopThreeCategory();
 	}
 }

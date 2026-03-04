@@ -1,0 +1,14 @@
+tbody tr td {
+  border-left: 1px solid #ddd;
+  padding: 10px;
+}
+
+tbody tr td:last-child {
+  border-right: 1px solid #ddd;
+}
+
+tbody tr:hover {
+    transition: all .3s;
+    background-color: #dddddd6f;
+    
+}

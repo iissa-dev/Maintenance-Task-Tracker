@@ -12,8 +12,18 @@ using Services.Profiles;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+builder.Services.AddCors(optoins =>
+{
+	optoins.AddPolicy("ReactAppPolicy", policy =>
+	{
+		policy.WithOrigins("http://localhost:5173")
+			  .AllowAnyMethod()
+			  .AllowAnyHeader();
+	});
+});
 
+
+// Add services to the container.
 builder.Services.AddControllers();
 
 builder.Services.AddEndpointsApiExplorer();
@@ -34,6 +44,7 @@ builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddScoped<IRequestService, RequestService>();
 builder.Services.AddScoped<IRequestRepository, RequestRepository>();
 builder.Services.AddScoped<ICategoryService, CategoryServcie>();
+builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
@@ -77,13 +88,21 @@ app.UseExceptionHandler(appError =>
 	});
 });
 
+app.UseDefaultFiles();
+
 app.UseStaticFiles();
 
 app.UseHttpsRedirection();
 
+app.UseRouting();
+
+app.UseCors("ReactAppPolicy");
+
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.MapFallbackToFile("index.html");
 
 app.Run();
 	

@@ -4,17 +4,20 @@ using Core.Entities;
 using Core.Enums;
 using Core.Interfaces.Repository;
 using Core.Interfaces.Service;
+using Microsoft.EntityFrameworkCore;
 
 namespace Services
 {
 	public class CategoryServcie : ICategoryService
 	{
 		private readonly IRepository<Category> _repository;
+		private readonly ICategoryRepository _categoryRepository;
 		private readonly IMapper _mapper;
-		public CategoryServcie(IRepository<Category> repository, IMapper mapper)
+		public CategoryServcie(IRepository<Category> repository, IMapper mapper, ICategoryRepository categoryRepository)
 		{
 			_repository = repository;
 			_mapper = mapper;
+			_categoryRepository = categoryRepository;
 		}
 
 		public async Task<Result> AddAsync(CategoryDto category)
@@ -79,6 +82,23 @@ namespace Services
 			var dto = _mapper.Map<CategoryDto>(category);
 
 			return Result<CategoryDto>.Success(dto);
+		}
+
+		public async Task<Result<IEnumerable<CategoryWithRequestCountDto>>> GetTopThreeCategory()
+		{
+			var categories = await _categoryRepository.GetTopThreeCategory()
+				.OrderByDescending(c => c.MaintenanceRequests.Count)
+				.Take(3)
+				.ToListAsync();
+
+			 var top3 = categories.Select(c => new CategoryWithRequestCountDto
+			{
+				Id = c.Id,
+				Name = c.Name,
+				RequestCount = c.MaintenanceRequests.Count
+			});
+
+			return Result<IEnumerable<CategoryWithRequestCountDto>>.Success(top3);
 		}
 	}
 }

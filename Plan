@@ -75,3 +75,14 @@ Maintenance Task Tracker
         profies/
         cateforyProfile
     CategoryService
+
+
+
+src/
+ ├── api/             # إعدادات Axios والـ Interceptors
+ ├── assets/          # الصور، الأيقونات، والملفات الثابتة
+ ├── components/      # المكونات الصغيرة (Buttons, Inputs, Cards)
+ ├── layouts/         # الهياكل العامة (Sidebar + Navbar Layout)
+ ├── pages/           # الصفحات الكاملة (Dashboard, RequestList)
+ ├── services/        # ملفات الـ API calls (maintenanceService.js)
+ └── utils/           # دوال مساعدة (Format Date, Constants)

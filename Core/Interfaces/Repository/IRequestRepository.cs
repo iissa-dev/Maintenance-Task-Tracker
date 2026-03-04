@@ -9,7 +9,7 @@ namespace Core.Interfaces.Repository
 {
 	public interface IRequestRepository
 	{
-		Task<IQueryable<MaintenanceRequest>> GetAllAsync(int pageNumber, int pageSize);
+		IQueryable<MaintenanceRequest> GetAllAsync();
 		Task<MaintenanceRequest?> GetByIdAsync(int id);
 
 		Task UpdateStatusAsync(int id, int status);

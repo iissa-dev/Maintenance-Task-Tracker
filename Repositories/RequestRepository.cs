@@ -15,7 +15,7 @@ namespace Repositories
 			_context = context;
 		}
 
-		public async Task<IQueryable<MaintenanceRequest>> GetAllAsync(int pageNumber, int pageSize)
+		public IQueryable<MaintenanceRequest> GetAllAsync()
 		{
 			return _context.MaintenanceRequest
 				.Include(r => r.Category).AsQueryable();

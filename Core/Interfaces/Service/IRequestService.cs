@@ -1,6 +1,5 @@
 ﻿using Core.DTOs.Page;
 using Core.DTOs.RequestDtos;
-using Core.Entities;
 
 namespace Core.Interfaces.Service
 {
@@ -12,5 +11,8 @@ namespace Core.Interfaces.Service
 		Task<Result> UpdateAsync(int id, RequestDto request);
 		Task<Result> DeleteAsync(int id);
 		Task<Result> UpdateStatusAsync(int id, int status);
+		Task <Result<IEnumerable<ResponseRequestDto>>> GetRecentActivity();
+
+		Task<Result<DashboardStatsDto>> GetDashboardStatsAsync();
 	}
 }

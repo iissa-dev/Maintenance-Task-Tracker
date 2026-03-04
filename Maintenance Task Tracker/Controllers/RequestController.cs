@@ -15,7 +15,7 @@ namespace Maintenance_Task_Tracker.Controllers
 			_requestService = requestService;
 		}
 
-		[HttpPost]
+		[HttpPost("addNewRequest")]
 		[ProducesResponseType(StatusCodes.Status200OK)]
 		[ProducesResponseType(StatusCodes.Status400BadRequest)]
 		public async Task<IActionResult> AddRequest([FromBody] Core.DTOs.RequestDtos.RequestDto request)
@@ -79,6 +79,22 @@ namespace Maintenance_Task_Tracker.Controllers
 				return Ok(result);
 
 			return BadRequest(result);
+		}
+
+		[HttpGet("recentActivity")]
+		[ProducesResponseType(StatusCodes.Status200OK)]
+		public async Task<IActionResult> GetRecentActivity()
+		{
+			var result = await _requestService.GetRecentActivity();
+			return Ok(result);
+		}
+
+		[HttpGet("dashboardStats")]
+		[ProducesResponseType(StatusCodes.Status200OK)]
+		public async Task<IActionResult> GetDashboardStats()
+		{
+			var result = await _requestService.GetDashboardStatsAsync();
+			return Ok(result);
 		}
 	}
 }

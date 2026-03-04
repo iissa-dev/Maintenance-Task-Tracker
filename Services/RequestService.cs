@@ -50,7 +50,7 @@ namespace Services
 
 		public async Task<ResultPage<ResponseRequestDto>> GetAllAsync(int pageNumber, int pageSize)
 		{
-			var query = await _requestRepository.GetAllAsync(1, 10);
+			var query = _requestRepository.GetAllAsync();
 
 			var totalItems = await query.CountAsync();
 			var items = await query
@@ -81,6 +81,43 @@ namespace Services
 			var dto = _mapper.Map<ResponseRequestDto>(existing);
 
 			return Result<ResponseRequestDto>.Success(dto);
+		}
+
+		public async Task<Result<DashboardStatsDto>> GetDashboardStatsAsync()
+		{
+			var query = _requestRepository.GetAllAsync();
+
+			var groubed = await query
+				.GroupBy(r => r.Status)
+				.Select(g => new
+				{
+					Status = g.Key,
+					Count = g.Count()
+				})
+				.ToListAsync();
+
+			var status = new DashboardStatsDto
+			{
+				TotalRequests = groubed.Sum(g => g.Count),
+				PendingCount = groubed.FirstOrDefault(g => g.Status == RequestStatus.Pending)?.Count ?? 0,
+				InProgressCount = groubed.FirstOrDefault(g => g.Status == RequestStatus.InProgress)?.Count ?? 0,
+				CompletedCount = groubed.FirstOrDefault(g => g.Status == RequestStatus.Completed)?.Count ?? 0
+			};
+
+			return Result<DashboardStatsDto>.Success(status);
+		}
+
+		public async Task<Result<IEnumerable<ResponseRequestDto>>> GetRecentActivity()
+		{
+			var query = _requestRepository.GetAllAsync();
+			var recentItems = await query
+				.OrderByDescending(q => q.CreatedAt)
+				.Take(4)
+				.ToListAsync();
+
+			var dto = _mapper.Map<IEnumerable<ResponseRequestDto>>(recentItems);
+
+			return Result<IEnumerable<ResponseRequestDto>>.Success(dto);
 		}
 
 		public async Task<Result> UpdateAsync(int id, RequestDto request)

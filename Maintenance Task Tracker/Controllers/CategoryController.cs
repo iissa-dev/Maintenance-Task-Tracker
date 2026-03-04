@@ -70,5 +70,13 @@ namespace Maintenance_Task_Tracker.Controllers
 				return Ok(result);
 			return NotFound(result);
 		}
+
+		[HttpGet("GetTopThreeCategories")]
+		[ProducesResponseType(StatusCodes.Status200OK)]
+		public async Task<IActionResult> GetTopThreeCategories()
+		{
+			var result = await _service.GetTopThreeCategory();
+			return Ok(result);
+		}
 	}
 }
