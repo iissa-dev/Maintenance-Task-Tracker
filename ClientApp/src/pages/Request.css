@@ -1,14 +1,8 @@
 tbody tr td {
-  border-left: 1px solid #ddd;
+  border-left: 1px solid var(--color-border);
   padding: 10px;
 }
 
 tbody tr td:last-child {
-  border-right: 1px solid #ddd;
-}
-
-tbody tr:hover {
-    transition: all .3s;
-    background-color: #dddddd6f;
-    
+  border-right: 1px solid var(--color-border);
 }

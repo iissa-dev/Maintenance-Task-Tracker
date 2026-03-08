@@ -86,3 +86,13 @@ src/
  ├── pages/           # الصفحات الكاملة (Dashboard, RequestList)
  ├── services/        # ملفات الـ API calls (maintenanceService.js)
  └── utils/           # دوال مساعدة (Format Date, Constants)
+
+
+ AspNetUsersالجدول الأساسي للـ 
+ Identity — تسجيل دخول وإنشاء حسابات
+ AspNetRolesإدارة الأدوار (Admin, Technician, User...)
+ AspNetUserRolesربط المستخدم بالـ 
+ RolePeopleتخزين البيانات الشخصية (الاسم، رقم الهاتف...)
+ RefreshTokensإدارة الجلسات وتجديد الـ 
+ JWTMaintenanceRequestجوهر المشروع — طلبات الصيانة
+ Categoryتصنيف طلبات الصيانة

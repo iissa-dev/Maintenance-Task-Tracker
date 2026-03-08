@@ -72,29 +72,32 @@ export function usePopup() {
 
     return (
       <>
-        <div className="overlay fixed inset-0 bg-black/25 backdrop-blur-[2px] z-[1000]" />
+        <div className="overlay fixed inset-0 bg-black/25 backdrop-blur-[2px] z-1000" />
 
-        <div className="popap-container fixed inset-0 flex justify-center items-center z-[1001]">
-          <div className="content bg-[#00000043] p-[20px] w-[400px] rounded-[10px] backdrop-blur-[5px]">
-            <div className="mb-[20px] text-white font-bold text-shadow-sm">
+        <div className="popap-container fixed inset-0 flex justify-center items-center z-1001">
+          <div className="content bg-primary/10 p-5 w-100 rounded-[10px] backdrop-blur-[5px]">
+            <div className="mb-5 text-white font-bold text-shadow-sm">
               {state.title}
             </div>
 
-            <div className="close-btn" onClick={() => handle(false)}>
-              <FontAwesomeIcon icon={faCircleXmark} />
+            <div className="" onClick={() => handle(false)}>
+              <FontAwesomeIcon
+                icon={faCircleXmark}
+                className="bg-danger/10 text-danger absolute -top-3.5 -right-3.5 cursor-pointer text-[25px] border border-white rounded-full w-6! h-6!"
+              />
             </div>
 
             <div className="status-icon">{handleTypeIcon(state.type)}</div>
 
-            <p className="mes text-shadow-sm mb-[20px] text-white font-bold">
+            <p className="mes text-shadow-sm mb-5 text-white font-bold">
               {state.message}
             </p>
 
-            <div className="btns flex justify-end gap-[10px]">
+            <div className="btns flex justify-end gap-2.5">
               {state.mode === "confirm" && (
                 <input
                   onClick={() => handle(false)}
-                  className="!bg-[#f44336a6]"
+                  className="btn-danger"
                   type="button"
                   value="Cancel"
                 />
@@ -102,7 +105,7 @@ export function usePopup() {
 
               <input
                 onClick={() => handle(true)}
-                className="!bg-[#0077ff72] backdrop-blur-[5px]"
+                className="btn-primary"
                 type="button"
                 value="Ok"
               />

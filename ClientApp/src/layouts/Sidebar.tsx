@@ -4,27 +4,41 @@ import {
   faList,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
+
 function Sidebar() {
+  const { pathname } = useLocation();
+
+  const baseClass = `mb-5 transition-all duration-500 cursor-pointer hover:bg-white/10 
+                     md:px-5 md:py-1.25 md:rounded-md w-12.5 h-12.5 md:h-auto md:w-auto 
+                     rounded-full flex justify-center items-center md:block`;
+
+  const activeClass = "bg-white/20 border border-white/20";
+
+  const getClass = (path: string) =>
+    `${baseClass} ${pathname === path ? activeClass : ""}`;
+
   return (
-    <div className="bg-sky-900 text-white w-[250px] p-[20px] text-[20px]">
-      <ul className="mt-[100px]">
-        <li className="mb-[20px] transition-all duration-[0.5s] cursor-pointer hover:bg-neutral-50/25 px-[20px] py-[5px] rounded-[6px]">
-          <FontAwesomeIcon icon={faChartBar} />
-          <span className="ml-[5px]">
-            <Link to={"/"}>Dashboard</Link>
-          </span>
-        </li>
-        <li className="mb-[20px] cursor-pointer hover:bg-neutral-50/25 px-[20px] py-[5px] rounded-[6px]">
-          <FontAwesomeIcon icon={faList} />
-          <span className="ml-[5px]">
-            <Link to={"/request"}>Requests</Link>
-          </span>
-        </li>
-        <li className="mb-[20px] cursor-pointer hover:bg-neutral-50/25 px-[20px] py-[5px] rounded-[6px]">
-          <FontAwesomeIcon icon={faFolder} />
-          <span className="ml-[5px]">Categories</span>
-        </li>
+    <div className="p-5 text-[20px] h-screen border-r neon-border w-16 md:w-62.5 transition-all duration-300">
+      <ul className="mt-25 flex items-center flex-col md:block">
+        <Link to="/">
+          <li className={getClass("/")}>
+            <FontAwesomeIcon icon={faChartBar} />
+            <span className="ml-1.25 hidden md:inline">Dashboard</span>
+          </li>
+        </Link>
+        <Link to="/request">
+          <li className={getClass("/request")}>
+            <FontAwesomeIcon icon={faList} />
+            <span className="ml-1.25 hidden md:inline">Requests</span>
+          </li>
+        </Link>
+        <Link to="/categories">
+          <li className={getClass("/categories")}>
+            <FontAwesomeIcon icon={faFolder} />
+            <span className="ml-1.25 hidden md:inline">Categories</span>
+          </li>
+        </Link>
       </ul>
     </div>
   );

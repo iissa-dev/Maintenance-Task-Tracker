@@ -1,5 +1,5 @@
 import Sidebar from "../layouts/Sidebar";
-import Chart from "../components/dashboardChart";
+import DashboardContainer from "../components/DdashboradContainer";
 
 function Dashboard() {
   return (
@@ -7,7 +7,7 @@ function Dashboard() {
       <Sidebar />
       <div className="flex flex-col flex-1">
         <div>
-          <Chart />
+          <DashboardContainer />
         </div>
       </div>
     </div>

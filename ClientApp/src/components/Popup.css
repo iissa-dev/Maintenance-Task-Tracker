@@ -2,7 +2,7 @@
   animation: popup 0.6s cubic-bezier(0.17, 0.54, 0.18, 1.23);
   box-shadow: 0 0 90px #000000c2;
   border: 2px solid #cccccc77;
-}
+} 
 
 .popap-container .content .close-btn svg {
   position: absolute;
@@ -29,16 +29,11 @@
 }
 
 .popap-container .content .btns input {
-  background-color: transparent;
   border-radius: 6px;
   padding: 6px 14px;
   border: none;
   font-weight: bold;
-  color: white;
   cursor: pointer;
-}
-.popap-container .content .btns input:nth-of-type(1) {
-  box-shadow: 0 0px 5px #0077ff72;
 }
 
 @keyframes popup {

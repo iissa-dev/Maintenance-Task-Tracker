@@ -14,7 +14,7 @@ export interface MaintenanceRequestDto {
   customerName: string;
   categoryName: string;
   description: string;
-  status: "Pending" | "In Progress" | "Completed" | "Canceled";
+  status: "Pending" | "InProgress" | "Completed" | "Canceled";
   createdAt: string;
 }
 
@@ -44,4 +44,11 @@ export interface PageResult<T> {
     totalPages: number;
     pageNumber: number;
     pageCount: number;
+}
+
+export interface UpdateRequestDto {
+  description: string;
+  customerName: string;
+  categoryId: number;
+  status: number
 }

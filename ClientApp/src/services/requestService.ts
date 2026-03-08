@@ -5,6 +5,7 @@ import type {
   DashboardStatsDto,
   RequestDto,
   PageResult,
+  UpdateRequestDto,
 } from "../types";
 
 type Props = {
@@ -31,5 +32,11 @@ export const requestService = {
   },
   delete: async (id: number): Promise<Result<boolean>> => {
     return await apiClient.delete(`Request/${id}`);
+  },
+  updateReqeust: async (
+    id: number,
+    data: UpdateRequestDto,
+  ): Promise<Result<boolean>> => {
+    return await apiClient.put(`Request/${id}`, data);
   },
 };
