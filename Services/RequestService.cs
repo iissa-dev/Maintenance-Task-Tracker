@@ -120,7 +120,7 @@ namespace Services
 			return Result<IEnumerable<ResponseRequestDto>>.Success(dto);
 		}
 
-		public async Task<Result> UpdateAsync(int id, RequestDto request)
+		public async Task<Result> UpdateAsync(int id, UpdateRequestDto request)
 		{
 			var existing = await _repository.GetByIdAsync(id);
 

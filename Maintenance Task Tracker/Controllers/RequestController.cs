@@ -1,4 +1,5 @@
-﻿using Core.Interfaces.Service;
+﻿using Core.DTOs.RequestDtos;
+using Core.Interfaces.Service;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -49,7 +50,7 @@ namespace Maintenance_Task_Tracker.Controllers
 
 		[HttpPut("{id}")]
 		[ProducesResponseType(StatusCodes.Status200OK)]
-		public async Task<IActionResult> UpdateRequest(int id, [FromBody] Core.DTOs.RequestDtos.RequestDto request)
+		public async Task<IActionResult> UpdateRequest(int id, [FromBody] UpdateRequestDto request)
 		{
 			var result = await _requestService.UpdateAsync(id, request);
 			if (result.IsSuccess)

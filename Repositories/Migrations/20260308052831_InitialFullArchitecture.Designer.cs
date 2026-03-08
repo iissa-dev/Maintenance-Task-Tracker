@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Repositories.Data;
 
@@ -11,9 +12,11 @@ using Repositories.Data;
 namespace Repositories.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260308052831_InitialFullArchitecture")]
+    partial class InitialFullArchitecture
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -161,17 +164,16 @@ namespace Repositories.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("AssignedToUserId")
-                        .HasColumnType("int");
-
                     b.Property<int>("CategoryId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("CreatedByUserId")
-                        .HasColumnType("int");
+                    b.Property<string>("CustomerName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -183,11 +185,7 @@ namespace Repositories.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AssignedToUserId");
-
                     b.HasIndex("CategoryId");
-
-                    b.HasIndex("CreatedByUserId");
 
                     b.ToTable("MaintenanceRequest");
                 });
@@ -373,28 +371,13 @@ namespace Repositories.Migrations
 
             modelBuilder.Entity("Core.Entities.MaintenanceRequest", b =>
                 {
-                    b.HasOne("Core.Entities.ApplicationUser", "AssignedTo")
-                        .WithMany()
-                        .HasForeignKey("AssignedToUserId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
                     b.HasOne("Core.Entities.Category", "Category")
                         .WithMany("MaintenanceRequests")
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Core.Entities.ApplicationUser", "CreatedBy")
-                        .WithMany()
-                        .HasForeignKey("CreatedByUserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("AssignedTo");
-
                     b.Navigation("Category");
-
-                    b.Navigation("CreatedBy");
                 });
 
             modelBuilder.Entity("Core.Entities.Person", b =>

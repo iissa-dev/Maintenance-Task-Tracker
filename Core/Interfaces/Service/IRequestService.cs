@@ -8,7 +8,7 @@ namespace Core.Interfaces.Service
 		Task<ResultPage<ResponseRequestDto>> GetAllAsync(int pageNumber, int pageSize);
 		Task<Result<ResponseRequestDto>> GetByIdAsync(int id);
 		Task<Result> AddAsync(RequestDto request);
-		Task<Result> UpdateAsync(int id, RequestDto request);
+		Task<Result> UpdateAsync(int id, UpdateRequestDto request);
 		Task<Result> DeleteAsync(int id);
 		Task<Result> UpdateStatusAsync(int id, int status);
 		Task <Result<IEnumerable<ResponseRequestDto>>> GetRecentActivity();

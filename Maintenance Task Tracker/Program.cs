@@ -1,8 +1,9 @@
-using AutoMapper;
+using Core.Entities;
 using Core.Exceptions;
 using Core.Interfaces.Repository;
 using Core.Interfaces.Service;
 using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi;
 using Repositories;
@@ -46,6 +47,14 @@ builder.Services.AddScoped<IRequestRepository, RequestRepository>();
 builder.Services.AddScoped<ICategoryService, CategoryServcie>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 
+builder.Services.AddIdentity<ApplicationUser, ApplicationRole>(options =>
+{
+	options.Password.RequireDigit = true;
+	options.Password.RequiredLength = 8;
+	options.Password.RequireNonAlphanumeric = false;
+})
+.AddEntityFrameworkStores<AppDbContext>()
+.AddDefaultTokenProviders();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
@@ -105,4 +114,3 @@ app.MapControllers();
 app.MapFallbackToFile("index.html");
 
 app.Run();
-	

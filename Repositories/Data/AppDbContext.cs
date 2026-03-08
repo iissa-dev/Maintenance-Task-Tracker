@@ -1,13 +1,16 @@
 ﻿
 
 using Core.Entities;
+using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace Repositories.Data
 {
-	public class AppDbContext : DbContext
+	public class AppDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, int>
 	{
-
+		public DbSet<Person> People { get; set; }
+		public DbSet<UserRefreshToken> RefreshTokens { get; set; }
 		public DbSet<Category> Category { get; set; }
 		public DbSet<MaintenanceRequest> MaintenanceRequest { get; set; }
 
@@ -24,6 +27,25 @@ namespace Repositories.Data
 				new Category { Id = 1, Name = "Electrical" },
 				new Category { Id = 2, Name = "Plumbing" }
 			);
+
+				
+			modelBuilder.Entity<ApplicationUser>()
+				.HasOne(u => u.Person)
+				.WithOne(p => p.User)
+				.HasForeignKey<Person>(p => p.UserId);
+
+			modelBuilder.Entity<MaintenanceRequest>()
+				.HasOne(m => m.CreatedBy)
+				.WithMany()
+				.HasForeignKey(m => m.CreatedByUserId)
+				.OnDelete(DeleteBehavior.Restrict);
+
+			modelBuilder.Entity<MaintenanceRequest>()
+				.HasOne(m => m.AssignedTo)
+				.WithMany()
+				.HasForeignKey(m => m.AssignedToUserId)
+				.OnDelete(DeleteBehavior.Restrict); 
 		}
 	}
 }
+

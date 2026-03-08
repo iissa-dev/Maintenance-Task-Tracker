@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using Core.DTOs.RequestDtos;
+using Core.Entities;
 
 namespace Services.Profiles
 {
@@ -6,9 +8,11 @@ namespace Services.Profiles
 	{
 		public RequestProfile()
 		{
-			CreateMap<Core.DTOs.RequestDtos.RequestDto, Core.Entities.MaintenanceRequest>().ReverseMap();
-			CreateMap<Core.Entities.MaintenanceRequest,Core.DTOs.RequestDtos.ResponseRequestDto >()
+			CreateMap<RequestDto, MaintenanceRequest>().ReverseMap();
+			CreateMap<MaintenanceRequest, ResponseRequestDto>()
 				.ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status.ToString()));
+
+			CreateMap<UpdateRequestDto, MaintenanceRequest>().ReverseMap();
 		}
 	}
 }
