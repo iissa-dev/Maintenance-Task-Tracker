@@ -28,11 +28,6 @@ namespace Repositories.Data
 				new Category { Id = 2, Name = "Plumbing" }
 			);
 
-				
-			modelBuilder.Entity<ApplicationUser>()
-				.HasOne(u => u.Person)
-				.WithOne(p => p.User)
-				.HasForeignKey<Person>(p => p.UserId);
 
 			modelBuilder.Entity<MaintenanceRequest>()
 				.HasOne(m => m.CreatedBy)

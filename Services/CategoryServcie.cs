@@ -86,7 +86,7 @@ namespace Services
 
 		public async Task<Result<IEnumerable<CategoryWithRequestCountDto>>> GetTopThreeCategory()
 		{
-			var categories = await _categoryRepository.GetTopThreeCategory()
+			var categories = await _categoryRepository.GetCategoriesWithRequests()
 				.OrderByDescending(c => c.MaintenanceRequests.Count)
 				.Take(3)
 				.ToListAsync();

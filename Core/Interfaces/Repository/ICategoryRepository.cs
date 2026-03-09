@@ -4,7 +4,10 @@ namespace Core.Interfaces.Repository
 {
 	public interface ICategoryRepository
 	{
-		IQueryable<Category> GetTopThreeCategory();
+		/// <summary>
+		/// Returns a queryable of the top three categories ordered by request count.
+		/// </summary>
+		IQueryable<Category> GetCategoriesWithRequests();
 	}
 }
 	

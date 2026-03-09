@@ -1,0 +1,45 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<doc>
+	<assembly>
+		<name>Core</name>
+	</assembly>		
+	<members>
+		<member name="T:Core.Interfaces.Service.ITokenService">
+			<summary>
+				Defines the contract for JWT token generation, refresh, and revocation operations.
+			</summary>
+		</member>
+
+		<member name="M:Core.Interfaces.Service.ITokenService.GenerateAccessTokenAsync(Core.Entities.ApplicationUser)">
+			<summary>
+				Generates a signed JWT access token for the specified user.
+			</summary>
+			<param name="user">The authenticated application user.</param>
+			<returns>A signed JWT token string.</returns>
+		</member>
+
+		<member name="M:Core.Interfaces.Service.ITokenService.GenerateRefreshTokenAsync(System.Int32)">
+			<summary>
+				Creates and persists a new refresh token for the specified user.
+			</summary>
+			<param name="userId">The ID of the user.</param>
+			<returns>The persisted UserRefreshToken entity.</returns>
+		</member>
+
+		<member name="M:Core.Interfaces.Service.ITokenService.RefreshTokenAsync(System.String)">
+			<summary>
+				Validates and rotates a refresh token, returning a new token pair.
+			</summary>
+			<param name="refreshToken">The refresh token string to validate.</param>
+			<returns>Result containing new AuthResponseDto if successful.</returns>
+		</member>
+
+		<member name="M:Core.Interfaces.Service.ITokenService.RevokeTokenAsync(System.String)">
+			<summary>
+				Revokes a refresh token, preventing future use.
+			</summary>
+			<param name="refreshToken">The refresh token string to revoke.</param>
+			<returns>Result indicating success or failure.</returns>
+		</member>
+	</members>
+</doc>

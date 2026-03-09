@@ -2,6 +2,7 @@
 using Core.Interfaces.Service;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace Maintenance_Task_Tracker.Controllers
 {
@@ -21,7 +22,8 @@ namespace Maintenance_Task_Tracker.Controllers
 		[ProducesResponseType(StatusCodes.Status400BadRequest)]
 		public async Task<IActionResult> AddRequest([FromBody] Core.DTOs.RequestDtos.RequestDto request)
 		{
-			var result = await _requestService.AddAsync(request);
+			//var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+			var result = await _requestService.AddAsync(request, 11);
 			if (result.IsSuccess)
 				return Ok(result);
 

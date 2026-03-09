@@ -4,8 +4,8 @@ namespace Core.Entities
 {
 	public class ApplicationUser: IdentityUser<int> {
 
-		public int PerosnId { get; set; }
+		public int PersonId { get; set; }
 
-		public Person Person { get; set; } = new Person();
+		public Person Person { get; set; } = null!;
 	}
 }

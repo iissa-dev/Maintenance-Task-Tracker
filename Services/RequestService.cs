@@ -21,13 +21,20 @@ namespace Services
 			_requestRepository = requestRepository;
 		}
 
-		public async Task<Result> AddAsync(RequestDto request)
+		public async Task<Result> AddAsync(RequestDto request, int userId)
 		{
-			if(request == null || string.IsNullOrWhiteSpace(request.CustomerName))
+			if(request == null)
 				return Result.Failure("Invalid request data.", AppError.BadRequest);
+			var entity = new MaintenanceRequest
+			{
+				Description = request.Description,
+				CategoryId = request.CategoryId,
+				CreatedByUserId = userId, // from token
+				Status = RequestStatus.Pending,
+				CreatedAt = DateTime.UtcNow
+			};
 
-
-			await _repository.AddAsync(_mapper.Map<MaintenanceRequest>(request));
+			await _repository.AddAsync(entity);
 			await _repository.SaveChangesAsync();
 			return Result.Success("Request added successfully.");
 		}
@@ -87,7 +94,7 @@ namespace Services
 		{
 			var query = _requestRepository.GetAllAsync();
 
-			var groubed = await query
+			var grouped  = await query
 				.GroupBy(r => r.Status)
 				.Select(g => new
 				{
@@ -98,10 +105,10 @@ namespace Services
 
 			var status = new DashboardStatsDto
 			{
-				TotalRequests = groubed.Sum(g => g.Count),
-				PendingCount = groubed.FirstOrDefault(g => g.Status == RequestStatus.Pending)?.Count ?? 0,
-				InProgressCount = groubed.FirstOrDefault(g => g.Status == RequestStatus.InProgress)?.Count ?? 0,
-				CompletedCount = groubed.FirstOrDefault(g => g.Status == RequestStatus.Completed)?.Count ?? 0
+				TotalRequests = grouped .Sum(g => g.Count),
+				PendingCount = grouped .FirstOrDefault(g => g.Status == RequestStatus.Pending)?.Count ?? 0,
+				InProgressCount = grouped .FirstOrDefault(g => g.Status == RequestStatus.InProgress)?.Count ?? 0,
+				CompletedCount = grouped .FirstOrDefault(g => g.Status == RequestStatus.Completed)?.Count ?? 0
 			};
 
 			return Result<DashboardStatsDto>.Success(status);
@@ -137,6 +144,10 @@ namespace Services
 
 		public async Task<Result> UpdateStatusAsync(int id, int status)
 		{
+
+			if (!Enum.IsDefined(typeof(RequestStatus), status))
+				return Result.Failure("Invalid status value", AppError.BadRequest);
+
 			var existing = await _repository.GetByIdAsync(id);
 
 			if(existing == null)
@@ -148,7 +159,7 @@ namespace Services
 			if(existing.Status == RequestStatus.Completed)
 				return Result.Failure("Cannot change status of a completed request.", AppError.BadRequest);
 
-			await _requestRepository.UpdateStatusAsync(id, status);
+			await _requestRepository.UpdateStatusAsync(id, (RequestStatus)status);
 
 			return Result.Success("Request status updated successfully.");
 		}

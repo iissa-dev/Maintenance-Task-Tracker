@@ -18,7 +18,7 @@ namespace Repositories
 		public IQueryable<MaintenanceRequest> GetAllAsync()
 		{
 			return _context.MaintenanceRequest
-				.Include(r => r.Category).AsQueryable();
+				.Include(r => r.Category);
 		}
 
 		public async Task<MaintenanceRequest?> GetByIdAsync(int id)
@@ -28,16 +28,11 @@ namespace Repositories
 				.FirstOrDefaultAsync(r => r.Id == id);
 		}
 
-		public async Task UpdateStatusAsync(int id, int status)
+		public async Task UpdateStatusAsync(int id, RequestStatus status)
 		{
-			if(!Enum.IsDefined(typeof(RequestStatus), status))
-				throw new ArgumentException("Invalid status value.", nameof(status));
-
-			var statusEnum = (RequestStatus)status;
-
 			await _context.MaintenanceRequest
 				.Where(r => r.Id == id)
-				.ExecuteUpdateAsync(r => r.SetProperty(req => req.Status, statusEnum));
+				.ExecuteUpdateAsync(r => r.SetProperty(req => req.Status, status));
 		}
 	}
 }

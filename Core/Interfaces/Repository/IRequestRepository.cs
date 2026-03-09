@@ -1,9 +1,5 @@
-﻿using Core.DTOs.Page;
-using Core.DTOs.RequestDtos;
-using Core.Entities;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Core.Entities;
+using Core.Enums;
 
 namespace Core.Interfaces.Repository
 {
@@ -12,6 +8,6 @@ namespace Core.Interfaces.Repository
 		IQueryable<MaintenanceRequest> GetAllAsync();
 		Task<MaintenanceRequest?> GetByIdAsync(int id);
 
-		Task UpdateStatusAsync(int id, int status);
+		Task UpdateStatusAsync(int id, RequestStatus status);
 	}
 }

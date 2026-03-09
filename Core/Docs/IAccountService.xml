@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<doc>
+	<assembly>
+		<name>Core</name>
+	</assembly>
+	<members>
+		<member name="T:Core.Interfaces.Service.IAccountService">
+			<summary>
+				Defines the contract for user authentication operations including registration and login.
+			</summary>
+		</member>
+
+		<member name="M:Core.Interfaces.Service.IAccountService.RegisterAsync(Core.DTOs.AuthDtos.RegisterDto)">
+			<summary>
+				Registers a new client user and returns a token pair upon success.
+			</summary>
+			<param name="dto">The registration data including name, email, username and password.</param>
+			<returns>
+				A <see cref="T:Result`1"/> containing <see cref="T:Core.DTOs.AuthDtos.AuthResponseDto"/>
+				with access and refresh tokens if successful.
+			</returns>
+		</member>
+
+		<member name="M:Core.Interfaces.Service.IAccountService.LoginAsync(Core.DTOs.AuthDtos.LoginDto)">
+			<summary>
+				Authenticates a user by username and password and returns a token pair.
+			</summary>
+			<param name="dto">The login credentials containing username and password.</param>
+			<returns>
+				A <see cref="T:Result`1"/> containing <see cref="T:Core.DTOs.AuthDtos.AuthResponseDto"/>
+				with access and refresh tokens if successful.
+			</returns>
+		</member>
+	</members>
+</doc>

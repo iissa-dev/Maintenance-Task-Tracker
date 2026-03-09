@@ -1,0 +1,63 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<doc>
+	<assembly>
+		<name>Core</name>
+	</assembly>
+	<members>
+		<member name="T:Core.Interfaces.Repository.IRepository`1">
+			<summary>
+				Defines a generic repository contract for basic CRUD operations.
+			</summary>
+		</member>
+
+		<member name="M:Core.Interfaces.Repository.IRepository`1.GetByIdAsync(System.Int32)">
+			<summary>
+				Retrieves a single entity by its ID.
+			</summary>
+			<param name="id">The unique identifier of the entity.</param>
+			<returns>The entity if found, otherwise null.</returns>
+		</member>
+
+		<member name="M:Core.Interfaces.Repository.IRepository`1.GetAllAsync">
+			<summary>
+				Retrieves all entities of the specified type.
+			</summary>
+			<returns>A collection of all entities.</returns>
+		</member>
+
+		<member name="M:Core.Interfaces.Repository.IRepository`1.AddAsync(`0)">
+			<summary>
+				Adds a new entity to the repository.
+			</summary>
+			<param name="entity">The entity to add.</param>
+		</member>
+
+		<member name="M:Core.Interfaces.Repository.IRepository`1.Update(`0)">
+			<summary>
+				Updates an existing entity in the repository.
+			</summary>
+			<param name="entity">The entity with updated values.</param>
+		</member>
+
+		<member name="M:Core.Interfaces.Repository.IRepository`1.Delete(System.Int32)">
+			<summary>
+				Deletes an entity by its ID.
+			</summary>
+			<param name="id">The unique identifier of the entity to delete.</param>
+		</member>
+
+		<member name="M:Core.Interfaces.Repository.IRepository`1.SaveChangesAsync">
+			<summary>
+				Persists all pending changes to the database.
+			</summary>
+		</member>
+
+		<member name="M:Core.Interfaces.Repository.IRepository`1.ExistsAsync(System.Linq.Expressions.Expression{System.Func{`0,System.Boolean}})">
+			<summary>
+				Checks whether any entity satisfies the specified condition.
+			</summary>
+			<param name="predicate">A lambda expression defining the condition to check.</param>
+			<returns>True if a matching entity exists, otherwise false.</returns>
+		</member>
+	</members>
+</doc>

@@ -12,7 +12,7 @@ namespace Repositories
 		{
 			_context = context;
 		}
-		public IQueryable<Category> GetTopThreeCategory()
+		public IQueryable<Category> GetCategoriesWithRequests()
 		{
 			return _context.Category.Include(c => c.MaintenanceRequests);
 		}

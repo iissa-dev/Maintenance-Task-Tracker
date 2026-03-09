@@ -1,5 +1,6 @@
 ﻿using Core.Enums;
 
+/// <summary>Represents the outcome of an operation.</summary>
 public class Result
 {
 	public bool IsSuccess { get; protected set; }
@@ -22,6 +23,7 @@ public class Result
 		};
 }
 
+/// <summary>Represents the outcome of an operation.</summary>
 public class Result<T> : Result
 {
 	public T? Data { get; private set; }

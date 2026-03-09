@@ -10,6 +10,6 @@
 		public DateTime ExpiryDate { get; set; }
 
 		public int UserId { get; set; }
-		public ApplicationUser User { get; set; } = new ApplicationUser();
+		public ApplicationUser User { get; set; } = null!;
 	}
 }

@@ -1,10 +1,13 @@
-﻿namespace Core.DTOs.RequestDtos
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Core.DTOs.RequestDtos
 {
 	// DTO for creating or updating a maintenance request
 	public class RequestDto
 	{
+		[Required]
 		public string Description { get; set; } = string.Empty;
-		public string CustomerName { get; set; } = string.Empty;
+		[Required]
 		public int CategoryId { get; set; }
 	}
 }

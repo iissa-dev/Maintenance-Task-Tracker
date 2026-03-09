@@ -2,14 +2,17 @@ using Core.Entities;
 using Core.Exceptions;
 using Core.Interfaces.Repository;
 using Core.Interfaces.Service;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
 using Repositories;
 using Repositories.Data;
 using Services;
 using Services.Profiles;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,7 +25,6 @@ builder.Services.AddCors(optoins =>
 			  .AllowAnyHeader();
 	});
 });
-
 
 // Add services to the container.
 builder.Services.AddControllers();
@@ -46,6 +48,8 @@ builder.Services.AddScoped<IRequestService, RequestService>();
 builder.Services.AddScoped<IRequestRepository, RequestRepository>();
 builder.Services.AddScoped<ICategoryService, CategoryServcie>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+builder.Services.AddScoped<IAccountService, AccountService>();
+builder.Services.AddScoped<ITokenService, TokenService>();
 
 builder.Services.AddIdentity<ApplicationUser, ApplicationRole>(options =>
 {
@@ -58,13 +62,32 @@ builder.Services.AddIdentity<ApplicationUser, ApplicationRole>(options =>
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") 
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
 	?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
 builder.Services.AddDbContext<AppDbContext>(options =>
 options.UseSqlServer(connectionString,
-b=> b.MigrationsAssembly("Repositories")));
+b => b.MigrationsAssembly("Repositories")));
 
+builder.Services.AddAuthentication(options =>
+{
+	options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+	options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options =>
+{
+	options.TokenValidationParameters = new TokenValidationParameters
+	{
+		ValidateIssuer = true,
+		ValidateAudience = true,
+		ValidateLifetime = true,
+		ValidateIssuerSigningKey = true,
+		ValidIssuer = builder.Configuration["Jwt:Issuer"],
+		ValidAudience = builder.Configuration["Jwt:Audience"],
+		IssuerSigningKey = new SymmetricSecurityKey(
+			Encoding.UTF8.GetBytes(builder.Configuration["Jwt:SecretKey"]!))
+	};
+});
 
 var app = builder.Build();
 
@@ -106,6 +129,8 @@ app.UseHttpsRedirection();
 app.UseRouting();
 
 app.UseCors("ReactAppPolicy");
+
+app.UseAuthentication();
 
 app.UseAuthorization();
 
