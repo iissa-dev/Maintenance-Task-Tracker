@@ -50,6 +50,7 @@ builder.Services.AddScoped<ICategoryService, CategoryServcie>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddScoped<IAdminService, AdminService>();
 
 builder.Services.AddIdentity<ApplicationUser, ApplicationRole>(options =>
 {

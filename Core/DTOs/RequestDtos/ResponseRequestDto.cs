@@ -1,6 +1,6 @@
 ﻿namespace Core.DTOs.RequestDtos
 {
-	// DTO for returning maintenance request details, including category name
+	// DTO for returning maintenance request details
 	public class ResponseRequestDto
 	{
 		public int Id { get; set; }

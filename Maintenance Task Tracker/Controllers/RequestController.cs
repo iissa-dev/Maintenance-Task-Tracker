@@ -22,8 +22,8 @@ namespace Maintenance_Task_Tracker.Controllers
 		[ProducesResponseType(StatusCodes.Status400BadRequest)]
 		public async Task<IActionResult> AddRequest([FromBody] Core.DTOs.RequestDtos.RequestDto request)
 		{
-			//var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
-			var result = await _requestService.AddAsync(request, 11);
+			var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+			var result = await _requestService.AddAsync(request, userId);
 			if (result.IsSuccess)
 				return Ok(result);
 

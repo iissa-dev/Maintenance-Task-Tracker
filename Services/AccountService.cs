@@ -60,7 +60,7 @@ namespace Services
 			PhoneNumber = dto.PhoneNumber ?? "",
 			BirthDate = dto.DateOfBirth.HasValue
 				? dto.DateOfBirth.Value.ToDateTime(TimeOnly.MinValue)
-				: null
+				: null	
 		};
 
 		await _context.People.AddAsync(person);
