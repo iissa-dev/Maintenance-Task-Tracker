@@ -1,7 +1,7 @@
 import apiClient from "../api/apiClient";
 import type {
   Result,
-  MaintenanceRequestDto,
+  ResponseRequestDto,
   DashboardStatsDto,
   RequestDto,
   PageResult,
@@ -14,7 +14,7 @@ type Props = {
 };
 
 export const requestService = {
-  getRecentActivity: async (): Promise<Result<MaintenanceRequestDto[]>> => {
+  getRecentActivity: async (): Promise<Result<ResponseRequestDto[]>> => {
     return await apiClient.get("Request/recentActivity");
   },
   getDashboardStats: async (): Promise<Result<DashboardStatsDto>> => {
@@ -26,7 +26,7 @@ export const requestService = {
   getAll: async ({
     pageNumber,
     pageSize,
-  }: Props): Promise<PageResult<MaintenanceRequestDto[]>> => {
+  }: Props): Promise<PageResult<ResponseRequestDto[]>> => {
     const url = `Request/GetAllRequest?pageNumber=${pageNumber}&pageSize=${pageSize}`;
     return await apiClient.get(url);
   },

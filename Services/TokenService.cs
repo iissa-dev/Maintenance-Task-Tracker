@@ -65,17 +65,17 @@ namespace Services
 
 			return refreshToken;
 		}
-		public async Task<Result<AuthResponseDto>> RefreshTokenAsync(string refreshToken)
+		public async Task<Result<TokenResult>> RefreshTokenAsync(string refreshToken)
 		{
 			var token = await _context.RefreshTokens
 				.Include(r => r.User)
 				.FirstOrDefaultAsync(r => r.RefreshToken == refreshToken);
 
 			if (token is null || token.User is null)
-				return Result<AuthResponseDto>.Failure("Invalid refresh token", AppError.Unauthorized);
+				return Result<TokenResult>.Failure("Invalid refresh token", AppError.Unauthorized);
 
 			if (token.IsRevoked || token.ExpiryDate < DateTime.UtcNow)
-				return Result<AuthResponseDto>.Failure("Refresh token expired or revoked", AppError.Unauthorized);
+				return Result<TokenResult>.Failure("Refresh token expired or revoked", AppError.Unauthorized);
 
 			token.IsRevoked = true;
 			await _context.SaveChangesAsync();
@@ -84,12 +84,10 @@ namespace Services
 			var newRefreshToken = await GenerateRefreshTokenAsync(token.User.Id);
 			var roles = await _userManager.GetRolesAsync(token.User);
 
-			return Result<AuthResponseDto>.Success(new AuthResponseDto
+			return Result<TokenResult>.Success(new TokenResult
 			{
 				AccessToken = newAccessToken,
 				RefreshToken = newRefreshToken.RefreshToken,
-				ExpiresAt = DateTime.UtcNow.AddMinutes(
-					double.Parse(_configuration["Jwt:ExpiryMinutes"]!)),
 				UserName = token.User.UserName!,
 				Role = roles.FirstOrDefault() ?? "Client"
 			});

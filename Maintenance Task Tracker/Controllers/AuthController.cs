@@ -10,11 +10,13 @@ namespace Maintenance_Task_Tracker.Controllers
     {
         private readonly IAccountService _accountService;
         private readonly ITokenService _tokenService;
+        private readonly IHostEnvironment _env;
 
-        public AuthController(IAccountService accountService, ITokenService tokenService)
+        public AuthController(IAccountService accountService, ITokenService tokenService, IHostEnvironment env)
         {
             _accountService = accountService;
             _tokenService = tokenService;
+            _env = env;
         }
 
         [HttpPost("register")]
@@ -35,23 +37,57 @@ namespace Maintenance_Task_Tracker.Controllers
         public async Task<IActionResult> Login([FromBody] LoginDto dto)
         {
             var result = await _accountService.LoginAsync(dto);
-            if (!result.IsSuccess)
-                return Unauthorized(result);
+            if (!result.IsSuccess) return Unauthorized(result);
 
-            return Ok(result);
+            Response.Cookies.Append("refreshToken", result.Data!.RefreshToken, new CookieOptions
+            {
+                HttpOnly = true,
+				Secure = _env.IsProduction(),
+				SameSite = SameSiteMode.Strict,
+				Expires = DateTime.UtcNow.AddDays(7)
+            });
+
+            return Ok(result.Data);
         }
-
 
         [HttpPost("refresh")]
 		[ProducesResponseType(StatusCodes.Status200OK)]
 		[ProducesResponseType(StatusCodes.Status401Unauthorized)]
-		public async Task<IActionResult> Refresh([FromBody] string refreshToken)
+		public async Task<IActionResult> Refresh()
         {
-            var result = await _tokenService.RefreshTokenAsync(refreshToken);
-            if (!result.IsSuccess)
-                return Unauthorized(result);
+            var refreshToken = Request.Cookies["refreshToken"];
+            if (refreshToken is null) return BadRequest();
+			var result = await _tokenService.RefreshTokenAsync(refreshToken);
+            if (!result.IsSuccess) return Unauthorized(result.ErrorCode);
 
-            return Ok(result);
+            Response.Cookies.Append("refreshToken", result.Data!.RefreshToken, new CookieOptions
+            {
+                HttpOnly = true,
+				Secure = _env.IsProduction(),
+				SameSite = SameSiteMode.Strict,
+				Expires = DateTimeOffset.UtcNow.AddDays(7)
+            });
+
+            return Ok(new AuthResponseDto
+			{
+				AccessToken = result.Data.AccessToken,
+				UserName = result.Data.UserName,
+				Role = result.Data.Role
+			});
         }
-    }
+
+		[HttpPut("logout")]
+		[ProducesResponseType(StatusCodes.Status200OK)]
+		[ProducesResponseType(StatusCodes.Status400BadRequest)]
+		public async Task<IActionResult> Logout() {
+            var refreshToken = Request.Cookies["refreshToken"];
+            if (refreshToken is null) return BadRequest(Result.Failure("Invalid Refresh Token Or you are not login", Core.Enums.AppError.BadRequest));
+
+            var result = await _accountService.Logout(refreshToken);
+			if (!result.IsSuccess)
+				return BadRequest(result);
+
+			return Ok(result);
+		}
+	}
 }

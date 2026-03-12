@@ -22,7 +22,8 @@ builder.Services.AddCors(optoins =>
 	{
 		policy.WithOrigins("http://localhost:5173")
 			  .AllowAnyMethod()
-			  .AllowAnyHeader();
+			  .AllowAnyHeader()
+			  .AllowCredentials();
 	});
 });
 
@@ -42,6 +43,8 @@ builder.Services.AddSwaggerGen(options =>
 
 builder.Services.AddAutoMapper(typeof(CategoryProfile));
 builder.Services.AddAutoMapper(typeof(RequestProfile));
+builder.Services.AddAutoMapper(typeof(PersonProfile));
+builder.Services.AddAutoMapper(typeof(UserProfile));
 
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddScoped<IRequestService, RequestService>();

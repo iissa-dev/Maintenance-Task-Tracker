@@ -1,7 +1,6 @@
 ﻿
 
 using Core.Entities;
-using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
@@ -26,20 +25,7 @@ namespace Repositories.Data
 			modelBuilder.Entity<Category>().HasData(
 				new Category { Id = 1, Name = "Electrical" },
 				new Category { Id = 2, Name = "Plumbing" }
-			);
-
-
-			modelBuilder.Entity<MaintenanceRequest>()
-				.HasOne(m => m.CreatedBy)
-				.WithMany()
-				.HasForeignKey(m => m.CreatedByUserId)
-				.OnDelete(DeleteBehavior.Restrict);
-
-			modelBuilder.Entity<MaintenanceRequest>()
-				.HasOne(m => m.AssignedTo)
-				.WithMany()
-				.HasForeignKey(m => m.AssignedToUserId)
-				.OnDelete(DeleteBehavior.Restrict); 
+			);			
 		}
 	}
 }

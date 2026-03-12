@@ -1,4 +1,5 @@
 ﻿using Core.Entities;
+using Core.Enums;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -19,7 +20,20 @@ namespace Repositories.Config
 
 			builder.Property(m => m.CreatedAt)
 				.HasColumnType("datetime2")
-				.IsRequired();	
+				.IsRequired();
+
+			builder
+				.HasOne(m => m.CreatedBy)
+				.WithMany()
+				.HasForeignKey(m => m.CreatedByUserId)
+				.OnDelete(DeleteBehavior.Restrict);
+
+			builder
+				.HasOne(m => m.AssignedTo)
+				.WithMany()
+				.HasForeignKey(m => m.AssignedToUserId)
+				.OnDelete(DeleteBehavior.Restrict);
+		
 		}
 	}
 }

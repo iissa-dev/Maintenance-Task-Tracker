@@ -3,11 +3,11 @@ import type {
   RequestDto,
   CategoryDto,
   UpdateRequestDto,
-  MaintenanceRequestDto,
+  ResponseRequestDto,
 } from "../types/index";
 import { categoryService } from "../services/categoryService";
 import { requestService } from "../services/requestService";
-import { PopupType, usePopup } from "./Popup";
+import { PopupType, usePopup } from "../components/Popup";
 
 async function addNew(params: RequestDto) {
   try {
@@ -26,7 +26,7 @@ type Props = {
   isOpen: boolean;
   onClose: () => void;
   Mode: string;
-  data: MaintenanceRequestDto | null;
+  data: ResponseRequestDto | null;
 };
 
 function getCategoryId(categories: CategoryDto[], categoryName: string) {
@@ -37,7 +37,6 @@ function getCategoryId(categories: CategoryDto[], categoryName: string) {
 function NewRequest({ isOpen, onClose, Mode = "Add", data }: Props) {
   const [categories, setCategories] = useState<CategoryDto[]>([]);
   const [description, setDescription] = useState("");
-  const [customerName, setCustomerName] = useState("");
   const [category, setCategory] = useState(1);
   const [status, setStatus] = useState(0); // Pending = 0
   const { confirm, Modal } = usePopup();
@@ -50,9 +49,10 @@ function NewRequest({ isOpen, onClose, Mode = "Add", data }: Props) {
     const text = e.target.value;
     setDescription(text);
   };
-  const handleCustomerName = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const text = e.target.value;
-    setCustomerName(text);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const handleCustomerName = (_e: React.ChangeEvent<HTMLInputElement>) => {
+    // const text = e.target.value;
+    // Remove Customer Name
   };
   const handleCategory = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const text = e.target.value;
@@ -64,7 +64,7 @@ function NewRequest({ isOpen, onClose, Mode = "Add", data }: Props) {
       try {
         const res = await categoryService.getAll();
         if (res.isSuccess) {
-          setCategories(res.data);
+          setCategories(res.data || []);
         } else {
           console.log(res.message);
         }
@@ -79,7 +79,6 @@ function NewRequest({ isOpen, onClose, Mode = "Add", data }: Props) {
     if (data) {
       // eslint-disable-next-line react-hooks/set-state-in-effect
       setDescription(data.description);
-      setCustomerName(data.customerName);
       setCategory(getCategoryId(categories, data.categoryName) ?? 1);
       if (data.status === "Pending") setStatus(0);
       if (data.status === "InProgress") setStatus(1);
@@ -98,7 +97,6 @@ function NewRequest({ isOpen, onClose, Mode = "Add", data }: Props) {
     const ok = await addNew({
       description: description,
       categoryId: category,
-      customerName: customerName,
     });
 
     if (ok) {
@@ -117,7 +115,6 @@ function NewRequest({ isOpen, onClose, Mode = "Add", data }: Props) {
     const Update: UpdateRequestDto = {
       description: description,
       categoryId: category,
-      customerName: customerName,
       status: status,
     };
 
@@ -161,15 +158,14 @@ function NewRequest({ isOpen, onClose, Mode = "Add", data }: Props) {
           />
           <label htmlFor="customerName">CustomerName</label>
           <input
-            onChange={handleCustomerName}
+            onChange={handleCustomerName} // Will Update it later
             id="customerName"
             type="text"
-            value={customerName}
-            className="px-2.5 py-1.25 border border-(--color-muted-foreground) outline-none rounded-[20px] mb-5"
+            className="px-2.5 py-1.25 border border-muted-foreground outline-none rounded-[20px] mb-5"
           />
           <select
             onChange={handleCategory}
-            className="px-2.5 py-1.25 border border-(--color-muted-foreground) outline-none rounded-[20px] mb-5"
+            className="px-2.5 py-1.25 border border-muted-foreground outline-none rounded-[20px] mb-5"
             value={category}
           >
             {categories.map((c) => (
@@ -185,7 +181,7 @@ function NewRequest({ isOpen, onClose, Mode = "Add", data }: Props) {
           {Mode === "Edit" && (
             <select
               onChange={handleStaus}
-              className="px-2.5 py-1.25 border border-(--color-muted-foreground) outline-none rounded-[20px] mb-6"
+              className="px-2.5 py-1.25 border border-muted-foreground outline-none rounded-[20px] mb-6"
               value={status}
             >
               <option className="bg-(--color-background) text-soft" value={0}>

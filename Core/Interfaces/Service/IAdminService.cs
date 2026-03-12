@@ -13,7 +13,7 @@ namespace Core.Interfaces.Service
 		/// <summary>Retrieves a paginated list of users filtered by role.</summary>
 		Task<Result<ResultPage<UserReponseDto>>> GetAllUsersByRoleAsync(
 			RoleName roleName, int pageNumber, int pageSize);
-
+			
 		/// <summary>Assigns an employee to a maintenance request.</summary>
 		Task<Result> AssignEmployee(int requestId, int employeeId);
 	}

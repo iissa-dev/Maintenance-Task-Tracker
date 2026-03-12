@@ -7,6 +7,7 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
 import "./Popup.css";
+import { createPortal } from "react-dom";
 
 export const PopupType = {
   INFO: "info",
@@ -70,7 +71,7 @@ export function usePopup() {
   const Modal = () => {
     if (!state) return null;
 
-    return (
+    return createPortal(
       <>
         <div className="overlay fixed inset-0 bg-black/25 backdrop-blur-[2px] z-1000" />
 
@@ -112,7 +113,8 @@ export function usePopup() {
             </div>
           </div>
         </div>
-      </>
+      </>,
+      document.body,
     );
   };
 

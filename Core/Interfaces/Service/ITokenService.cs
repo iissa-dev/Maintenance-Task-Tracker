@@ -19,7 +19,7 @@ namespace Core.Interfaces.Service
 
 		/// <include file='../../Docs/ITokenService.xml' 
 		///          path='doc/members/member[@name="M:Core.Interfaces.Service.ITokenService.RefreshTokenAsync(System.String)"]/*'/>
-		Task<Result<AuthResponseDto>> RefreshTokenAsync(string refreshToken);
+		Task<Result<TokenResult>> RefreshTokenAsync(string refreshToken);
 
 		/// <include file='../../Docs/ITokenService.xml' 
 		///          path='doc/members/member[@name="M:Core.Interfaces.Service.ITokenService.RevokeTokenAsync(System.String)"]/*'/>

@@ -2,6 +2,7 @@ import {
   faChartBar,
   faFolder,
   faList,
+  faUser,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Link, useLocation } from "react-router-dom";
@@ -19,7 +20,7 @@ function Sidebar() {
     `${baseClass} ${pathname === path ? activeClass : ""}`;
 
   return (
-    <div className="p-5 text-[20px] h-screen border-r neon-border w-16 md:w-62.5 transition-all duration-300">
+    <div className="p-5 text-[20px] h-screen border-r neon-border w-16 md:w-62.5 transition-all duration-300 flex flex-col justify-between">
       <ul className="mt-25 flex items-center flex-col md:block">
         <Link to="/">
           <li className={getClass("/")}>
@@ -33,13 +34,19 @@ function Sidebar() {
             <span className="ml-1.25 hidden md:inline">Requests</span>
           </li>
         </Link>
-        <Link to="/categories">
-          <li className={getClass("/categories")}>
+        <Link to="/UserManagement">
+          <li className={getClass("/UserManagement")}>
             <FontAwesomeIcon icon={faFolder} />
-            <span className="ml-1.25 hidden md:inline">Categories</span>
+            <span className="ml-1.25 hidden md:inline">Users</span>
           </li>
         </Link>
       </ul>
+      <div>
+        <Link to={"/login"}>
+          <FontAwesomeIcon icon={faUser} />
+          <span className="ml-1.25 hidden md:inline">Login</span>
+        </Link>
+      </div>
     </div>
   );
 }

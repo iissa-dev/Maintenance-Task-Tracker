@@ -1,26 +1,24 @@
 import { useEffect, useState } from "react";
 import Sidebar from "../layouts/Sidebar";
 import "./Request.css";
-import NewRequest from "../components/NewRequest";
+import NewRequest from "../forms/NewRequest";
 import Table from "../components/Table";
-import type { MaintenanceRequestDto, PageResult } from "../types";
+import type { ResponseRequestDto, PageResult } from "../types";
 import { requestService } from "../services/requestService";
 import { usePopup, PopupType } from "../components/Popup";
 
 function Request() {
   // States
   const [open, setOpen] = useState(false);
-  const [requests, setRequests] = useState<MaintenanceRequestDto[]>([]);
-  const [pageInfo, setPageInfo] =
-    useState<PageResult<MaintenanceRequestDto[]>>();
+  const [requests, setRequests] = useState<ResponseRequestDto[]>([]);
+  const [pageInfo, setPageInfo] = useState<PageResult<ResponseRequestDto[]>>();
   const [currentPage, setCurrentPage] = useState(pageInfo?.pageNumber ?? 1);
   const [reload, setReload] = useState(false);
   const { confirm, Modal } = usePopup();
-  const [requestToUpdate, setRequestToUpdate] =
-    useState<MaintenanceRequestDto>();
+  const [requestToUpdate, setRequestToUpdate] = useState<ResponseRequestDto>();
+  const [loading, setLoading] = useState(false);
   const tableData = requests.map((request) => ({
     id: request.id,
-    customerName: request.customerName,
     categoryName: request.categoryName,
     createdAt: request.createdAt,
     description: request.description,
@@ -29,6 +27,7 @@ function Request() {
   useEffect(() => {
     const fetchRequest = async () => {
       try {
+        setLoading(true);
         const res = await requestService.getAll({
           pageNumber: currentPage,
           pageSize: 4,
@@ -40,6 +39,8 @@ function Request() {
         } else console.log("Empty");
       } catch (err) {
         console.log(err);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -74,9 +75,9 @@ function Request() {
       id: data.id,
       categoryName: data.categoryName,
       createdAt: data.createdAt,
-      customerName: data.customerName,
       description: data.description,
       status: data.status,
+      categoryId: 0,
     });
     setOpen(true);
   };
@@ -98,21 +99,15 @@ function Request() {
   return (
     <div className="flex">
       <Sidebar />
-      <div className="flex-1 p-5 overflow-auto">
+      <div className="flex-1 p-5 overflow-auto relative">
         <Table
-          tableHeader={[
-            "Id",
-            "Name",
-            "Category",
-            "CreatedAt",
-            "Description",
-            "Status",
-          ]}
+          tableHeader={["Id", "Category", "CreatedAt", "Description", "Status"]}
           tableData={tableData}
           onDelete={(id) => handleDelete(id)}
           onEdit={(data) => handleEdit(data)}
           onNext={goNext}
           onPrev={goPrev}
+          loading={loading}
           pageInfo={{
             PageNumber: currentPage,
             PageSize: pageInfo?.totalPages ?? 10,

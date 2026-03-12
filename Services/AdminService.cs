@@ -1,10 +1,8 @@
 ﻿using Core.DTOs.AuthDtos;
 using Core.DTOs.Page;
 using Core.DTOs.UserDtos;
-using Core.Entities;
 using Core.Enums;
 using Core.Interfaces.Service;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Repositories.Data;
 
@@ -12,15 +10,12 @@ namespace Services
 {
 	public class AdminService : IAdminService
 	{
-
-		private readonly UserManager<ApplicationUser> _userManager;
 		private readonly AppDbContext _context;
-		private readonly IRequestService _requestService;
-		public AdminService(UserManager<ApplicationUser> userManager, AppDbContext context, IRequestService requestService)
+		private readonly IAccountService _accountService;
+		public AdminService(AppDbContext context, IAccountService accountService)
 		{
-			_userManager = userManager;
 			_context = context;
-			_requestService = requestService;
+			_accountService = accountService;
 		}
 
 		public async Task<Result> AssignEmployee(int requestId, int	employeeId)
@@ -47,42 +42,7 @@ namespace Services
 
 		public async Task<Result> CreateEmployeeAsync(RegisterDto registerDto)
 		{
-			var person = new Person
-			{
-				FirstName = registerDto.FirstName,
-				LastName = registerDto.LastName,
-				PhoneNumber = registerDto.PhoneNumber ?? "",
-				BirthDate = registerDto.DateOfBirth.HasValue
-				? registerDto.DateOfBirth.Value.ToDateTime(TimeOnly.MinValue)
-				: null
-			};
-
-			await _context.People.AddAsync(person);
-			await _context.SaveChangesAsync();
-
-			var user = new ApplicationUser
-			{
-				PersonId = person.Id,
-				UserName = registerDto.UserName,
-				Email = registerDto.Email,
-				PhoneNumber = registerDto.PhoneNumber ?? "",
-			};
-
-			var result = await _userManager.CreateAsync(user, registerDto.Password);
-
-			if (!result.Succeeded)
-			{
-				_context.People.Remove(person);
-				await _context.SaveChangesAsync();
-
-				return Result.Failure(
-						string.Join(", ", result.Errors.Select(e => e.Description)),
-						AppError.BadRequest);
-			}
-
-			await _userManager.AddToRoleAsync(user, RoleName.Employee.ToString());
-
-			return Result.Success("Create Employee Success");
+			return await _accountService.CreateUserAsync(registerDto, RoleName.Employee);
 		}
 
 		public async Task<Result<ResultPage<UserReponseDto>>> GetAllUsersByRoleAsync(RoleName roleName, int pageNumber = 1, int pageSize = 10)
@@ -118,7 +78,6 @@ namespace Services
 
 			return Result<ResultPage<UserReponseDto>>.Success(pageResult, "Success");
 		}
-
 
 	}
 }

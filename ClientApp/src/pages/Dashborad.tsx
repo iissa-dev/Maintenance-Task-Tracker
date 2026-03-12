@@ -5,7 +5,7 @@ function Dashboard() {
   return (
     <div className="flex h-screen">
       <Sidebar />
-      <div className="flex flex-col flex-1">
+      <div className="flex flex-col flex-1 relative">
         <div>
           <DashboardContainer />
         </div>

@@ -1,4 +1,5 @@
 ﻿using Core.DTOs.AuthDtos;
+using Core.Enums;
 
 namespace Core.Interfaces.Service
 {
@@ -7,12 +8,16 @@ namespace Core.Interfaces.Service
 	public interface IAccountService
 	{
 
-		/// <include file='../../Docs/IAccountService.xml'
-		///          path='doc/members/member[@name="M:Core.Interfaces.Service.IAccountService.RegisterAsync(Core.DTOs.AuthDtos.RegisterDto)"]/*'/>
-		Task<Result<AuthResponseDto>> RegisterAsync(RegisterDto dto);
+		Task<Result> CreateUserAsync(RegisterDto dto, RoleName roleName);
 
 		/// <include file='../../Docs/IAccountService.xml'
 		///          path='doc/members/member[@name="M:Core.Interfaces.Service.IAccountService.LoginAsync(Core.DTOs.AuthDtos.LoginDto)"]/*'/>
-		Task<Result<AuthResponseDto>> LoginAsync(LoginDto dto);
+		Task<Result<TokenResult>> LoginAsync(LoginDto dto);
+
+		/// <include file='../../Docs/IAccountService.xml'
+		///          path='doc/members/member[@name="M:Core.Interfaces.Service.IAccountService.RegisterAsync(Core.DTOs.AuthDtos.RegisterDto)"]/*'/>
+		Task<Result> RegisterAsync(RegisterDto registerDto);
+
+		Task<Result> Logout(string refreshToken);
 	}
 }

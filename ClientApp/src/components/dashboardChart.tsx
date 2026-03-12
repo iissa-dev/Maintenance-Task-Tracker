@@ -21,13 +21,13 @@ function DashboardChart() {
       try {
         const res = await categoryService.getTopThreeCategories();
         if (res.isSuccess) {
-          setCategories(res.data);
+          setCategories(res.data || []);
         } else {
           console.error(res);
         }
       } catch (err) {
         console.error(err);
-      }
+      } 
     };
 
     fetchData();
