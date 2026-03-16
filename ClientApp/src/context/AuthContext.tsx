@@ -48,9 +48,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         role: res.role,
       });
       return { message: "Login Success", isSuccess: true };
-    } catch (error: any) {
+    } catch {
       return {
-        message: String(error),
+        message: "Unvalid Username or Password",
         isSuccess: false,
       };
     } finally {

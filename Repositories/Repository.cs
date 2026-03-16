@@ -29,13 +29,13 @@ namespace Repositories
 
 		public void Update(T entity) => _dbSet.Update(entity);
 
-		public async Task Delete(int id)
+		public async Task<bool> DeleteAsync(int id)
 		{
 			var entity = await _dbSet.FindAsync(id);
-			if (entity != null)
-			{
-				_dbSet.Remove(entity);
-			}
+			if (entity == null) return false;
+
+			_dbSet.Remove(entity);
+			return true;
 		}
 
 		public async Task SaveChangesAsync()

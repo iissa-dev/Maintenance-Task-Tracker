@@ -39,7 +39,7 @@ namespace Services
 				return Result.Failure("Category not found.", AppError.NotFound);
 			}
 
-			await _repository.Delete(id);
+			await _repository.DeleteAsync(id);
 			await _repository.SaveChangesAsync();
 			return Result.Success("Category deleted successfully.");
 		}

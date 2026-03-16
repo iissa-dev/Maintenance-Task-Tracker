@@ -37,7 +37,7 @@ export interface DashboardStatsDto {
 }
 
 export interface PageResult<T> {
-  items: T;
+  items: T[];
   totalItems: number;
   totalPages: number;
   pageNumber: number;
@@ -55,7 +55,7 @@ export interface RegisterDto {
   lastName: string;
   userName: string;
   email: string;
-  phoneNumber: string;
+  phoneNumber: string | null;
   password: string;
   dateOfBairth: string | null;
 }
@@ -70,7 +70,7 @@ export interface AuthResponseDto {
   userName: string;
   role: string;
 }
-// Store in Context 
+// Store in Context
 export interface AuthUser {
   userName: string;
   role: string;
@@ -81,7 +81,7 @@ export interface UserReponseDto {
   fullName: string;
   userName: string;
   email: string;
-  phoneNumber: string;
+  phoneNumber?: string;
   role: string;
 }
 
@@ -90,4 +90,15 @@ export interface TokenResult {
   refreshToken: string;
   role: string;
   userName: string;
+}
+
+export interface UpdateUserDto {
+  firstName: string;
+  lastName: string;
+  email: string;
+  userName: string;
+}
+
+export interface AddUserDto extends UpdateUserDto {
+  password: string;
 }

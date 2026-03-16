@@ -26,7 +26,7 @@ export const requestService = {
   getAll: async ({
     pageNumber,
     pageSize,
-  }: Props): Promise<PageResult<ResponseRequestDto[]>> => {
+  }: Props): Promise<PageResult<ResponseRequestDto>> => {
     const url = `Request/GetAllRequest?pageNumber=${pageNumber}&pageSize=${pageSize}`;
     return await apiClient.get(url);
   },

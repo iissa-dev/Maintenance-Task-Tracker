@@ -5,16 +5,21 @@ import Request from "./pages/Request";
 import Login from "./pages/Login";
 import { AuthProvider } from "./context/AuthContext";
 import UserManagement from "./pages/UserManagement";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+
+const queryClient = new QueryClient();
 function App() {
   return (
-    <AuthProvider>
-      <Routes>
-        <Route path="/" element={<Dashboard />} />
-        <Route path="request" element={<Request />} />
-        <Route path="login" element={<Login />} />
-        <Route path="userManagement" element={<UserManagement />} />
-      </Routes>
-    </AuthProvider>
+    <QueryClientProvider client={queryClient}>
+      <AuthProvider>
+        <Routes>
+          <Route path="/" element={<Dashboard />} />
+          <Route path="request" element={<Request />} />
+          <Route path="login" element={<Login />} />
+          <Route path="userManagement" element={<UserManagement />} />
+        </Routes>
+      </AuthProvider>
+    </QueryClientProvider>
   );
 }
 

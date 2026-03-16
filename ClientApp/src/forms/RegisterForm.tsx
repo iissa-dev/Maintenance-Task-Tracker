@@ -69,6 +69,7 @@ function RegisterForm({ show = false, onBackClick }: Parps) {
   const handleSignup = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     if (!data) return;
+
     const isRegister = await register(data);
     if (isRegister.isSuccess) {
       await alert(isRegister.message, "Regiester", PopupType.INFO);

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Sidebar from "../layouts/Sidebar";
 import "./Request.css";
 import NewRequest from "../forms/NewRequest";
@@ -6,48 +6,74 @@ import Table from "../components/Table";
 import type { ResponseRequestDto, PageResult } from "../types";
 import { requestService } from "../services/requestService";
 import { usePopup, PopupType } from "../components/Popup";
+import { ThreeDot } from "react-loading-indicators";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+
+type FormState =
+  | { Mode: "Add"; data: null }
+  | { Mode: "Edit"; data: ResponseRequestDto };
+
+const DEFAULT_FORM_STATE: FormState = { Mode: "Add", data: null };
 
 function Request() {
-  // States
   const [open, setOpen] = useState(false);
-  const [requests, setRequests] = useState<ResponseRequestDto[]>([]);
-  const [pageInfo, setPageInfo] = useState<PageResult<ResponseRequestDto[]>>();
-  const [currentPage, setCurrentPage] = useState(pageInfo?.pageNumber ?? 1);
-  const [reload, setReload] = useState(false);
-  const { confirm, Modal } = usePopup();
-  const [requestToUpdate, setRequestToUpdate] = useState<ResponseRequestDto>();
-  const [loading, setLoading] = useState(false);
-  const tableData = requests.map((request) => ({
-    id: request.id,
-    categoryName: request.categoryName,
-    createdAt: request.createdAt,
-    description: request.description,
-    status: request.status,
-  }));
-  useEffect(() => {
-    const fetchRequest = async () => {
-      try {
-        setLoading(true);
-        const res = await requestService.getAll({
-          pageNumber: currentPage,
-          pageSize: 4,
-        });
-        if (res.totalPages != 0) {
-          setRequests(res.items);
-          setPageInfo(res);
-          setCurrentPage(res.pageNumber);
-        } else console.log("Empty");
-      } catch (err) {
-        console.log(err);
-      } finally {
-        setLoading(false);
-      }
-    };
+  const [currentPage, setCurrentPage] = useState(1);
+  const [formState, setFormState] = useState<FormState>(DEFAULT_FORM_STATE);
 
-    fetchRequest();
-  }, [currentPage, reload]);
+  const { confirm, alert, Modal } = usePopup();
+  const queryClient = useQueryClient();
 
-  // Logic
+  const { data, isLoading, isPreviousData } = useQuery({
+    queryFn: () =>
+      requestService.getAll({ pageNumber: currentPage, pageSize: 4 }),
+    queryKey: ["requests", currentPage],
+    keepPreviousData: true,
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: async (id: number) => {
+      const res = await requestService.delete(id);
+      if (!res.isSuccess) throw new Error(res.message);
+      return res;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["requests"] });
+    },
+  });
+
+  const pageInfo: PageResult<ResponseRequestDto> = data ?? {
+    items: [],
+    pageNumber: 1,
+    pageCount: 1,
+    totalItems: 0,
+    totalPages: 1,
+  };
+
+  if (isLoading) {
+    return (
+      <div className="fixed top-[50%] left-[50%] -translate-[50%]">
+        <ThreeDot
+          variant="bounce"
+          color="#239c8c"
+          size="medium"
+          text="LOADING"
+          textColor="#0d8988"
+        />
+      </div>
+    );
+  }
+
+  const tableData =
+    pageInfo.items?.map((request) => ({
+      id: request.id,
+      categoryName: request.categoryName,
+      createdAt: request.createdAt,
+      description: request.description,
+      status: request.status,
+    })) ?? [];
+
+  type TableRow = (typeof tableData)[number];
+
   const handleDelete = async (id: number) => {
     const ok = await confirm(
       `Are you sure you want to delete request with Id: ${id}?`,
@@ -57,70 +83,74 @@ function Request() {
     if (!ok) return;
 
     try {
-      const res = await requestService.delete(id);
-
-      if (res.isSuccess) {
-        setReload(true);
-      } else {
-        console.log(res?.message || "Flaid to delete");
-      }
-    } catch (err) {
-      console.error(err);
+      await deleteMutation.mutateAsync(id);
+      await alert("Request deleted successfully.", "Delete", PopupType.INFO);
+    } catch (error) {
+      await alert(`${error}`, "Delete", PopupType.DANGER);
     }
   };
-  type TableRow = (typeof tableData)[number];
 
-  const handleEdit = async (data: TableRow) => {
-    setRequestToUpdate({
-      id: data.id,
-      categoryName: data.categoryName,
-      createdAt: data.createdAt,
-      description: data.description,
-      status: data.status,
-      categoryId: 0,
+  const handleEdit = (row: TableRow) => {
+    setFormState({
+      Mode: "Edit",
+      data: {
+        id: row.id,
+        categoryName: row.categoryName,
+        createdAt: row.createdAt,
+        description: row.description,
+        status: row.status,
+        categoryId: 0, // ← الـ backend ما يرجعه، getCategoryId في NewRequest يحله
+      },
     });
     setOpen(true);
   };
-  const goNext = () => {
-    if (!pageInfo) return;
-    if (!currentPage) return;
-    if (pageInfo?.pageNumber < pageInfo?.totalPages) {
-      setCurrentPage((prev) => (prev += 1));
-    }
+
+  const handleCloseForm = () => {
+    setOpen(false);
+    setFormState(DEFAULT_FORM_STATE);
   };
+
+  const goNext = () => {
+    if (!isPreviousData && currentPage < pageInfo.totalPages)
+      setCurrentPage((prev) => prev + 1);
+  };
+
   const goPrev = () => {
-    if (!pageInfo) return;
-    if (!currentPage) return;
-    if (currentPage > 1) {
-      setCurrentPage((prev) => (prev -= 1));
-    }
+    if (currentPage > 1) setCurrentPage((prev) => prev - 1);
   };
 
   return (
     <div className="flex">
       <Sidebar />
       <div className="flex-1 p-5 overflow-auto relative">
+        <div className="mb-4 flex justify-end">
+          <button
+            onClick={() => {
+              setFormState(DEFAULT_FORM_STATE);
+              setOpen(true);
+            }}
+            className="btn-primary px-4 py-2 rounded-lg font-medium transition"
+          >
+            + New Request
+          </button>
+        </div>
         <Table
           tableHeader={["Id", "Category", "CreatedAt", "Description", "Status"]}
           tableData={tableData}
-          onDelete={(id) => handleDelete(id)}
-          onEdit={(data) => handleEdit(data)}
+          onDelete={handleDelete}
+          onEdit={handleEdit}
           onNext={goNext}
           onPrev={goPrev}
-          loading={loading}
           pageInfo={{
             PageNumber: currentPage,
-            PageSize: pageInfo?.totalPages ?? 10,
-          }}
-          onReload={function (): void {
-            throw new Error("Function not implemented.");
+            PageSize: pageInfo.totalPages ?? 1,
           }}
         />
         <NewRequest
+          key={`${formState.Mode}-${formState.data?.id}`}
           isOpen={open}
-          onClose={() => setOpen(false)}
-          Mode="Edit"
-          data={requestToUpdate ?? null}
+          onClose={handleCloseForm}
+          {...formState}
         />
       </div>
       <Modal />

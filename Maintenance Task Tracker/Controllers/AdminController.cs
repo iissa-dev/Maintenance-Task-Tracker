@@ -1,4 +1,5 @@
 ﻿using Core.DTOs.AuthDtos;
+using Core.DTOs.UserDtos;
 using Core.Enums;
 using Core.Interfaces.Service;
 using Microsoft.AspNetCore.Http;
@@ -30,30 +31,21 @@ namespace Maintenance_Task_Tracker.Controllers
 			return BadRequest(result);
 		}
 
-		[HttpGet("Employees")]
+		[HttpGet("Users")]
 		[ProducesResponseType(StatusCodes.Status200OK)]
 		[ProducesResponseType(StatusCodes.Status400BadRequest)]
-		public async Task<IActionResult> GetAllEmployeeAsync(int pageNumber, int pageSize)
+		public async Task<IActionResult> GetAllUsersAsync (int roleId, int pageNumber, int pageSize, string? searchByUserName)
 		{
-			var result = await _adminService.GetAllUsersByRoleAsync(RoleName.Employee, pageNumber, pageSize);
+
+			if(!Enum.IsDefined((RoleName)roleId)) {
+				return BadRequest(Result.Failure("Invalid Role", AppError.BadRequest));
+			}
+			var result = await _adminService.GetAllUsersByRoleAsync((RoleName)roleId, pageNumber, pageSize, searchByUserName);
 			if (result.IsSuccess)
 				return Ok(result);
 
 			return BadRequest(result);
 		}
-
-		[HttpGet("Clients")]
-		[ProducesResponseType(StatusCodes.Status200OK)]
-		[ProducesResponseType(StatusCodes.Status400BadRequest)]
-		public async Task<IActionResult> GetAllClientsAsync(int pageNumber, int pageSize)
-		{
-			var result = await _adminService.GetAllUsersByRoleAsync(RoleName.Client, pageNumber, pageSize);
-			if (result.IsSuccess)
-				return Ok(result);
-
-			return BadRequest(result);
-		}
-
 		[HttpPut("request/{requestId}/assgin/{employeeId}")]
 		[ProducesResponseType(StatusCodes.Status200OK)]
 		[ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -65,6 +57,27 @@ namespace Maintenance_Task_Tracker.Controllers
 
 			return BadRequest(result);
 		}
+		
+		[HttpDelete("Delete/{userId}")]
+		[ProducesResponseType(StatusCodes.Status200OK)]
+		[ProducesResponseType(StatusCodes.Status404NotFound)]
+		public async Task<IActionResult> DeleteUserAsync(int userId) {
+			var result = await _adminService.DeleteUserAsync(userId);
+			if(result.IsSuccess) return Ok(result);
+			return NotFound(result);
+		}
 
+		[HttpPut("UpdateUser/{id}")]
+		[ProducesResponseType(StatusCodes.Status200OK)]
+		[ProducesResponseType(StatusCodes.Status400BadRequest)]
+		[ProducesResponseType(StatusCodes.Status404NotFound)]
+		public async Task<IActionResult> UpdateUser(int id, [FromBody] UpdateUserDto dto)
+		{
+			var result = await _adminService.UpdateUserAsync(id, dto);
+			if (result.IsSuccess)
+				return Ok(result);
+
+			return BadRequest(result);
+		}
 	}
 }

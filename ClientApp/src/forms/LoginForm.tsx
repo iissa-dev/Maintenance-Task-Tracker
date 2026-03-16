@@ -22,14 +22,16 @@ function LoginForm({ onSignupClick }: Params) {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
-    const isLogin = await login(data);
-    if (isLogin.isSuccess) {
-      navigate("/");
-      return;
+    try {
+      const isLogin = await login(data);
+      if (isLogin.isSuccess) {
+        navigate("/");
+        return;
+      }
+      await alert(isLogin.message, "Error", PopupType.WARNING);
+    } catch (error) {
+      console.log(error);
     }
-
-    await alert(isLogin.message, "Error", PopupType.WARNING);
   };
   const isFilled = data.userName && data.password ? true : false;
   return (

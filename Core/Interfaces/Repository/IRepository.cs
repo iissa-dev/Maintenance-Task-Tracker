@@ -24,7 +24,7 @@ namespace Core.Interfaces.Repository
 
 		/// <include file='../../Docs/IRepository.xml'
 		///          path='doc/members/member[@name="M:Core.Interfaces.Repository.IRepository`1.Delete(System.Int32)"]/*'/>
-		Task Delete(int id);
+		Task<bool> DeleteAsync(int id);
 
 		/// <include file='../../Docs/IRepository.xml'
 		///          path='doc/members/member[@name="M:Core.Interfaces.Repository.IRepository`1.SaveChangesAsync"]/*'/>

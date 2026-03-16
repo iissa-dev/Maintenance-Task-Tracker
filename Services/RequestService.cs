@@ -43,15 +43,11 @@ namespace Services
 		{
 			if(id < 1) 
 				return Result.Failure("Invalid request ID.", AppError.BadRequest);
-
-			if (!await _repository.ExistsAsync(r => r.Id == id))
-			{
+			var deleted = await _repository.DeleteAsync(id);
+			if (!deleted)
 				return Result.Failure("Request not found.", AppError.NotFound);
-			}
-
-			await _repository.Delete(id);
+			
 			await _repository.SaveChangesAsync();
-
 			return Result.Success("Request deleted successfully.");
 		}
 
