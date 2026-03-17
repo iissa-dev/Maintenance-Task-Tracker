@@ -21,7 +21,7 @@ namespace Repositories
 		public async Task AddAsync(T entity) => await _dbSet.AddAsync(entity);
 	
 
-		public async Task<IEnumerable<T>> GetAllAsync() => await _dbSet.ToListAsync();
+		public IQueryable<T> GetAllAsync() =>  _dbSet;
 	
 
 		public async Task<T?> GetByIdAsync(int id) =>  await _dbSet.FindAsync(id);

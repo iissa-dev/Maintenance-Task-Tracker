@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using Core.DTOs.AuthDtos;
+﻿using Core.DTOs.AuthDtos;
 using Core.DTOs.Page;
 using Core.DTOs.UserDtos;
 using Core.Entities;
@@ -15,17 +14,15 @@ namespace Services
 	{
 		private readonly AppDbContext _context;
 		private readonly IAccountService _accountService;
-		private readonly IMapper _mapper;
 		private readonly UserManager<ApplicationUser> _userManager;
-		public AdminService(AppDbContext context, IAccountService accountService, IMapper mapper, UserManager<ApplicationUser> userManager)
+		public AdminService(AppDbContext context, IAccountService accountService, UserManager<ApplicationUser> userManager)
 		{
 			_context = context;
 			_accountService = accountService;
-			_mapper = mapper;
 			_userManager = userManager;
 		}
 
-		public async Task<Result> AssignEmployee(int requestId, int	employeeId)
+		public async Task<Result> AssignEmployee(int requestId, int employeeId)
 		{
 
 			var request = await _context.MaintenanceRequest
@@ -35,7 +32,7 @@ namespace Services
 				return Result.Failure("Request not found.", AppError.NotFound);
 
 			var isEmployee = await _context.UserRoles
-				.AnyAsync(ur => ur.UserId == employeeId && ur.RoleId == (int) RoleName.Employee);
+				.AnyAsync(ur => ur.UserId == employeeId && ur.RoleId == (int)RoleName.Employee);
 
 			if (!isEmployee)
 				return Result.Failure("Employee not found", AppError.NotFound);
@@ -54,11 +51,11 @@ namespace Services
 
 		public async Task<Result<ResultPage<UserReponseDto>>> GetAllUsersByRoleAsync(RoleName roleName, int pageNumber = 1, int pageSize = 10, string? searchByUserName = null)
 		{
-			var query =  _context.Users
+			var query = _context.Users
 			.Where(u => _context.UserRoles
-			.Any(ur => ur.UserId == u.Id && ur.RoleId == (int) roleName));
-			
-			if(!string.IsNullOrEmpty(searchByUserName)) 
+			.Any(ur => ur.UserId == u.Id && ur.RoleId == (int)roleName));
+
+			if (!string.IsNullOrEmpty(searchByUserName))
 				query = query.Where(u => u.UserName!.Contains(searchByUserName));
 
 			var totalItems = await query.CountAsync();
@@ -67,7 +64,8 @@ namespace Services
 			.OrderBy(u => u.Id)
 			.Skip((pageNumber - 1) * pageSize)
 			.Take(pageSize)
-			.Select(u => new UserReponseDto {
+			.Select(u => new UserReponseDto
+			{
 				Id = u.Id,
 				UserName = u.UserName!,
 				Email = u.Email!,
@@ -82,14 +80,15 @@ namespace Services
 				Items = items,
 				TotalItems = totalItems,
 				PageNumber = pageNumber,
-				PageCount = pageSize,
+				PageSize = pageSize,
 				TotalPages = (int)Math.Ceiling(totalItems / (double)pageSize)
 			};
 
 			return Result<ResultPage<UserReponseDto>>.Success(pageResult, "Success");
 		}
 
-		public async Task<Result> DeleteUserAsync(int userId) {
+		public async Task<Result> DeleteUserAsync(int userId)
+		{
 			var user = await _userManager.FindByIdAsync(userId.ToString());
 			if (user is null)
 				return Result.Failure("User not found.", AppError.NotFound);

@@ -11,7 +11,6 @@ using Microsoft.OpenApi;
 using Repositories;
 using Repositories.Data;
 using Services;
-using Services.Profiles;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -41,10 +40,6 @@ builder.Services.AddSwaggerGen(options =>
 	});
 });
 
-builder.Services.AddAutoMapper(typeof(CategoryProfile));
-builder.Services.AddAutoMapper(typeof(RequestProfile));
-builder.Services.AddAutoMapper(typeof(PersonProfile));
-builder.Services.AddAutoMapper(typeof(UserProfile));
 
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddScoped<IRequestService, RequestService>();
@@ -54,6 +49,7 @@ builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IAdminService, AdminService>();
+builder.Services.AddScoped<IServiceRequest, ServiceRequestService>();
 
 builder.Services.AddIdentity<ApplicationUser, ApplicationRole>(options =>
 {

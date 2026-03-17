@@ -96,3 +96,14 @@ src/
  RefreshTokensإدارة الجلسات وتجديد الـ 
  JWTMaintenanceRequestجوهر المشروع — طلبات الصيانة
  Categoryتصنيف طلبات الصيانة
+
+
+ Admin Can Create Servcies Request 
+    Name, Description, Price, categoryId
+    Addmin Assign Request to employee =>  already exists 
+    Get All Request => wiht Category Name => search with Service name and filter by categoryId
+
+Client Can Ask For Request 
+    already exists Description with userId
+
+Employee can see one requests and change status if completed

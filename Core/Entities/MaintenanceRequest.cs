@@ -19,5 +19,8 @@ namespace Core.Entities
 
 		public int CategoryId { get; set; }
 		public Category Category { get; set; } = null!;
+
+		public int ServiceRequestId { get; set; }
+		public ServiceRequest ServiceRequest { get; set; } = null!;
 	}
 }

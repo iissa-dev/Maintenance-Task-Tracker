@@ -25,7 +25,7 @@ namespace Maintenance_Task_Tracker.Controllers
 		{
 			var result = await _adminService.CreateEmployeeAsync(dto);
 
-			if(result.IsSuccess) 
+			if (result.IsSuccess)
 				return Ok(result);
 
 			return BadRequest(result);
@@ -34,10 +34,11 @@ namespace Maintenance_Task_Tracker.Controllers
 		[HttpGet("Users")]
 		[ProducesResponseType(StatusCodes.Status200OK)]
 		[ProducesResponseType(StatusCodes.Status400BadRequest)]
-		public async Task<IActionResult> GetAllUsersAsync (int roleId, int pageNumber, int pageSize, string? searchByUserName)
+		public async Task<IActionResult> GetAllUsersAsync(int roleId, int pageNumber, int pageSize, string? searchByUserName)
 		{
 
-			if(!Enum.IsDefined((RoleName)roleId)) {
+			if (!Enum.IsDefined((RoleName)roleId))
+			{
 				return BadRequest(Result.Failure("Invalid Role", AppError.BadRequest));
 			}
 			var result = await _adminService.GetAllUsersByRoleAsync((RoleName)roleId, pageNumber, pageSize, searchByUserName);
@@ -49,7 +50,7 @@ namespace Maintenance_Task_Tracker.Controllers
 		[HttpPut("request/{requestId}/assgin/{employeeId}")]
 		[ProducesResponseType(StatusCodes.Status200OK)]
 		[ProducesResponseType(StatusCodes.Status400BadRequest)]
-		public async Task<IActionResult> AssignEmployee(int requestId, int employeeId) 
+		public async Task<IActionResult> AssignEmployee(int requestId, int employeeId)
 		{
 			var result = await _adminService.AssignEmployee(requestId, employeeId);
 			if (result.IsSuccess)
@@ -57,13 +58,14 @@ namespace Maintenance_Task_Tracker.Controllers
 
 			return BadRequest(result);
 		}
-		
+
 		[HttpDelete("Delete/{userId}")]
 		[ProducesResponseType(StatusCodes.Status200OK)]
 		[ProducesResponseType(StatusCodes.Status404NotFound)]
-		public async Task<IActionResult> DeleteUserAsync(int userId) {
+		public async Task<IActionResult> DeleteUserAsync(int userId)
+		{
 			var result = await _adminService.DeleteUserAsync(userId);
-			if(result.IsSuccess) return Ok(result);
+			if (result.IsSuccess) return Ok(result);
 			return NotFound(result);
 		}
 

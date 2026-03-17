@@ -11,7 +11,9 @@ namespace Core.Entities
 		[MaxLength(50)]
 		public string Name { get; set; } = string.Empty;
 
-		public ICollection<MaintenanceRequest> MaintenanceRequests { get; set; } 
+		public ICollection<MaintenanceRequest> MaintenanceRequests { get; set; }
 			= new List<MaintenanceRequest>();
+
+		public ICollection<ServiceRequest> ServiceRequests { get; set; } = new List<ServiceRequest>();
 	}
 }

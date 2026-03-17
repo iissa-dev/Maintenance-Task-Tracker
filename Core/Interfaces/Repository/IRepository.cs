@@ -12,7 +12,7 @@ namespace Core.Interfaces.Repository
 
 		/// <include file='../../Docs/IRepository.xml'
 		///          path='doc/members/member[@name="M:Core.Interfaces.Repository.IRepository`1.GetAllAsync"]/*'/>
-		Task<IEnumerable<T>> GetAllAsync();
+		IQueryable<T> GetAllAsync();
 
 		/// <include file='../../Docs/IRepository.xml'
 		///          path='doc/members/member[@name="M:Core.Interfaces.Repository.IRepository`1.AddAsync(`0)"]/*'/>

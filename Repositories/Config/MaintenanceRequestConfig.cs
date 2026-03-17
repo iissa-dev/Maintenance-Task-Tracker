@@ -33,6 +33,12 @@ namespace Repositories.Config
 				.WithMany()
 				.HasForeignKey(m => m.AssignedToUserId)
 				.OnDelete(DeleteBehavior.Restrict);
+
+			builder.
+			HasOne(m => m.ServiceRequest)
+			.WithMany(m => m.MaintenanceRequests)
+			.HasForeignKey(m => m.ServiceRequestId)
+			.OnDelete(DeleteBehavior.Restrict);
 		
 		}
 	}
