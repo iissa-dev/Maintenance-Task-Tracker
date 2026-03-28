@@ -9,12 +9,10 @@ namespace Services
 {
 	public class CategoryServcie : ICategoryService
 	{
-		private readonly IRepository<Category> _repository;
-		private readonly ICategoryRepository _categoryRepository;
-		public CategoryServcie(IRepository<Category> repository, ICategoryRepository categoryRepository)
+		private readonly ICategoryRepository _repository;
+		public CategoryServcie( ICategoryRepository categoryRepository)
 		{
-			_repository = repository;
-			_categoryRepository = categoryRepository;
+			_repository = categoryRepository;
 		}
 
 		public async Task<Result> AddAsync(CategoryDto category)
@@ -85,7 +83,7 @@ namespace Services
 
 		public async Task<Result<IEnumerable<CategoryWithRequestCountDto>>> GetTopThreeCategory()
 		{
-			var categories = await _categoryRepository.GetCategoriesWithRequests()
+			var categories = await _repository.GetAllWithIncludesAsync()
 				.OrderByDescending(c => c.MaintenanceRequests.Count)
 				.Take(3)
 				.ToListAsync();

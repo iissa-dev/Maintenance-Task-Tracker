@@ -1,6 +1,7 @@
 ﻿using Core.DTOs.AuthDtos;
 using Core.Entities;
 using Core.Enums;
+using Core.Interfaces.Repository;
 using Core.Interfaces.Service;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -17,13 +18,13 @@ namespace Services
 	{
 		private readonly UserManager<ApplicationUser> _userManager;
 		private readonly IConfiguration _configuration;
-		private readonly AppDbContext _context;
+		private readonly IRefreshTokenRepository _refreshTokenRepository;
 
-		public TokenService(UserManager<ApplicationUser> userManager, IConfiguration configuration, AppDbContext context)
+		public TokenService(UserManager<ApplicationUser> userManager, IConfiguration configuration, IRefreshTokenRepository refreshTokenRepository)
 		{
 			_userManager = userManager;
 			_configuration = configuration;
-			_context = context;
+			_refreshTokenRepository = refreshTokenRepository;
 		}
 		public async Task<string> GenerateAccessTokenAsync(ApplicationUser user)
 		{
@@ -60,16 +61,14 @@ namespace Services
 				IsRevoked = false
 			};
 
-			await _context.RefreshTokens.AddAsync(refreshToken);
-			await _context.SaveChangesAsync();
+			await _refreshTokenRepository.AddAsync(refreshToken);
+			await _refreshTokenRepository.SaveChangesAsync();
 
 			return refreshToken;
 		}
 		public async Task<Result<TokenResult>> RefreshTokenAsync(string refreshToken)
 		{
-			var token = await _context.RefreshTokens
-				.Include(r => r.User)
-				.FirstOrDefaultAsync(r => r.RefreshToken == refreshToken);
+			var token = await _refreshTokenRepository.GetByTokenAsync(refreshToken);
 
 			if (token is null || token.User is null)
 				return Result<TokenResult>.Failure("Invalid refresh token", AppError.Unauthorized);
@@ -78,7 +77,8 @@ namespace Services
 				return Result<TokenResult>.Failure("Refresh token expired or revoked", AppError.Unauthorized);
 
 			token.IsRevoked = true;
-			await _context.SaveChangesAsync();
+			_refreshTokenRepository.Update(token);
+			await _refreshTokenRepository.SaveChangesAsync();
 
 			var newAccessToken = await GenerateAccessTokenAsync(token.User);
 			var newRefreshToken = await GenerateRefreshTokenAsync(token.User.Id);
@@ -94,14 +94,14 @@ namespace Services
 		}
 		public async Task<Result> RevokeTokenAsync(string refreshToken)
 		{
-			var token = await _context.RefreshTokens
-				.FirstOrDefaultAsync(r => r.RefreshToken == refreshToken);
+			var token = await _refreshTokenRepository.GetByTokenAsync(refreshToken);
 
 			if (token is null)
 				return Result.Failure("Invalid refresh token", AppError.Unauthorized);
 
 			token.IsRevoked = true;
-			await _context.SaveChangesAsync();
+			_refreshTokenRepository.Update(token);
+			await _refreshTokenRepository.SaveChangesAsync();
 
 			return Result.Success("Token revoked successfully");
 		}

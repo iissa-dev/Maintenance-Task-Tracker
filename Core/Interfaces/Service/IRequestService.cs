@@ -8,7 +8,7 @@ namespace Core.Interfaces.Service
 	{
 		/// <include file='../../Docs/IRequestService.xml'
 		///          path='doc/members/member[@name="M:Core.Interfaces.Service.IRequestService.GetAllAsync(System.Int32,System.Int32)"]/*'/>
-		Task<ResultPage<ResponseRequestDto>> GetAllAsync(int pageNumber, int pageSize);
+		Task<Result<ResultPage<ResponseRequestDto>>> GetAllAsync(int pageNumber, int pageSize);
 
 		/// <include file='../../Docs/IRequestService.xml'
 		///          path='doc/members/member[@name="M:Core.Interfaces.Service.IRequestService.GetByIdAsync(System.Int32)"]/*'/>

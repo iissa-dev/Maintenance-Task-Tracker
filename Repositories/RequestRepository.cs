@@ -6,33 +6,21 @@ using Repositories.Data;
 
 namespace Repositories
 {
-	public class RequestRepository : IRequestRepository
+	public class RequestRepository(AppDbContext context) : Repository<MaintenanceRequest>(context), IRequestRepository
 	{
-		private readonly AppDbContext _context;
-
-		public RequestRepository(AppDbContext context)
-		{
-			_context = context;
-		}
-
-		public IQueryable<MaintenanceRequest> GetAllAsync()
-		{
-			return _context.MaintenanceRequest
-				.Include(r => r.Category);
-		}
-
-		public async Task<MaintenanceRequest?> GetByIdAsync(int id)
-		{
-			return await _context.MaintenanceRequest
-				.Include(r => r.Category)
-				.FirstOrDefaultAsync(r => r.Id == id);
-		}
+		public IQueryable<MaintenanceRequest> GetAllWithIncludes()
+			=> _dbSet
+			.AsNoTracking()
+			.Include(r => r.Category);
+					
+		public async Task<MaintenanceRequest?> GetByIdWithIncludesAsync(int id)
+			=> await _dbSet
+			.Include(r => r.Category)
+			.FirstOrDefaultAsync(r => r.Id == id);
 
 		public async Task UpdateStatusAsync(int id, RequestStatus status)
-		{
-			await _context.MaintenanceRequest
-				.Where(r => r.Id == id)
-				.ExecuteUpdateAsync(r => r.SetProperty(req => req.Status, status));
-		}
+			=> await _dbSet.Where(r => r.Id == id)
+					 .ExecuteUpdateAsync(s => s.SetProperty(r => r.Status, status));
+
 	}
 }

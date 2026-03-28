@@ -3,88 +3,83 @@ using Core.DTOs.Page;
 using Core.DTOs.UserDtos;
 using Core.Entities;
 using Core.Enums;
+using Core.Extensions;
+using Core.Interfaces.Repository;
 using Core.Interfaces.Service;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using Repositories.Data;
 
 namespace Services
 {
 	public class AdminService : IAdminService
 	{
-		private readonly AppDbContext _context;
+		private readonly IRequestRepository _requestRepository;
+		private readonly IUserRepository _userRepository;
+		private readonly IPersonRepository _personRepository;
 		private readonly IAccountService _accountService;
 		private readonly UserManager<ApplicationUser> _userManager;
-		public AdminService(AppDbContext context, IAccountService accountService, UserManager<ApplicationUser> userManager)
+
+		public AdminService(
+			IRequestRepository requestRepository,
+			IUserRepository userRepository,
+			IPersonRepository personRepository,
+			IAccountService accountService,
+			UserManager<ApplicationUser> userManager)
 		{
-			_context = context;
+			_requestRepository = requestRepository;
+			_userRepository = userRepository;
+			_personRepository = personRepository;
 			_accountService = accountService;
 			_userManager = userManager;
 		}
 
+
 		public async Task<Result> AssignEmployee(int requestId, int employeeId)
 		{
 
-			var request = await _context.MaintenanceRequest
-				.FirstOrDefaultAsync(r => r.Id == requestId);
+			var request = await _requestRepository.GetByIdAsync(requestId);
 
 			if (request is null)
 				return Result.Failure("Request not found.", AppError.NotFound);
 
-			var isEmployee = await _context.UserRoles
-				.AnyAsync(ur => ur.UserId == employeeId && ur.RoleId == (int)RoleName.Employee);
+			var isEmployee = await _userRepository.IsEmployeeAsync(employeeId);
 
 			if (!isEmployee)
 				return Result.Failure("Employee not found", AppError.NotFound);
 
 			request.AssignedToUserId = employeeId;
 			request.Status = RequestStatus.InProgress;
-			await _context.SaveChangesAsync();
+			_requestRepository.Update(request);
+			await _requestRepository.SaveChangesAsync();
 
 			return Result.Success("Employee assigned successfully");
 		}
 
 		public async Task<Result> CreateEmployeeAsync(RegisterDto registerDto)
-		{
-			return await _accountService.CreateUserAsync(registerDto, RoleName.Employee);
-		}
+			=> await _accountService.CreateUserAsync(registerDto, RoleName.Employee);
+
 
 		public async Task<Result<ResultPage<UserReponseDto>>> GetAllUsersByRoleAsync(RoleName roleName, int pageNumber = 1, int pageSize = 10, string? searchByUserName = null)
 		{
-			var query = _context.Users
-			.Where(u => _context.UserRoles
-			.Any(ur => ur.UserId == u.Id && ur.RoleId == (int)roleName));
+			var query = _userRepository.GetUsersByRole(roleName);
+
 
 			if (!string.IsNullOrEmpty(searchByUserName))
 				query = query.Where(u => u.UserName!.Contains(searchByUserName));
 
-			var totalItems = await query.CountAsync();
+			var data = await query
+				.OrderBy(u => u.Id)
+				.Select(u => new UserReponseDto
+				{
+					Id = u.Id,
+					UserName = u.UserName!,
+					Email = u.Email!,
+					FullName = u.Person.FirstName + " " + u.Person.LastName,
+					PhoneNumber = u.Person.PhoneNumber,
+					Role = roleName.ToString()
 
-			var items = await query
-			.OrderBy(u => u.Id)
-			.Skip((pageNumber - 1) * pageSize)
-			.Take(pageSize)
-			.Select(u => new UserReponseDto
-			{
-				Id = u.Id,
-				UserName = u.UserName!,
-				Email = u.Email!,
-				FullName = u.Person.FirstName + " " + u.Person.LastName,
-				PhoneNumber = u.Person.PhoneNumber,
-				Role = roleName.ToString()
-			})
-			.ToListAsync();
+				}).ToPagedResultAsync(pageNumber, pageSize);
 
-			var pageResult = new ResultPage<UserReponseDto>
-			{
-				Items = items,
-				TotalItems = totalItems,
-				PageNumber = pageNumber,
-				PageSize = pageSize,
-				TotalPages = (int)Math.Ceiling(totalItems / (double)pageSize)
-			};
-
-			return Result<ResultPage<UserReponseDto>>.Success(pageResult, "Success");
+			return Result<ResultPage<UserReponseDto>>.Success(data);
 		}
 
 		public async Task<Result> DeleteUserAsync(int userId)
@@ -104,46 +99,44 @@ namespace Services
 
 		public async Task<Result> UpdateUserAsync(int id, UpdateUserDto dto)
 		{
-			var strategy = _context.Database.CreateExecutionStrategy();
+			await using var transaction = await _personRepository.BeginTransactAsync();
 
-			return await strategy.ExecuteAsync(async () =>
+			try
 			{
-				await using var transaction = await _context.Database.BeginTransactionAsync();
-				try
-				{
-					var user = await _userManager.FindByIdAsync(id.ToString());
-					if (user is null)
-						return Result.Failure("User not found.", AppError.NotFound);
+				var user = await _userManager.FindByIdAsync(id.ToString());
+				if (user is null)
+					return Result.Failure("User not found.", AppError.NotFound);
 
-					var person = await _context.People.FindAsync(user.PersonId);
-					if (person is null)
-						return Result.Failure("Person not found.", AppError.NotFound);
+				var person = await _personRepository.GetByIdAsync(user.PersonId);
+				if (person is null)
+					return Result.Failure("Person not found.", AppError.NotFound);
 
-					person.FirstName = dto.FirstName;
-					person.LastName = dto.LastName;
-					await _context.SaveChangesAsync();
+				user.Email = dto.Email;
+				user.UserName = dto.UserName;
+				var result = await _userManager.UpdateAsync(user);
 
-					user.Email = dto.Email;
-					user.UserName = dto.UserName;
-
-					var result = await _userManager.UpdateAsync(user);
-					if (!result.Succeeded)
-					{
-						await transaction.RollbackAsync();
-						return Result.Failure(
-							string.Join(", ", result.Errors.Select(e => e.Description)),
-							AppError.BadRequest);
-					}
-
-					await transaction.CommitAsync();
-					return Result.Success("User updated successfully.");
-				}
-				catch (Exception)
+				if (!result.Succeeded)
 				{
 					await transaction.RollbackAsync();
-					throw;
+					return Result.Failure(
+						string.Join(", ", result.Errors.Select(e => e.Description)),
+						AppError.BadRequest);
 				}
-			});
+
+				person.FirstName = dto.FirstName;
+				person.LastName = dto.LastName;
+				_personRepository.Update(person);
+				await _personRepository.SaveChangesAsync();
+
+
+				await transaction.CommitAsync();
+				return Result.Success("User updated successfully.");
+			}
+			catch (Exception)
+			{
+				await transaction.RollbackAsync();
+				throw;
+			}
 		}
 	}
 }

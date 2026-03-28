@@ -10,7 +10,9 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
 using Repositories;
 using Repositories.Data;
+using Repositories.DependencyInjection;
 using Services;
+using Services.DependencyInjection;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -41,15 +43,8 @@ builder.Services.AddSwaggerGen(options =>
 });
 
 
-builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
-builder.Services.AddScoped<IRequestService, RequestService>();
-builder.Services.AddScoped<IRequestRepository, RequestRepository>();
-builder.Services.AddScoped<ICategoryService, CategoryServcie>();
-builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
-builder.Services.AddScoped<IAccountService, AccountService>();
-builder.Services.AddScoped<ITokenService, TokenService>();
-builder.Services.AddScoped<IAdminService, AdminService>();
-builder.Services.AddScoped<IServiceRequest, ServiceRequestService>();
+builder.Services.AddRepositoriesServiceExtensions();
+builder.Services.AddApplicationsServices();
 
 builder.Services.AddIdentity<ApplicationUser, ApplicationRole>(options =>
 {
@@ -90,6 +85,8 @@ builder.Services.AddAuthentication(options =>
 });
 
 var app = builder.Build();
+
+
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

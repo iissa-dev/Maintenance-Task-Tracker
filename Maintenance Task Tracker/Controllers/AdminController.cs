@@ -47,7 +47,7 @@ namespace Maintenance_Task_Tracker.Controllers
 
 			return BadRequest(result);
 		}
-		[HttpPut("request/{requestId}/assgin/{employeeId}")]
+		[HttpPut("request/{requestId}/assign/{employeeId}")]
 		[ProducesResponseType(StatusCodes.Status200OK)]
 		[ProducesResponseType(StatusCodes.Status400BadRequest)]
 		public async Task<IActionResult> AssignEmployee(int requestId, int employeeId)

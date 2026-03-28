@@ -2,22 +2,15 @@
 using Core.DTOs.RequestDtos;
 using Core.Entities;
 using Core.Enums;
+using Core.Extensions;
 using Core.Interfaces.Repository;
 using Core.Interfaces.Service;
 using Microsoft.EntityFrameworkCore;
 
 namespace Services
 {
-	public class RequestService : IRequestService
+	public class RequestService(IRequestRepository requestRepository) : IRequestService
 	{
-		private readonly IRepository<MaintenanceRequest> _repository;
-		private readonly IRequestRepository _requestRepository;
-		public RequestService(IRepository<MaintenanceRequest> repository, IRequestRepository requestRepository)
-		{
-			_repository = repository;
-			_requestRepository = requestRepository;
-		}
-
 		public async Task<Result> AddAsync(RequestDto request, int userId)
 		{
 			if (request == null)
@@ -31,8 +24,8 @@ namespace Services
 				CreatedAt = DateTime.UtcNow
 			};
 
-			await _repository.AddAsync(entity);
-			await _repository.SaveChangesAsync();
+			await requestRepository.AddAsync(entity);
+			await requestRepository.SaveChangesAsync();
 			return Result.Success("Request added successfully.");
 		}
 
@@ -40,48 +33,38 @@ namespace Services
 		{
 			if (id < 1)
 				return Result.Failure("Invalid request ID.", AppError.BadRequest);
-			var deleted = await _repository.DeleteAsync(id);
+			var deleted = await requestRepository.DeleteAsync(id);
 			if (!deleted)
 				return Result.Failure("Request not found.", AppError.NotFound);
 
-			await _repository.SaveChangesAsync();
+			await requestRepository.SaveChangesAsync();
 			return Result.Success("Request deleted successfully.");
 		}
 
-		public async Task<ResultPage<ResponseRequestDto>> GetAllAsync(int pageNumber, int pageSize)
+		public async Task<Result<ResultPage<ResponseRequestDto>>> GetAllAsync(int pageNumber, int pageSize)
 		{
-			var query = _requestRepository.GetAllAsync();
+			var query = requestRepository.GetAllWithIncludes();
 
-			var totalItems = await query.CountAsync();
-			var items = await query
+			var data = await query
 				.OrderBy(q => q.Id)
-				.Skip((pageNumber - 1) * pageSize)
-				.Take(pageSize)
-				.ToListAsync();
+				.Select(r => new ResponseRequestDto
+				{
+					Id = r.Id,
+					Description = r.Description,
+					Status = r.Status.ToString(),
+					CreatedAt = r.CreatedAt,
+					CategoryName = r.Category.Name,
+					CategoryId = r.CategoryId
+				})
+				.ToPagedResultAsync(pageNumber, pageSize);
 
-			var dto = items.Select(r => new ResponseRequestDto
-			{
-				Id = r.Id,
-				Description = r.Description,
-				Status = r.Status.ToString(),
-				CreatedAt = r.CreatedAt,
-				CategoryName = r.Category.Name,
-				CategoryId = r.CategoryId
-			});
-
-			return new ResultPage<ResponseRequestDto>
-			{
-				Items = dto,
-				TotalItems = totalItems,
-				TotalPages = (int)Math.Ceiling(totalItems / (double)pageSize),
-				PageNumber = pageNumber,
-				PageSize = pageSize
-			};
+		
+			return Result<ResultPage<ResponseRequestDto>>.Success(data);
 		}
 
 		public async Task<Result<ResponseRequestDto>> GetByIdAsync(int id)
 		{
-			var existing = await _requestRepository.GetByIdAsync(id);
+			var existing = await requestRepository.GetByIdWithIncludesAsync(id);
 
 			if (existing == null)
 				return Result<ResponseRequestDto>.Failure("Request not found.", AppError.NotFound);
@@ -101,7 +84,7 @@ namespace Services
 
 		public async Task<Result<DashboardStatsDto>> GetDashboardStatsAsync()
 		{
-			var query = _requestRepository.GetAllAsync();
+			var query = requestRepository.GetAllAsync();
 
 			var grouped = await query
 				.GroupBy(r => r.Status)
@@ -125,7 +108,7 @@ namespace Services
 
 		public async Task<Result<IEnumerable<ResponseRequestDto>>> GetRecentActivity()
 		{
-			var query = _requestRepository.GetAllAsync();
+			var query = requestRepository.GetAllWithIncludes();
 			var recentItems = await query
 				.OrderByDescending(q => q.CreatedAt)
 				.Take(4)
@@ -145,7 +128,7 @@ namespace Services
 
 		public async Task<Result> UpdateAsync(int id, UpdateRequestDto request)
 		{
-			var existing = await _repository.GetByIdAsync(id);
+			var existing = await requestRepository.GetByIdAsync(id);
 
 			if (existing == null)
 				return Result.Failure("Request not found.", AppError.NotFound);
@@ -154,8 +137,8 @@ namespace Services
 			existing.CategoryId = request.CategoryId;
 			existing.Status = (RequestStatus)request.Status;
 
-			_repository.Update(existing);
-			await _repository.SaveChangesAsync();
+			requestRepository.Update(existing);
+			await requestRepository.SaveChangesAsync();
 
 			return Result.Success("Request updated successfully.");
 		}
@@ -166,7 +149,7 @@ namespace Services
 			if (!Enum.IsDefined(typeof(RequestStatus), status))
 				return Result.Failure("Invalid status value", AppError.BadRequest);
 
-			var existing = await _repository.GetByIdAsync(id);
+			var existing = await requestRepository.GetByIdAsync(id);
 
 			if (existing == null)
 				return Result.Failure("Request not found.", AppError.NotFound);
@@ -177,7 +160,7 @@ namespace Services
 			if (existing.Status == RequestStatus.Completed)
 				return Result.Failure("Cannot change status of a completed request.", AppError.BadRequest);
 
-			await _requestRepository.UpdateStatusAsync(id, (RequestStatus)status);
+			await requestRepository.UpdateStatusAsync(id, (RequestStatus)status);
 
 			return Result.Success("Request status updated successfully.");
 		}

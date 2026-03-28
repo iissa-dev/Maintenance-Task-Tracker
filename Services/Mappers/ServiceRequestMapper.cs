@@ -1,5 +1,7 @@
-﻿using Core.DTOs.ServiceRequestDto;
+﻿using Core.DTOs;
+using Core.DTOs.ServiceRequestDto;
 using Core.Entities;
+using System.Runtime.CompilerServices;
 
 namespace Services.Mappers
 {
@@ -8,7 +10,7 @@ namespace Services.Mappers
 		public static ServiceRequestResponseDto ToDto(this ServiceRequest s) =>
 		new ServiceRequestResponseDto
 		{
-			CategoryName = s.Category.Name,
+			CategoryDto = new CategoryDto{ Id= s.CategoryId, Name = s.Category.Name},
 			Description = s.Description,
 			Price = s.Price,
 			Name = s.Name,
@@ -20,8 +22,10 @@ namespace Services.Mappers
 			existing.Name = dto.Name;
 			existing.Description = dto.Description;
 			existing.Price = dto.Price;
-			existing.CategoryId = dto.CategoryId;
+			existing.CategoryId = dto.CategoryDto.Id;
 			return existing;
 		}
 	}
+
+	
 }

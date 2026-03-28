@@ -1,19 +1,19 @@
-﻿using Core.DTOs.ServiceRequestDto;
+﻿using Core.DTOs.Page;
+using Core.DTOs.ServiceRequestDto;
+using Core.Entities;
+using Core.Enums;
+using Core.Extensions;
 using Core.Interfaces.Repository;
 using Core.Interfaces.Service;
-using Core.Enums;
-using Core.Entities;
-using Core.DTOs.Page;
-using Microsoft.EntityFrameworkCore;
 using Services.Mappers;
 
 namespace Services
 {
 	public class ServiceRequestService : IServiceRequest
 	{
-		private readonly IRepository<ServiceRequest> _repository;
+		private readonly IServiceRequestRepository _repository;
 
-		public ServiceRequestService(IRepository<ServiceRequest> repository)
+		public ServiceRequestService(IServiceRequestRepository repository)
 		{
 			_repository = repository;
 		}
@@ -51,31 +51,19 @@ namespace Services
 		int? categoryId = null,
 		string? searchByName = null)
 		{
-			var query = _repository.GetAllAsync();
+			var query = _repository.GetAllWithIncludesAsync();
 
 			// Filter
 			if (categoryId != null)
 				query = query.Where(s => s.CategoryId == categoryId.Value);
+
 			if (!string.IsNullOrWhiteSpace(searchByName))
 				query = query.Where(s => s.Name.Contains(searchByName ?? string.Empty));
 
-			var totalItems = await query.CountAsync();
-
-			var dto = await query
-				.Include(s => s.Category)
+			var data = await query
 				.OrderBy(s => s.Id)
-				.Skip((pageNumber - 1) * pageSize)
-				.Take(pageSize).Select(s => s.ToDto()).ToListAsync();
-
-
-			var data = new ResultPage<ServiceRequestResponseDto>
-			{
-				Items = dto,
-				TotalItems = totalItems,
-				TotalPages = (int)Math.Ceiling(totalItems / (double)pageSize),
-				PageNumber = pageNumber,
-				PageSize = pageSize
-			};
+				.Select(s=> s.ToDto())
+				.ToPagedResultAsync(pageNumber, pageSize);
 
 			return Result<ResultPage<ServiceRequestResponseDto>>.Success(data);
 		}

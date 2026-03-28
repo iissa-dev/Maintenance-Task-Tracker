@@ -2,6 +2,7 @@
 using Core.Exceptions;
 using Core.Interfaces.Repository;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 using Repositories.Data;
 using System.Linq.Expressions;
 
@@ -9,8 +10,8 @@ namespace Repositories
 {
 	public class Repository<T> : IRepository<T> where T : class
 	{
-		private readonly AppDbContext _context;
-		private readonly DbSet<T> _dbSet;
+		protected readonly AppDbContext _context;
+		protected readonly DbSet<T> _dbSet;
 
 		public Repository(AppDbContext context)
 		{
@@ -54,5 +55,8 @@ namespace Repositories
 		{
 			return await _dbSet.AnyAsync(predicate);
 		}
+
+		public async Task<IDbContextTransaction> BeginTransactAsync()
+			=> await _context.Database.BeginTransactionAsync();
 	}
 }

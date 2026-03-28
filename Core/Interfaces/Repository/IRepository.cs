@@ -1,4 +1,5 @@
-﻿using System.Linq.Expressions;
+﻿using Microsoft.EntityFrameworkCore.Storage;
+using System.Linq.Expressions;
 
 namespace Core.Interfaces.Repository
 {
@@ -33,5 +34,7 @@ namespace Core.Interfaces.Repository
 		/// <include file='../../Docs/IRepository.xml'
 		///          path='doc/members/member[@name="M:Core.Interfaces.Repository.IRepository`1.ExistsAsync(System.Linq.Expressions.Expression{System.Func{`0,System.Boolean}})"]/*'/>
 		Task<bool> ExistsAsync(Expression<Func<T, bool>> predicate);
+
+		Task<IDbContextTransaction> BeginTransactAsync();
 	}
 }

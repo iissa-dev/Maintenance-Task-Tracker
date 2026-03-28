@@ -1,30 +1,26 @@
 ﻿using Core.DTOs.AuthDtos;
 using Core.Entities;
 using Core.Enums;
+using Core.Interfaces.Repository;
 using Core.Interfaces.Service;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Repositories.Data;
 
 namespace Services
 {
 	public class AccountService : IAccountService
 	{
-		private readonly AppDbContext _context;
 		private readonly ITokenService _tokenService;
+		private readonly IPersonRepository _personRepository;
 		private readonly UserManager<ApplicationUser> _userManager;
-		private readonly IConfiguration _configuration;
 
 		public AccountService(
 			UserManager<ApplicationUser> userManager,
 			ITokenService tokenService,
-			AppDbContext context, IConfiguration configuration)
+			IPersonRepository personRepository)
 		{
 			_userManager = userManager;
 			_tokenService = tokenService;
-			_context = context;
-			_configuration = configuration;
+			_personRepository = personRepository;
 		}
 
 		public async Task<Result<TokenResult>> LoginAsync(LoginDto dto)
@@ -52,60 +48,49 @@ namespace Services
 
 		public async Task<Result> CreateUserAsync(RegisterDto registerDto, RoleName roleName)
 		{
-			var strategy = _context.Database.CreateExecutionStrategy();
-			return await strategy.ExecuteAsync(async () =>
+			await using var transaction = await _personRepository.BeginTransactAsync();
+			try
 			{
-				await using var tx = await _context.Database.BeginTransactionAsync();
-				try
+				var person = new Person
 				{
-					var person = new Person
-					{
-						FirstName = registerDto.FirstName,
-						LastName = registerDto.LastName,
-						BirthDate = registerDto.DateOfBirth?.ToDateTime(TimeOnly.MinValue),
-						PhoneNumber = registerDto.PhoneNumber ?? "",
-						
-					};
-					await _context.People.AddAsync(person);
-					await _context.SaveChangesAsync();
+					FirstName = registerDto.FirstName,
+					LastName = registerDto.LastName,
+					BirthDate = registerDto.DateOfBirth?.ToDateTime(TimeOnly.MinValue),
+					PhoneNumber = registerDto.PhoneNumber ?? ""
+				};
 
-					var user = new ApplicationUser
-					{
-						Person = person,
-						UserName = registerDto.UserName,
-						Email = registerDto.Email,
-						PhoneNumber = registerDto.PhoneNumber ?? "",
-					};
-					user.PersonId = person.Id;
-					var result = await _userManager.CreateAsync(user, registerDto.Password);
-					if (!result.Succeeded)
-					{
-						await tx.RollbackAsync();
-						return Result.Failure(
-								string.Join(", ", result.Errors.Select(e => e.Description)),
-								AppError.BadRequest);
-					}
+				await _personRepository.AddAsync(person);
+				await _personRepository.SaveChangesAsync();
 
-					var role = await _userManager.AddToRoleAsync(user, roleName.ToString());
-					if (!role.Succeeded)
-					{
-						await tx.RollbackAsync();
-						return Result.Failure(string.Join(", ", role.Errors.Select(e => e.Description)), AppError.BadRequest);
-					}
-
-					await tx.CommitAsync();
-					return Result.Success($"{roleName} Created Success");
-				}
-				catch (Exception)
+				var user = new ApplicationUser
 				{
-					try { await tx.RollbackAsync(); }
-					catch { /* ignore rollback errors */ }
-					throw;
-				}
-			});
+					Person = person,
+					UserName = registerDto.UserName,
+					Email = registerDto.Email,
+					PhoneNumber = registerDto.PhoneNumber ?? ""
+				};
 
+				var createResult = await _userManager.CreateAsync(user, registerDto.Password);
+				if (!createResult.Succeeded)
+					return Result.Failure(
+						string.Join(", ", createResult.Errors.Select(e => e.Description)),
+						AppError.BadRequest);
+
+				var roleResult = await _userManager.AddToRoleAsync(user, roleName.ToString());
+				if (!roleResult.Succeeded)
+					return Result.Failure(
+						string.Join(", ", roleResult.Errors.Select(e => e.Description)),
+						AppError.BadRequest);
+
+				await transaction.CommitAsync();
+				return Result.Success($"{roleName} Created Successfully");
+			}
+			catch (Exception)
+			{
+				await transaction.RollbackAsync();
+				throw;
+			}
 		}
-
 		public async Task<Result> RegisterAsync(RegisterDto registerDto)
 		{
 			return await CreateUserAsync(registerDto, RoleName.Client);

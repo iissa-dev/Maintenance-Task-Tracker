@@ -5,16 +5,12 @@ using Repositories.Data;
 
 namespace Repositories
 {
-	public class CategoryRepository : ICategoryRepository
+	public class CategoryRepository : Repository<Category>, ICategoryRepository
 	{
-		private readonly AppDbContext _context;
-		public CategoryRepository(AppDbContext context)
+		public CategoryRepository(AppDbContext context) : base(context) { }
+		public IQueryable<Category> GetAllWithIncludesAsync()
 		{
-			_context = context;
-		}
-		public IQueryable<Category> GetCategoriesWithRequests()
-		{
-			return _context.Category.Include(c => c.MaintenanceRequests);
+			return _dbSet.AsNoTracking().Include(c => c.MaintenanceRequests);
 		}
 	}
 }
