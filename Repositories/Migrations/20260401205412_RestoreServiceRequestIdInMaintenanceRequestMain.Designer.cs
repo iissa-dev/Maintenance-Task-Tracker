@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Repositories.Data;
 
@@ -11,9 +12,11 @@ using Repositories.Data;
 namespace Repositories.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260401205412_RestoreServiceRequestIdInMaintenanceRequestMain")]
+    partial class RestoreServiceRequestIdInMaintenanceRequestMain
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -141,6 +144,18 @@ namespace Repositories.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Category");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Name = "Electrical"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Name = "Plumbing"
+                        });
                 });
 
             modelBuilder.Entity("Core.Entities.MaintenanceRequest", b =>
@@ -424,7 +439,7 @@ namespace Repositories.Migrations
                     b.HasOne("Core.Entities.ServiceRequest", "ServiceRequest")
                         .WithMany("MaintenanceRequests")
                         .HasForeignKey("ServiceRequestId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("AssignedTo");

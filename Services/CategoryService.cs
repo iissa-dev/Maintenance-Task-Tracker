@@ -7,10 +7,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Services
 {
-	public class CategoryServcie : ICategoryService
+	public class CategoryService : ICategoryService
 	{
 		private readonly ICategoryRepository _repository;
-		public CategoryServcie( ICategoryRepository categoryRepository)
+		public CategoryService( ICategoryRepository categoryRepository)
 		{
 			_repository = categoryRepository;
 		}

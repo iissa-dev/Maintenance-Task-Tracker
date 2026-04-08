@@ -6,6 +6,7 @@ using Core.Extensions;
 using Core.Interfaces.Repository;
 using Core.Interfaces.Service;
 using Microsoft.EntityFrameworkCore;
+using Services.Mappers;
 
 namespace Services
 {
@@ -21,7 +22,8 @@ namespace Services
 				CategoryId = request.CategoryId,
 				CreatedByUserId = userId, // from token
 				Status = RequestStatus.Pending,
-				CreatedAt = DateTime.UtcNow
+				CreatedAt = DateTime.UtcNow,
+				ServiceRequestId = request.ServiceRequestId
 			};
 
 			await requestRepository.AddAsync(entity);
@@ -31,8 +33,10 @@ namespace Services
 
 		public async Task<Result> DeleteAsync(int id)
 		{
+
 			if (id < 1)
 				return Result.Failure("Invalid request ID.", AppError.BadRequest);
+
 			var deleted = await requestRepository.DeleteAsync(id);
 			if (!deleted)
 				return Result.Failure("Request not found.", AppError.NotFound);
@@ -47,18 +51,9 @@ namespace Services
 
 			var data = await query
 				.OrderBy(q => q.Id)
-				.Select(r => new ResponseRequestDto
-				{
-					Id = r.Id,
-					Description = r.Description,
-					Status = r.Status.ToString(),
-					CreatedAt = r.CreatedAt,
-					CategoryName = r.Category.Name,
-					CategoryId = r.CategoryId
-				})
+				.Select(r => r.ToResponseDto())
 				.ToPagedResultAsync(pageNumber, pageSize);
 
-		
 			return Result<ResultPage<ResponseRequestDto>>.Success(data);
 		}
 
@@ -69,17 +64,7 @@ namespace Services
 			if (existing == null)
 				return Result<ResponseRequestDto>.Failure("Request not found.", AppError.NotFound);
 
-			var dto = new ResponseRequestDto
-			{
-				Id = existing.Id,
-				Description = existing.Description,
-				Status = existing.Status.ToString(),
-				CreatedAt = existing.CreatedAt,
-				CategoryName = existing.Category.Name,
-				CategoryId = existing.CategoryId
-			};
-
-			return Result<ResponseRequestDto>.Success(dto);
+			return Result<ResponseRequestDto>.Success(existing.ToResponseDto());
 		}
 
 		public async Task<Result<DashboardStatsDto>> GetDashboardStatsAsync()
@@ -114,14 +99,7 @@ namespace Services
 				.Take(4)
 				.ToListAsync();
 
-			var dto = recentItems.Select(i => new ResponseRequestDto
-			{
-				Id = i.Id,
-				CategoryId = i.CategoryId,
-				Description = i.Description,
-				CreatedAt = i.CreatedAt,
-				Status = i.Status.ToString()
-			});
+			var dto = recentItems.Select(i => i.ToResponseDto());
 
 			return Result<IEnumerable<ResponseRequestDto>>.Success(dto);
 		}

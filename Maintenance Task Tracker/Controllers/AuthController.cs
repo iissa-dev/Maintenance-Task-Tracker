@@ -47,7 +47,7 @@ namespace Maintenance_Task_Tracker.Controllers
 				Expires = DateTime.UtcNow.AddDays(7)
             });
 
-            return Ok(result.Data);
+            return Ok(result);
         }
 
         [HttpPost("refresh")]

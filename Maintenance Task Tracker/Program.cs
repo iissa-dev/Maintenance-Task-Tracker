@@ -1,19 +1,16 @@
 using Core.Entities;
 using Core.Exceptions;
-using Core.Interfaces.Repository;
-using Core.Interfaces.Service;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
-using Repositories;
 using Repositories.Data;
 using Repositories.DependencyInjection;
-using Services;
 using Services.DependencyInjection;
 using System.Text;
+using Maintenance_Task_Tracker.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -85,6 +82,8 @@ builder.Services.AddAuthentication(options =>
 });
 
 var app = builder.Build();
+
+await app.Services.SeedAsync();
 
 
 

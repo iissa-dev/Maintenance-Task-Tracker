@@ -7,6 +7,7 @@ using Core.Extensions;
 using Core.Interfaces.Repository;
 using Core.Interfaces.Service;
 using Microsoft.AspNetCore.Identity;
+using Services.Mappers;
 
 namespace Services
 {
@@ -58,7 +59,11 @@ namespace Services
 			=> await _accountService.CreateUserAsync(registerDto, RoleName.Employee);
 
 
-		public async Task<Result<ResultPage<UserReponseDto>>> GetAllUsersByRoleAsync(RoleName roleName, int pageNumber = 1, int pageSize = 10, string? searchByUserName = null)
+		public async Task<Result<ResultPage<UserReponseDto>>> GetAllUsersByRoleAsync(
+		RoleName roleName,
+		int pageNumber = 1,
+		int pageSize = 10,
+		string? searchByUserName = null)
 		{
 			var query = _userRepository.GetUsersByRole(roleName);
 
@@ -68,16 +73,8 @@ namespace Services
 
 			var data = await query
 				.OrderBy(u => u.Id)
-				.Select(u => new UserReponseDto
-				{
-					Id = u.Id,
-					UserName = u.UserName!,
-					Email = u.Email!,
-					FullName = u.Person.FirstName + " " + u.Person.LastName,
-					PhoneNumber = u.Person.PhoneNumber,
-					Role = roleName.ToString()
-
-				}).ToPagedResultAsync(pageNumber, pageSize);
+				.Select(u => u.ToDto(roleName))
+				.ToPagedResultAsync(pageNumber, pageSize);
 
 			return Result<ResultPage<UserReponseDto>>.Success(data);
 		}

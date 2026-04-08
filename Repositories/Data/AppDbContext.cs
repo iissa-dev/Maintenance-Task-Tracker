@@ -1,4 +1,5 @@
 ﻿using Core.Entities;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
@@ -19,11 +20,6 @@ namespace Repositories.Data
 		{
 			base.OnModelCreating(modelBuilder);
 			modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
-
-			modelBuilder.Entity<Category>().HasData(
-				new Category { Id = 1, Name = "Electrical" },
-				new Category { Id = 2, Name = "Plumbing" }
-			);
 		}
 	}
 }

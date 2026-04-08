@@ -9,5 +9,7 @@ namespace Core.DTOs.RequestDtos
 		public string Description { get; set; } = string.Empty;
 		[Required]
 		public int CategoryId { get; set; }
+		[Required]
+		public int ServiceRequestId { get; set; }
 	}
 }

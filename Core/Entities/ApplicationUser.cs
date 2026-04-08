@@ -2,7 +2,8 @@
 
 namespace Core.Entities
 {
-	public class ApplicationUser: IdentityUser<int> {
+	public class ApplicationUser : IdentityUser<int>
+	{
 
 		public int PersonId { get; set; }
 

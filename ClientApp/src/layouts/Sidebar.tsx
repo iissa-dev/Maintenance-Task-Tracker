@@ -3,6 +3,7 @@ import {
   faFolder,
   faList,
   faUser,
+  faUsers,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Link, useLocation } from "react-router-dom";
@@ -36,8 +37,14 @@ function Sidebar() {
         </Link>
         <Link to="/UserManagement">
           <li className={getClass("/UserManagement")}>
-            <FontAwesomeIcon icon={faFolder} />
+            <FontAwesomeIcon icon={faUsers} />
             <span className="ml-1.25 hidden md:inline">Users</span>
+          </li>
+        </Link>
+        <Link to="/serviceManagement">
+          <li className={getClass("/serviceManagement")}>
+            <FontAwesomeIcon icon={faFolder} />
+            <span className="ml-1.25 hidden md:inline">Services</span>
           </li>
         </Link>
       </ul>

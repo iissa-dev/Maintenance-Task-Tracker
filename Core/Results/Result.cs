@@ -41,6 +41,7 @@ public class Result<T> : Result
 		{
 			IsSuccess = false,
 			Message = message,
-			ErrorCode = errorCode
+			ErrorCode = errorCode,
+			Data = default
 		};
 }

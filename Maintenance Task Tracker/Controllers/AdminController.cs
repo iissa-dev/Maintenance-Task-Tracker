@@ -2,8 +2,10 @@
 using Core.DTOs.UserDtos;
 using Core.Enums;
 using Core.Interfaces.Service;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 
 namespace Maintenance_Task_Tracker.Controllers
 {
@@ -62,7 +64,7 @@ namespace Maintenance_Task_Tracker.Controllers
 		[HttpDelete("Delete/{userId}")]
 		[ProducesResponseType(StatusCodes.Status200OK)]
 		[ProducesResponseType(StatusCodes.Status404NotFound)]
-		public async Task<IActionResult> DeleteUserAsync(int userId)
+		public async Task<IActionResult> DeleteUserAsync([Range(1, int.MaxValue)]int userId)
 		{
 			var result = await _adminService.DeleteUserAsync(userId);
 			if (result.IsSuccess) return Ok(result);
@@ -73,7 +75,7 @@ namespace Maintenance_Task_Tracker.Controllers
 		[ProducesResponseType(StatusCodes.Status200OK)]
 		[ProducesResponseType(StatusCodes.Status400BadRequest)]
 		[ProducesResponseType(StatusCodes.Status404NotFound)]
-		public async Task<IActionResult> UpdateUser(int id, [FromBody] UpdateUserDto dto)
+		public async Task<IActionResult> UpdateUser(int id, [FromForm] UpdateUserDto dto)
 		{
 			var result = await _adminService.UpdateUserAsync(id, dto);
 			if (result.IsSuccess)

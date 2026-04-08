@@ -48,48 +48,54 @@ namespace Services
 
 		public async Task<Result> CreateUserAsync(RegisterDto registerDto, RoleName roleName)
 		{
-			await using var transaction = await _personRepository.BeginTransactAsync();
-			try
+			return await _personRepository.ExecuteWithStrategyAsync(async () =>
 			{
-				var person = new Person
+				await using var transaction = await _personRepository.BeginTransactAsync();
+				try
 				{
-					FirstName = registerDto.FirstName,
-					LastName = registerDto.LastName,
-					BirthDate = registerDto.DateOfBirth?.ToDateTime(TimeOnly.MinValue),
-					PhoneNumber = registerDto.PhoneNumber ?? ""
-				};
+					var person = new Person
+					{
+						FirstName = registerDto.FirstName,
+						LastName = registerDto.LastName,
+						BirthDate = registerDto.DateOfBirth?.ToDateTime(TimeOnly.MinValue),
+						PhoneNumber = registerDto.PhoneNumber ?? ""
+					};
 
-				await _personRepository.AddAsync(person);
-				await _personRepository.SaveChangesAsync();
+					await _personRepository.AddAsync(person);
+					await _personRepository.SaveChangesAsync();
 
-				var user = new ApplicationUser
+					var user = new ApplicationUser
+					{
+						Person = person,
+						UserName = registerDto.UserName,
+						Email = registerDto.Email,
+						PhoneNumber = registerDto.PhoneNumber ?? ""
+					};
+
+					var createResult = await _userManager.CreateAsync(user, registerDto.Password);
+					if (!createResult.Succeeded)
+					{
+						return Result.Failure(
+							string.Join(", ", createResult.Errors.Select(e => e.Description)),
+							AppError.BadRequest);
+					}
+
+					var roleResult = await _userManager.AddToRoleAsync(user, roleName.ToString());
+					if (!roleResult.Succeeded)
+					{
+						return Result.Failure(
+							string.Join(", ", roleResult.Errors.Select(e => e.Description)),
+							AppError.BadRequest);
+					}
+
+					await transaction.CommitAsync();
+					return Result.Success($"{roleName} Created Successfully");
+				}
+				catch (Exception)
 				{
-					Person = person,
-					UserName = registerDto.UserName,
-					Email = registerDto.Email,
-					PhoneNumber = registerDto.PhoneNumber ?? ""
-				};
-
-				var createResult = await _userManager.CreateAsync(user, registerDto.Password);
-				if (!createResult.Succeeded)
-					return Result.Failure(
-						string.Join(", ", createResult.Errors.Select(e => e.Description)),
-						AppError.BadRequest);
-
-				var roleResult = await _userManager.AddToRoleAsync(user, roleName.ToString());
-				if (!roleResult.Succeeded)
-					return Result.Failure(
-						string.Join(", ", roleResult.Errors.Select(e => e.Description)),
-						AppError.BadRequest);
-
-				await transaction.CommitAsync();
-				return Result.Success($"{roleName} Created Successfully");
-			}
-			catch (Exception)
-			{
-				await transaction.RollbackAsync();
-				throw;
-			}
+					return Result.Failure("An unexpected error occurred during user creation.", AppError.InternalServerError);
+				}
+			});
 		}
 		public async Task<Result> RegisterAsync(RegisterDto registerDto)
 		{

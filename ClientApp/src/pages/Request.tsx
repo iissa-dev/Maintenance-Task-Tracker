@@ -99,7 +99,7 @@ function Request() {
         createdAt: row.createdAt,
         description: row.description,
         status: row.status,
-        categoryId: 0, // ← الـ backend ما يرجعه، getCategoryId في NewRequest يحله
+        categoryId: 0,
       },
     });
     setOpen(true);

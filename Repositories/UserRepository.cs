@@ -12,6 +12,7 @@ namespace Repositories
 
 		public IQueryable<ApplicationUser> GetUsersByRole(RoleName roleName)
 			=> _context.Users
+				.Include(p => p.Person)
 				.Where(u => _context.UserRoles.Any(ur => ur.UserId == u.Id && ur.RoleId == (int)roleName));
 
 		public async Task<bool> IsEmployeeAsync(int userId)

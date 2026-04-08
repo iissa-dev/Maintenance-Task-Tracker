@@ -1,4 +1,4 @@
-﻿using Core.Enums;
+using Core.Enums;
 using Core.Exceptions;
 using Core.Interfaces.Repository;
 using Microsoft.EntityFrameworkCore;
@@ -20,13 +20,10 @@ namespace Repositories
 		}
 
 		public async Task AddAsync(T entity) => await _dbSet.AddAsync(entity);
-	
 
-		public IQueryable<T> GetAllAsync() =>  _dbSet;
-	
+		public IQueryable<T> GetAllAsync() => _dbSet;
 
-		public async Task<T?> GetByIdAsync(int id) =>  await _dbSet.FindAsync(id);
-			
+		public async Task<T?> GetByIdAsync(int id) => await _dbSet.FindAsync(id);
 
 		public void Update(T entity) => _dbSet.Update(entity);
 
@@ -58,5 +55,11 @@ namespace Repositories
 
 		public async Task<IDbContextTransaction> BeginTransactAsync()
 			=> await _context.Database.BeginTransactionAsync();
+
+		public async Task<TResult> ExecuteWithStrategyAsync<TResult>(Func<Task<TResult>> action)
+		{
+			var strategy = _context.Database.CreateExecutionStrategy();
+			return await strategy.ExecuteAsync(action);
+		}
 	}
 }

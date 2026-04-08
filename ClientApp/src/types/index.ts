@@ -16,11 +16,13 @@ export interface ResponseRequestDto {
   createdAt: string;
   categoryName: string;
   categoryId: number;
+  customerName?: string;
 }
 
 export interface RequestDto {
   description: string;
   categoryId: number;
+  serviceRequestId?: number;
 }
 
 export interface CategoryWithRequestCountDto {
@@ -101,4 +103,27 @@ export interface UpdateUserDto {
 
 export interface AddUserDto extends UpdateUserDto {
   password: string;
+}
+
+export interface UpdateServiceRequestDto {
+  id: number;
+  name: string;
+  description: string;
+  price?: number;
+  categoryId: number;
+}
+
+export interface CategoryDto {
+  id: number;
+  name: string;
+}
+
+export type AddServiceRequestDto = UpdateServiceRequestDto;
+
+export interface ServiceRequestResponseDto {
+  serviceId: number;
+  name: string;
+  description: string;
+  price?: number;
+  categoryDto: CategoryDto;
 }

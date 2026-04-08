@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Repositories.Data;
 
@@ -11,9 +12,11 @@ using Repositories.Data;
 namespace Repositories.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260401202448_RemoveServiceRequestFromMaintenanceRequest")]
+    partial class RemoveServiceRequestFromMaintenanceRequest
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -141,6 +144,18 @@ namespace Repositories.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Category");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Name = "Electrical"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Name = "Plumbing"
+                        });
                 });
 
             modelBuilder.Entity("Core.Entities.MaintenanceRequest", b =>
@@ -168,9 +183,6 @@ namespace Repositories.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
 
-                    b.Property<int>("ServiceRequestId")
-                        .HasColumnType("int");
-
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
@@ -181,8 +193,6 @@ namespace Repositories.Migrations
                     b.HasIndex("CategoryId");
 
                     b.HasIndex("CreatedByUserId");
-
-                    b.HasIndex("ServiceRequestId");
 
                     b.ToTable("MaintenanceRequest");
                 });
@@ -239,6 +249,9 @@ namespace Repositories.Migrations
                         .HasMaxLength(300)
                         .HasColumnType("nvarchar(300)");
 
+                    b.Property<int>("MaintenanceRequestId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -250,6 +263,8 @@ namespace Repositories.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("CategoryId");
+
+                    b.HasIndex("MaintenanceRequestId");
 
                     b.ToTable("ServiceRequests");
                 });
@@ -421,19 +436,11 @@ namespace Repositories.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Core.Entities.ServiceRequest", "ServiceRequest")
-                        .WithMany("MaintenanceRequests")
-                        .HasForeignKey("ServiceRequestId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
                     b.Navigation("AssignedTo");
 
                     b.Navigation("Category");
 
                     b.Navigation("CreatedBy");
-
-                    b.Navigation("ServiceRequest");
                 });
 
             modelBuilder.Entity("Core.Entities.ServiceRequest", b =>
@@ -444,7 +451,15 @@ namespace Repositories.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.HasOne("Core.Entities.MaintenanceRequest", "MaintenanceRequest")
+                        .WithMany()
+                        .HasForeignKey("MaintenanceRequestId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Category");
+
+                    b.Navigation("MaintenanceRequest");
                 });
 
             modelBuilder.Entity("Core.Entities.UserRefreshToken", b =>
@@ -514,11 +529,6 @@ namespace Repositories.Migrations
                     b.Navigation("MaintenanceRequests");
 
                     b.Navigation("ServiceRequests");
-                });
-
-            modelBuilder.Entity("Core.Entities.ServiceRequest", b =>
-                {
-                    b.Navigation("MaintenanceRequests");
                 });
 #pragma warning restore 612, 618
         }

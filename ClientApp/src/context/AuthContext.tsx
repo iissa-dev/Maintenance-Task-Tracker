@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   createContext,
   useCallback,
@@ -41,13 +40,17 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     try {
       setLoading(true);
       const res = await authService.Login(data);
-      setAccessToken(res.accessToken);
-      setToken(res.accessToken);
-      setUser({
-        userName: res.userName,
-        role: res.role,
-      });
-      return { message: "Login Success", isSuccess: true };
+      if (res.isSuccess && res.data) {
+        setAccessToken(res.data.accessToken);
+        setToken(res.data.accessToken);
+        setUser({
+          userName: res.data.userName,
+          role: res.data.role,
+        });
+        return { message: "Login Success", isSuccess: true };
+      }
+
+      return { message: res.message || "Login Failed", isSuccess: false };
     } catch {
       return {
         message: "Unvalid Username or Password",

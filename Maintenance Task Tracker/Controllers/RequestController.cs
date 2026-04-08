@@ -1,5 +1,6 @@
 ﻿using Core.DTOs.RequestDtos;
 using Core.Interfaces.Service;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
@@ -8,6 +9,7 @@ namespace Maintenance_Task_Tracker.Controllers
 {
 	[Route("api/[controller]")]
 	[ApiController]
+	//[Authorize]
 	public class RequestController : ControllerBase
 	{
 		private readonly IRequestService _requestService;
@@ -20,9 +22,14 @@ namespace Maintenance_Task_Tracker.Controllers
 		[HttpPost("addNewRequest")]
 		[ProducesResponseType(StatusCodes.Status200OK)]
 		[ProducesResponseType(StatusCodes.Status400BadRequest)]
-		public async Task<IActionResult> AddRequest([FromBody] Core.DTOs.RequestDtos.RequestDto request)
+		[Authorize]
+		public async Task<IActionResult> AddRequest([FromBody] RequestDto request)
 		{
-			var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+			var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+			if (userIdClaim is null)
+				return Unauthorized(Result.Failure("User not identified.", Core.Enums.AppError.Unauthorized));
+
+			var userId = int.Parse(userIdClaim.Value);
 			var result = await _requestService.AddAsync(request, userId);
 			if (result.IsSuccess)
 				return Ok(result);

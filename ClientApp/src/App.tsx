@@ -6,6 +6,7 @@ import Login from "./pages/Login";
 import { AuthProvider } from "./context/AuthContext";
 import UserManagement from "./pages/UserManagement";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import ServiceManagement from "./pages/ServiceManagement";
 
 const queryClient = new QueryClient();
 function App() {
@@ -17,6 +18,7 @@ function App() {
           <Route path="request" element={<Request />} />
           <Route path="login" element={<Login />} />
           <Route path="userManagement" element={<UserManagement />} />
+          <Route path="serviceManagement" element={<ServiceManagement />} />
         </Routes>
       </AuthProvider>
     </QueryClientProvider>

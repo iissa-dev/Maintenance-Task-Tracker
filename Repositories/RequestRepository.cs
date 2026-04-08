@@ -11,11 +11,16 @@ namespace Repositories
 		public IQueryable<MaintenanceRequest> GetAllWithIncludes()
 			=> _dbSet
 			.AsNoTracking()
-			.Include(r => r.Category);
-					
+			.Include(r => r.Category)
+			.Include(r => r.CreatedBy)
+			.Include(r => r.AssignedTo);
+
+
 		public async Task<MaintenanceRequest?> GetByIdWithIncludesAsync(int id)
 			=> await _dbSet
 			.Include(r => r.Category)
+			.Include(r => r.CreatedBy)
+			.Include(r => r.AssignedTo)
 			.FirstOrDefaultAsync(r => r.Id == id);
 
 		public async Task UpdateStatusAsync(int id, RequestStatus status)

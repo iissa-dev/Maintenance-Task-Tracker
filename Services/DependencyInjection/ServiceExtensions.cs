@@ -7,7 +7,7 @@ namespace Services.DependencyInjection
 	{
 		public static IServiceCollection AddApplicationsServices(this IServiceCollection Services) {
 
-			Services.AddScoped<ICategoryService, CategoryServcie>();
+			Services.AddScoped<ICategoryService, CategoryService>();
 			Services.AddScoped<IAccountService, AccountService>();
 			Services.AddScoped<ITokenService, TokenService>();
 			Services.AddScoped<IAdminService, AdminService>();

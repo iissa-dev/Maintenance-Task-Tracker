@@ -9,5 +9,6 @@
 		public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 		public int CategoryId { get; set; }
 		public string CategoryName { get; set; } = string.Empty;
+		public string CustomerName { get; set; } = string.Empty;
 	}
 }

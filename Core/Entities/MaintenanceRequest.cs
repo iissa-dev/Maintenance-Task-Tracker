@@ -22,5 +22,7 @@ namespace Core.Entities
 
 		public int ServiceRequestId { get; set; }
 		public ServiceRequest ServiceRequest { get; set; } = null!;
+
+		
 	}
 }

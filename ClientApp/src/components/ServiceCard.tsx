@@ -1,0 +1,241 @@
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { serviceRequestService } from "../services/serviceRequestService";
+import { useState } from "react";
+import { ThreeDot } from "react-loading-indicators";
+import { categoryService } from "../services/categoryService";
+import ServiceHandled from "../forms/ServiceHandled";
+import type {
+  RequestDto,
+  ServiceRequestResponseDto,
+  UpdateServiceRequestDto,
+} from "../types";
+import { PopupType, usePopup } from "./Popup";
+import { requestService } from "../services/requestService";
+import { useAuth } from "../hooks/useAuth";
+
+type CardState = { Role: "Client" } | { Role: "Admin" };
+
+
+function ServiceCard() {
+  const queryClient = useQueryClient();
+  const pageSize = 6;
+  const { confirm, alert, Modal } = usePopup();
+  const [pageNumber, setPageNumber] = useState(1);
+  const { user } = useAuth();
+  const [cardState] = useState<CardState>({
+    Role: user?.role === "Admin" ? "Admin" : "Client",
+  });
+  const [categoryId, setCategoryId] = useState<number | null>(null);
+  const [isOpenForm, setIsOpenForm] = useState(false);
+  const [selectedService, setSelectedService] =
+    useState<UpdateServiceRequestDto>();
+  const { data, isLoading, isFetching } = useQuery({
+    queryFn: () =>
+      serviceRequestService.services({ pageNumber, pageSize, categoryId }),
+    queryKey: ["services", categoryId, pageNumber],
+  });
+  const totalPages = data?.data?.totalPages ?? 1;
+
+  const { data: categoriesData } = useQuery({
+    queryFn: () => categoryService.getAll(),
+    queryKey: ["categories"],
+  });
+  const services: ServiceRequestResponseDto[] = data?.data?.items ?? [];
+  const categories = categoriesData?.data;
+
+  const deleteMutaion = useMutation({
+    mutationFn: async (id: number) => {
+      const res = await serviceRequestService.deleteService(id);
+
+      if (!res.isSuccess) throw new Error(res.message);
+      return res;
+    },
+    onSuccess: async () => {
+      queryClient.invalidateQueries({ queryKey: ["services"] });
+      await alert("Service Deleted Successfully", "Deleted", PopupType.INFO);
+    },
+    onError: async (error: Error) => {
+      await alert(error?.message, "Error", PopupType.DANGER);
+    },
+  });
+
+  const addRequestMutation = useMutation({
+    mutationFn: async (data: RequestDto) => {
+      const res = await requestService.addNewRequest(data);
+
+      if (res.isSuccess) {
+        return res;
+      }
+    },
+    onSuccess: async () => {
+      // queryClient.invalidateQueries({queryKey: }) update requests later
+      await alert("Request Added Successfully", "Success", PopupType.INFO);
+    },
+    onError: async (error: Error) => {
+      await alert(`${error?.message}`, "Error", PopupType.DANGER);
+    },
+  });
+  if (isLoading) {
+    return (
+      <div className="fixed top-[50%] left-[50%] -translate-[50%]">
+        <ThreeDot
+          variant="bounce"
+          color="#239c8c"
+          size="medium"
+          text="LOADING"
+          textColor="#0d8988"
+        />
+      </div>
+    );
+  }
+  const goNext = () => {
+    if (!isFetching && pageNumber < totalPages)
+      setPageNumber((prev) => prev + 1);
+  };
+
+  const handleDelete = async (id: number) => {
+    const ok = await confirm(
+      "Are you sure you want to delete this Service? ",
+      "Delete",
+      PopupType.WARNING,
+    );
+    if (!ok) return;
+
+    deleteMutaion.mutate(id);
+  };
+
+  return (
+    <>
+      <ServiceHandled
+        onClose={() => setIsOpenForm(false)}
+        isOpen={isOpenForm}
+        Mode="Edit"
+        data={selectedService}
+      />
+      <div>
+        <div className="mb-10 flex justify-between items-center">
+          <div>
+            <label htmlFor="category">Categories</label>
+            <select
+              className="ml-3"
+              id="category"
+              onChange={(e) => {
+                const value = Number(e.target.value);
+                setCategoryId(value === 0 ? null : value);
+              }}
+              value={categoryId ?? 0}
+            >
+              <option value={0} className="bg-background">
+                All
+              </option>
+              {categories &&
+                categories.map((category) => (
+                  <option
+                    key={category.id}
+                    value={category.id}
+                    className="bg-background"
+                  >
+                    {category.name}
+                  </option>
+                ))}
+            </select>
+          </div>
+          <div className="flex gap-2.5">
+            <input
+              className="btn-ghost cursor-pointer"
+              type="button"
+              value="Prev"
+              onClick={() => setPageNumber((prev) => Math.max(prev - 1, 1))}
+            />
+            <input
+              className="btn-ghost cursor-pointer"
+              type="button"
+              value="Next"
+              disabled={isFetching || pageNumber === totalPages}
+              onClick={goNext}
+            />
+          </div>
+        </div>
+        <div className="grid gap-2.5 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+          {services &&
+            services.map((service) => (
+              <div
+                key={service.serviceId}
+                className="p-5 bg-card rounded-md relative neon-border"
+              >
+                <span className="text-xs absolute top-2 right-2">
+                  {service.categoryDto.name}
+                </span>
+                <p className="my-2 text-2xl text-soft">{service.name}</p>
+                <p className="my-2">{service.description}</p>
+                <p className="my-2">
+                  <span>Price: </span>
+                  {service.price}
+                  <span>$</span>
+                </p>
+                <hr className="text-soft mb-6" />
+                <div className="flex justify-end gap-2">
+                  {cardState.Role === "Admin" ? (
+                    <>
+                      <input
+                        className="text-[14px] btn-ghost cursor-pointer"
+                        type="button"
+                        value="Edit"
+                        onClick={() => {
+                          setSelectedService({
+                            name: service.name,
+                            description: service.description,
+                            price: service.price,
+                            categoryId: service.categoryDto.id,
+                            id: service.serviceId,
+                          });
+                          setIsOpenForm(true);
+                        }}
+                      />
+                      <input
+                        className="text-[14px] btn-danger cursor-pointer"
+                        type="button"
+                        value="Delete"
+                        onClick={() => handleDelete(service.serviceId)}
+                      />
+                    </>
+                  ) : (
+                    <input
+                      className="text-[14px] btn-secondary cursor-pointer"
+                      type="button"
+                      value="Request"
+                      onClick={async () => {
+                        const ok = await confirm(
+                          "Are you sure you want to request this service?",
+                          "Confirm Request",
+                          PopupType.INFO,
+                        );
+                        if (!ok) return;
+                        try {
+                          await addRequestMutation.mutateAsync({
+                            description: service.description,
+                            categoryId: service.categoryDto.id,
+                            serviceRequestId: service.serviceId,
+                          });
+                        } catch (error) {
+                          console.log(error);
+                          await alert(
+                            "Something went wrong",
+                            "Error",
+                            PopupType.DANGER,
+                          );
+                        }
+                      }}
+                    />
+                  )}
+                </div>
+              </div>
+            ))}
+        </div>
+      </div>
+      <Modal />
+    </>
+  );
+}
+
+export default ServiceCard;

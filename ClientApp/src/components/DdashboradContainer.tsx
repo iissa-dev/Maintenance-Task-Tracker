@@ -11,7 +11,7 @@ const STATUS_COLORS = [
 import { Clock, PlayCircle } from "lucide-react";
 import { useEffect, useState } from "react";
 import NewRequest from "../forms/NewRequest";
-import DashboardChart from "./DashboardChart";
+import DashboardChart from "./dashboardChart";
 import { ThreeDot } from "react-loading-indicators";
 
 function DashboardContainer() {
@@ -144,7 +144,7 @@ function DashboardContainer() {
                       <div className="flex justify-between w-full">
                         <div>
                           <p className="text-sm font-semibold text-cyan">
-                            Costomer Name
+                            {req.customerName ?? "Unknown"}
                           </p>
                           <p className="text-xs text-slate-500">
                             {req.description}

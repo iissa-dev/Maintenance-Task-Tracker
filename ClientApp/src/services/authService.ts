@@ -11,7 +11,7 @@ export const authService = {
   Register: async (data: RegisterDto): Promise<Result<boolean>> => {
     return await apiClient.post("/Auth/register", data);
   },
-  Login: async (data: LoginDto): Promise<AuthResponseDto> => {
+  Login: async (data: LoginDto): Promise<Result<AuthResponseDto>> => {
     return await apiClient.post("/Auth/login", data);
   },
   Refresh: async (): Promise<AuthResponseDto> => {
