@@ -9,7 +9,7 @@ namespace Repositories
 	{
 		public async Task<UserRefreshToken?> GetByTokenAsync(string refreshToken)
 		{
-			return await _dbSet.FirstOrDefaultAsync(rt => rt.RefreshToken == refreshToken);
+			return await _dbSet.Include(r => r.User).FirstOrDefaultAsync(rt => rt.RefreshToken == refreshToken);
 		}
 		public async Task<UserRefreshToken?> GetByTokenWithUserAsync(string refreshToken)
 		{

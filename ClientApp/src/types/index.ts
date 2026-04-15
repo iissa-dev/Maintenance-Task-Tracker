@@ -113,12 +113,12 @@ export interface UpdateServiceRequestDto {
   categoryId: number;
 }
 
-export interface CategoryDto {
-  id: number;
+export interface AddServiceRequestDto {
   name: string;
+  description: string;
+  price?: number;
+  categoryId: number;
 }
-
-export type AddServiceRequestDto = UpdateServiceRequestDto;
 
 export interface ServiceRequestResponseDto {
   serviceId: number;

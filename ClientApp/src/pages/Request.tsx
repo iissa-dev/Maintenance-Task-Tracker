@@ -1,7 +1,7 @@
 import { useState } from "react";
 import Sidebar from "../layouts/Sidebar";
 import "./Request.css";
-import NewRequest from "../forms/NewRequest";
+import NewRequest from "../features/requests/components/HandleRequst";
 import Table from "../components/Table";
 import type { ResponseRequestDto, PageResult } from "../types";
 import { requestService } from "../services/requestService";
@@ -19,14 +19,16 @@ function Request() {
   const [open, setOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [formState, setFormState] = useState<FormState>(DEFAULT_FORM_STATE);
-
   const { confirm, alert, Modal } = usePopup();
   const queryClient = useQueryClient();
 
   const { data, isLoading, isPreviousData } = useQuery({
-    queryFn: () =>
-      requestService.getAll({ pageNumber: currentPage, pageSize: 4 }),
     queryKey: ["requests", currentPage],
+    queryFn: () =>
+      requestService.getAll({
+        pageNumber: currentPage,
+        pageSize: 4,
+      }),
     keepPreviousData: true,
   });
 
@@ -41,7 +43,7 @@ function Request() {
     },
   });
 
-  const pageInfo: PageResult<ResponseRequestDto> = data ?? {
+  const pageInfo: PageResult<ResponseRequestDto> = data?.data ?? {
     items: [],
     pageNumber: 1,
     pageCount: 1,
@@ -64,7 +66,7 @@ function Request() {
   }
 
   const tableData =
-    pageInfo.items?.map((request) => ({
+    pageInfo.items.map((request) => ({
       id: request.id,
       categoryName: request.categoryName,
       createdAt: request.createdAt,
@@ -72,7 +74,13 @@ function Request() {
       status: request.status,
     })) ?? [];
 
-  type TableRow = (typeof tableData)[number];
+  type TableRow = {
+    id: number;
+    categoryName: string;
+    createdAt: string;
+    description: string;
+    status: ResponseRequestDto["status"];
+  };
 
   const handleDelete = async (id: number) => {
     const ok = await confirm(
@@ -111,17 +119,21 @@ function Request() {
   };
 
   const goNext = () => {
-    if (!isPreviousData && currentPage < pageInfo.totalPages)
+    if (!isPreviousData && currentPage < pageInfo.totalPages) {
       setCurrentPage((prev) => prev + 1);
+    }
   };
 
   const goPrev = () => {
-    if (currentPage > 1) setCurrentPage((prev) => prev - 1);
+    if (currentPage > 1) {
+      setCurrentPage((prev) => prev - 1);
+    }
   };
 
   return (
     <div className="flex">
       <Sidebar />
+
       <div className="flex-1 p-5 overflow-auto relative">
         <div className="mb-4 flex justify-end">
           <button
@@ -134,6 +146,7 @@ function Request() {
             + New Request
           </button>
         </div>
+
         <Table
           tableHeader={["Id", "Category", "CreatedAt", "Description", "Status"]}
           tableData={tableData}
@@ -146,6 +159,7 @@ function Request() {
             PageSize: pageInfo.totalPages ?? 1,
           }}
         />
+
         <NewRequest
           key={`${formState.Mode}-${formState.data?.id}`}
           isOpen={open}
@@ -153,6 +167,7 @@ function Request() {
           {...formState}
         />
       </div>
+
       <Modal />
     </div>
   );

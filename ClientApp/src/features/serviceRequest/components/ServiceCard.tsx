@@ -1,23 +1,18 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { serviceRequestService } from "../services/serviceRequestService";
+import { useQuery } from "@tanstack/react-query";
+import { serviceRequestService } from "../../../services/serviceRequestService";
 import { useState } from "react";
 import { ThreeDot } from "react-loading-indicators";
-import { categoryService } from "../services/categoryService";
-import ServiceHandled from "../forms/ServiceHandled";
-import type {
-  RequestDto,
-  ServiceRequestResponseDto,
-  UpdateServiceRequestDto,
-} from "../types";
-import { PopupType, usePopup } from "./Popup";
-import { requestService } from "../services/requestService";
-import { useAuth } from "../hooks/useAuth";
+import { categoryService } from "../../../services/categoryService";
+import ServiceHandled from "./HandleServiceRequest";
+import type { ServiceRequestResponseDto } from "../../../types";
+import { PopupType, usePopup } from "../../../components/Popup";
+import { useAuth } from "../../../hooks/useAuth";
+import { useDeleteServiceReqeust } from "../api/serviceRequest.mutation";
+import { useAddRequest } from "../../requests/api/request.mutations";
 
 type CardState = { Role: "Client" } | { Role: "Admin" };
 
-
 function ServiceCard() {
-  const queryClient = useQueryClient();
   const pageSize = 6;
   const { confirm, alert, Modal } = usePopup();
   const [pageNumber, setPageNumber] = useState(1);
@@ -28,7 +23,7 @@ function ServiceCard() {
   const [categoryId, setCategoryId] = useState<number | null>(null);
   const [isOpenForm, setIsOpenForm] = useState(false);
   const [selectedService, setSelectedService] =
-    useState<UpdateServiceRequestDto>();
+    useState<ServiceRequestResponseDto>();
   const { data, isLoading, isFetching } = useQuery({
     queryFn: () =>
       serviceRequestService.services({ pageNumber, pageSize, categoryId }),
@@ -43,38 +38,9 @@ function ServiceCard() {
   const services: ServiceRequestResponseDto[] = data?.data?.items ?? [];
   const categories = categoriesData?.data;
 
-  const deleteMutaion = useMutation({
-    mutationFn: async (id: number) => {
-      const res = await serviceRequestService.deleteService(id);
+  const deleteMutaion = useDeleteServiceReqeust(alert);
 
-      if (!res.isSuccess) throw new Error(res.message);
-      return res;
-    },
-    onSuccess: async () => {
-      queryClient.invalidateQueries({ queryKey: ["services"] });
-      await alert("Service Deleted Successfully", "Deleted", PopupType.INFO);
-    },
-    onError: async (error: Error) => {
-      await alert(error?.message, "Error", PopupType.DANGER);
-    },
-  });
-
-  const addRequestMutation = useMutation({
-    mutationFn: async (data: RequestDto) => {
-      const res = await requestService.addNewRequest(data);
-
-      if (res.isSuccess) {
-        return res;
-      }
-    },
-    onSuccess: async () => {
-      // queryClient.invalidateQueries({queryKey: }) update requests later
-      await alert("Request Added Successfully", "Success", PopupType.INFO);
-    },
-    onError: async (error: Error) => {
-      await alert(`${error?.message}`, "Error", PopupType.DANGER);
-    },
-  });
+  const addRequestMutation = useAddRequest(alert);
   if (isLoading) {
     return (
       <div className="fixed top-[50%] left-[50%] -translate-[50%]">
@@ -106,12 +72,14 @@ function ServiceCard() {
 
   return (
     <>
-      <ServiceHandled
-        onClose={() => setIsOpenForm(false)}
-        isOpen={isOpenForm}
-        Mode="Edit"
-        data={selectedService}
-      />
+      {selectedService && (
+        <ServiceHandled
+          onClose={() => setIsOpenForm(false)}
+          isOpen={isOpenForm}
+          Mode="Edit"
+          data={selectedService}
+        />
+      )}
       <div>
         <div className="mb-10 flex justify-between items-center">
           <div>
@@ -182,13 +150,7 @@ function ServiceCard() {
                         type="button"
                         value="Edit"
                         onClick={() => {
-                          setSelectedService({
-                            name: service.name,
-                            description: service.description,
-                            price: service.price,
-                            categoryId: service.categoryDto.id,
-                            id: service.serviceId,
-                          });
+                          setSelectedService(service);
                           setIsOpenForm(true);
                         }}
                       />
@@ -211,20 +173,12 @@ function ServiceCard() {
                           PopupType.INFO,
                         );
                         if (!ok) return;
-                        try {
-                          await addRequestMutation.mutateAsync({
-                            description: service.description,
-                            categoryId: service.categoryDto.id,
-                            serviceRequestId: service.serviceId,
-                          });
-                        } catch (error) {
-                          console.log(error);
-                          await alert(
-                            "Something went wrong",
-                            "Error",
-                            PopupType.DANGER,
-                          );
-                        }
+
+                        await addRequestMutation.mutateAsync({
+                          description: service.description,
+                          categoryId: service.categoryDto.id,
+                          serviceRequestId: service.serviceId,
+                        });
                       }}
                     />
                   )}

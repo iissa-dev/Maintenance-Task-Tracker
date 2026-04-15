@@ -10,7 +10,7 @@ const STATUS_COLORS = [
 
 import { Clock, PlayCircle } from "lucide-react";
 import { useEffect, useState } from "react";
-import NewRequest from "../forms/NewRequest";
+import NewRequest from "../features/requests/components/HandleRequst";
 import DashboardChart from "./dashboardChart";
 import { ThreeDot } from "react-loading-indicators";
 

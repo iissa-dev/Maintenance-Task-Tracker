@@ -1,11 +1,12 @@
 import { useState } from "react";
-import ServiceCard from "../components/ServiceCard";
+import ServiceCard from "../features/serviceRequest/components/ServiceCard";
 import Sidebar from "../layouts/Sidebar";
-import ServiceHandled from "../forms/ServiceHandled";
+import ServiceHandled from "../features/serviceRequest/components/HandleServiceRequest";
+import { useAuth } from "../hooks/useAuth";
 
 function ServiceManagement() {
   const [isOpenForm, setIsOpenForm] = useState(false);
-
+  const { user } = useAuth();
   return (
     <main className="flex">
       <Sidebar />
@@ -25,12 +26,16 @@ function ServiceManagement() {
               Real-time status of your facility requests
             </p>
           </div>
-          <button
-            onClick={() => setIsOpenForm(true)}
-            className="btn-primary px-4 py-2 rounded-lg font-medium transition"
-          >
-            + New Request
-          </button>
+          {user?.role === "Admin" ? (
+            <button
+              onClick={() => setIsOpenForm(true)}
+              className="btn-primary px-4 py-2 rounded-lg font-medium transition"
+            >
+              + New Request
+            </button>
+          ) : (
+            ""
+          )}
         </header>
         <section>
           <ServiceCard />

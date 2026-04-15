@@ -15,9 +15,11 @@ export const authService = {
     return await apiClient.post("/Auth/login", data);
   },
   Refresh: async (): Promise<AuthResponseDto> => {
-    return await apiClient.post("/Auth/refresh");
+    return await apiClient.post("/Auth/refresh", {}, {withCredentials: true});
   },
   Logout: async (): Promise<Result<boolean>> => {
     return await apiClient.put("/Auth/logout");
   },
 };
+
+

@@ -56,7 +56,7 @@ namespace Maintenance_Task_Tracker.Controllers
 		public async Task<IActionResult> Refresh()
         {
             var refreshToken = Request.Cookies["refreshToken"];
-            if (refreshToken is null) return BadRequest();
+            if (refreshToken is null) return BadRequest(Result.Failure("Invalid Refresh Token Or you are not login", Core.Enums.AppError.BadRequest));
 			var result = await _tokenService.RefreshTokenAsync(refreshToken);
             if (!result.IsSuccess) return Unauthorized(result.ErrorCode);
 

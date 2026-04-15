@@ -15,7 +15,7 @@ export const PopupType = {
   WARNING: "warning",
 } as const;
 
-type PopupTypeValue = (typeof PopupType)[keyof typeof PopupType];
+export type PopupTypeValue = (typeof PopupType)[keyof typeof PopupType];
 
 type Mode = "confirm" | "alert";
 

@@ -22,6 +22,7 @@ export const userService = {
     return apiClent.post("/Admin/CreateEmployeeAsync", data);
   },
   updateUser: async (id: number, data: UpdateUserDto): Promise<Result> => {
+    console.log(data);
     return apiClent.put(`/Admin/UpdateUser/${id}`, data);
   },
   users: async ({

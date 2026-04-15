@@ -26,7 +26,7 @@ export const requestService = {
   getAll: async ({
     pageNumber,
     pageSize,
-  }: Props): Promise<PageResult<ResponseRequestDto>> => {
+  }: Props): Promise<Result<PageResult<ResponseRequestDto>>> => {
     const url = `Request/GetAllRequest?pageNumber=${pageNumber}&pageSize=${pageSize}`;
     return await apiClient.get(url);
   },
@@ -37,6 +37,7 @@ export const requestService = {
     id: number,
     data: UpdateRequestDto,
   ): Promise<Result<boolean>> => {
+    console.log(data);
     return await apiClient.put(`Request/${id}`, data);
   },
 };

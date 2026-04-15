@@ -5,8 +5,9 @@ import type { UpdateUserDto } from "../types";
 import { userService } from "../services/userService.ts";
 import { ThreeDot } from "react-loading-indicators";
 import { PopupType, usePopup } from "../components/Popup.tsx";
-import NewEmployee from "../forms/NewEmployee.tsx";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
+import { HandleUser } from "../features/users/components/HandleUser.tsx";
+import { useDeleteUser } from "../features/users/api/user.mutation.ts";
 
 type FormState =
   | { Mode: "Add"; id: null; data: null }
@@ -17,14 +18,12 @@ const DEFAULT_FORM_STATE: FormState = { Mode: "Add", id: null, data: null };
 function UserManagement() {
   const [PageNumber, setPageNumber] = useState(1);
   const [role, setRole] = useState(2);
-  const [openForm, setOpenFrom] = useState(false);
+  const [open, setOpen] = useState(false);
+  const { confirm, alert, Modal } = usePopup();
   const [formState, setFormState] = useState<FormState>(DEFAULT_FORM_STATE);
   const [search, setSearch] = useState("");
   const [appliedSearch, setAppliedSearch] = useState("");
   const PageSize = 10;
-
-  const { confirm, alert, Modal } = usePopup();
-  const queryClient = useQueryClient();
 
   const { data, isLoading, isPreviousData } = useQuery({
     queryFn: () =>
@@ -38,17 +37,7 @@ function UserManagement() {
     keepPreviousData: true,
   });
 
-  const deleteMutation = useMutation({
-    mutationFn: async (id: number) => {
-      const res = await userService.deleteUser(id);
-      if (!res.isSuccess) throw new Error(res.message);
-      return res;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["users"] });
-    },
-  });
-
+  const deleteMutation = useDeleteUser({ alert });
   const users = data?.data?.items;
   const totalPages = data?.data?.totalPages ?? 1;
 
@@ -75,7 +64,13 @@ function UserManagement() {
       role: user.role,
     })) ?? [];
 
-  type TableRow = (typeof tableRow)[number];
+  type TableRow = {
+    id: number;
+    fullName: string;
+    userName: string;
+    email: string;
+    role: string;
+  };
 
   const handleNext = () => {
     if (!isPreviousData && PageNumber < totalPages)
@@ -89,9 +84,8 @@ function UserManagement() {
   const handleRole = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setRole(Number(e.target.value));
     setPageNumber(1);
-    setSearch("")
+    setSearch("");
     setAppliedSearch("");
-    
   };
 
   const handleDelete = async (id: number) => {
@@ -102,12 +96,8 @@ function UserManagement() {
     );
     if (!ok) return;
 
-    try {
-      await deleteMutation.mutateAsync(id);
-      await alert("User deleted successfully.", "Delete", PopupType.INFO);
-    } catch (error) {
-      await alert(`${error}`, "Delete", PopupType.DANGER);
-    }
+    await deleteMutation.mutateAsync(id);
+    await alert("User deleted successfully.", "Delete", PopupType.INFO);
   };
 
   const handleOpenEdit = (row: TableRow) => {
@@ -122,11 +112,11 @@ function UserManagement() {
         userName: row.userName,
       },
     });
-    setOpenFrom(true);
+    setOpen(true);
   };
 
   const handleCloseForm = () => {
-    setOpenFrom(false);
+    setOpen(false);
     setFormState(DEFAULT_FORM_STATE);
   };
 
@@ -134,16 +124,16 @@ function UserManagement() {
     setPageNumber(1);
     setAppliedSearch(search);
   };
-
   return (
     <>
       <div className="flex">
         <Sidebar />
-        <NewEmployee
-          key={`${formState.Mode}-${formState.id}`}
-          isOpen={openForm}
+        <HandleUser
+          isOpen={open}
           onClose={handleCloseForm}
-          {...formState}
+          userId={formState.id ?? 0}
+          Mode={formState.Mode}
+          data={formState.data}
         />
         <div className="p-5 flex-1 overflow-auto flex flex-col">
           <header className="mb-8 flex justify-between items-center">
@@ -156,7 +146,7 @@ function UserManagement() {
             <button
               onClick={() => {
                 setFormState(DEFAULT_FORM_STATE);
-                setOpenFrom(true);
+                setOpen(true);
               }}
               className="btn-primary px-4 py-2 rounded-lg font-medium transition"
             >

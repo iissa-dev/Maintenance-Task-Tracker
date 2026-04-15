@@ -32,7 +32,7 @@ export const serviceRequestService = {
   addServices: async (data: AddServiceRequestDto): Promise<Result> => {
     return apiClient.post("ServiceRequest/CreateNewService", data);
   },
-  updateServcie: async (
+  updateService: async (
     id: number,
     data: UpdateServiceRequestDto,
   ): Promise<Result> => {

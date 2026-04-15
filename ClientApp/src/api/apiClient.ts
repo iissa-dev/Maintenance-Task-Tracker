@@ -54,7 +54,11 @@ apiClient.interceptors.response.use(
     }
 
     // 401 — refresh token
-    if (originalRequest._retry || originalRequest.url?.includes("Auth/login")) {
+    if (
+      originalRequest._retry ||
+      originalRequest.url?.includes("Auth/login") ||
+      originalRequest.url?.includes("Auth/refresh")
+    ) {
       return Promise.reject(error);
     }
 
@@ -79,7 +83,6 @@ apiClient.interceptors.response.use(
     } catch (refreshError) {
       processQueue(refreshError, null);
       setToken(null);
-      window.location.href = "/login";
       return Promise.reject(refreshError);
     } finally {
       isRefreshing = false;

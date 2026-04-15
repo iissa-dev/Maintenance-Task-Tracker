@@ -3,7 +3,6 @@ using Core.DTOs.UserDtos;
 using Core.Enums;
 using Core.Interfaces.Service;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 
@@ -11,6 +10,7 @@ namespace Maintenance_Task_Tracker.Controllers
 {
 	[Route("api/[controller]")]
 	[ApiController]
+	//[Authorize]
 	public class AdminController : ControllerBase
 	{
 		private readonly IAdminService _adminService;
@@ -36,6 +36,7 @@ namespace Maintenance_Task_Tracker.Controllers
 		[HttpGet("Users")]
 		[ProducesResponseType(StatusCodes.Status200OK)]
 		[ProducesResponseType(StatusCodes.Status400BadRequest)]
+		//[Authorize]
 		public async Task<IActionResult> GetAllUsersAsync(int roleId, int pageNumber, int pageSize, string? searchByUserName)
 		{
 
@@ -75,7 +76,7 @@ namespace Maintenance_Task_Tracker.Controllers
 		[ProducesResponseType(StatusCodes.Status200OK)]
 		[ProducesResponseType(StatusCodes.Status400BadRequest)]
 		[ProducesResponseType(StatusCodes.Status404NotFound)]
-		public async Task<IActionResult> UpdateUser(int id, [FromForm] UpdateUserDto dto)
+		public async Task<IActionResult> UpdateUser(int id, [FromBody] UpdateUserDto dto)
 		{
 			var result = await _adminService.UpdateUserAsync(id, dto);
 			if (result.IsSuccess)
