@@ -12,15 +12,18 @@ namespace Services
 		private readonly ITokenService _tokenService;
 		private readonly IPersonRepository _personRepository;
 		private readonly UserManager<ApplicationUser> _userManager;
+		private readonly IUserService _userService;
 
 		public AccountService(
 			UserManager<ApplicationUser> userManager,
 			ITokenService tokenService,
-			IPersonRepository personRepository)
+			IPersonRepository personRepository,
+			IUserService userService)
 		{
 			_userManager = userManager;
 			_tokenService = tokenService;
 			_personRepository = personRepository;
+			_userService = userService;
 		}
 
 		public async Task<Result<TokenResult>> LoginAsync(LoginDto dto)
@@ -64,36 +67,33 @@ namespace Services
 					await _personRepository.AddAsync(person);
 					await _personRepository.SaveChangesAsync();
 
-					var user = new ApplicationUser
-					{
-						Person = person,
-						UserName = registerDto.UserName,
-						Email = registerDto.Email,
-						PhoneNumber = registerDto.PhoneNumber ?? ""
-					};
+					var userResult = await _userService.CreateUserAsync(registerDto);
 
-					var createResult = await _userManager.CreateAsync(user, registerDto.Password);
-					if (!createResult.Succeeded)
+					if (!userResult.IsSuccess)
 					{
-						return Result.Failure(
-							string.Join(", ", createResult.Errors.Select(e => e.Description)),
-							AppError.BadRequest);
+						await transaction.RollbackAsync();
+						return Result.Failure(userResult.Message ?? "An error occurred while creating the user", AppError.BadRequest);
 					}
 
-					var roleResult = await _userManager.AddToRoleAsync(user, roleName.ToString());
-					if (!roleResult.Succeeded)
+					var user = userResult.Data!;
+
+					var roleResult = await _userService.AddToRoleAsync(user, roleName);
+
+					if (!roleResult.IsSuccess)
 					{
-						return Result.Failure(
-							string.Join(", ", roleResult.Errors.Select(e => e.Description)),
-							AppError.BadRequest);
+						await _userService.DeleteUserAsync(user); // Log this later for debugging
+						await transaction.RollbackAsync();
+
+						return Result.Failure(roleResult.Message ?? "An error occurred while assigning the role", AppError.BadRequest);
 					}
 
 					await transaction.CommitAsync();
 					return Result.Success($"{roleName} Created Successfully");
 				}
-				catch (Exception)
+				catch (Exception ex)
 				{
-					return Result.Failure("An unexpected error occurred during user creation.", AppError.InternalServerError);
+					await transaction.RollbackAsync();
+					return Result.Failure($"An unexpected error {ex.Message}", AppError.InternalServerError);
 				}
 			});
 		}

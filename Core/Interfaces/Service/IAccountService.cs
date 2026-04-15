@@ -20,4 +20,5 @@ namespace Core.Interfaces.Service
 
 		Task<Result> Logout(string refreshToken);
 	}
+
 }

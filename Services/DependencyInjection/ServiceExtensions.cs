@@ -13,7 +13,7 @@ namespace Services.DependencyInjection
 			Services.AddScoped<IAdminService, AdminService>();
 			Services.AddScoped<IServiceRequest, ServiceRequestService>();
 			Services.AddScoped<IRequestService, RequestService>();
-
+			Services.AddScoped<IUserService, UserService>();
 
 			return Services;
 		}
