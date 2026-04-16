@@ -4,7 +4,7 @@ import { useState } from "react";
 import { ThreeDot } from "react-loading-indicators";
 import { categoryService } from "../../../services/categoryService";
 import ServiceHandled from "./HandleServiceRequest";
-import type { ServiceRequestResponseDto } from "../../../types";
+import type { RequestDto, ServiceRequestResponseDto } from "../../../types";
 import { PopupType, usePopup } from "../../../components/Popup";
 import { useAuth } from "../../../hooks/useAuth";
 import { useDeleteServiceReqeust } from "../api/serviceRequest.mutation";
@@ -66,6 +66,20 @@ function ServiceCard() {
     deleteMutaion.mutate(id);
   };
 
+  const handleRequestService = async (service: RequestDto) => {
+    const ok = await confirm(
+      "Are you sure you want to request this service?",
+      "Confirm Request",
+      PopupType.INFO,
+    );
+    if (!ok) return;
+
+    await addRequestMutation.mutateAsync({
+      description: service.description,
+      categoryId: service.categoryId,
+      serviceRequestId: service.serviceRequestId,
+    });
+  };
   return (
     <>
       {selectedService && (
@@ -162,20 +176,13 @@ function ServiceCard() {
                       className="text-[14px] btn-secondary cursor-pointer"
                       type="button"
                       value="Request"
-                      onClick={async () => {
-                        const ok = await confirm(
-                          "Are you sure you want to request this service?",
-                          "Confirm Request",
-                          PopupType.INFO,
-                        );
-                        if (!ok) return;
-
-                        await addRequestMutation.mutateAsync({
-                          description: service.description,
-                          categoryId: service.categoryDto.id,
+                      onClick={() =>
+                        handleRequestService({
                           serviceRequestId: service.serviceId,
-                        });
-                      }}
+                          categoryId: service.categoryDto.id,
+                          description: service.description,
+                        })
+                      }
                     />
                   )}
                 </div>
