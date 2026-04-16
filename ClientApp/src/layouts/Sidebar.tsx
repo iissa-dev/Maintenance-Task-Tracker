@@ -11,7 +11,7 @@ import { useAuth } from "../hooks/useAuth";
 
 function Sidebar() {
   const { pathname } = useLocation();
-  const { isAuthenticated, loading, logout } = useAuth();
+  const { user, logout } = useAuth();
 
   const baseClass = `mb-5 transition-all duration-500 cursor-pointer hover:bg-white/10 
                      md:px-5 md:py-1.25 md:rounded-md w-12.5 h-12.5 md:h-auto md:w-auto 
@@ -52,16 +52,9 @@ function Sidebar() {
       </ul>
       <div>
         <div>
-          {loading ? (
-            <div className="flex items-center text-soft animate-pulse opacity-50">
-              <FontAwesomeIcon icon={faUser} />
-              <span className="ml-1.25 hidden md:inline text-sm">
-                Loading...
-              </span>
-            </div>
-          ) : isAuthenticated ? (
+          {user ? (
             <button
-              onClick={() => logout()}
+              onClick={logout}
               className="cursor-pointer hover:text-white/70 transition-colors"
             >
               <FontAwesomeIcon icon={faUser} />

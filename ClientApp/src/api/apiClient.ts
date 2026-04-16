@@ -1,92 +1,92 @@
 import axios from "axios";
-import { getToken, setToken } from "./tokenRef";
-import type { AuthResponseDto, Result } from "../types";
+import type { AuthResponseDto } from "../types";
+import dayjs from "dayjs";
+import { jwtDecode } from "jwt-decode";
+
+const baseURL: string = "http://localhost:5049/api";
+let refreshPromise: Promise<AuthResponseDto> | null = null;
 
 const apiClient = axios.create({
-  baseURL: import.meta.env.DEV ? "http://localhost:5049/api" : "/api",
-  headers: { "Content-Type": "application/json" },
+  baseURL,
   withCredentials: true,
 });
 
-apiClient.interceptors.request.use((config) => {
-  const token = getToken();
-  if (token) config.headers.Authorization = `Bearer ${token}`;
-  return config;
+apiClient.interceptors.request.use(async (req) => {
+  const stored = localStorage.getItem("authToken");
+
+  if (!stored) return req;
+
+  let authToken: AuthResponseDto;
+
+  try {
+    authToken = JSON.parse(stored);
+  } catch {
+    localStorage.removeItem("authToken");
+    return req;
+  }
+
+  if (!authToken.accessToken) return req;
+
+  const decoded: { exp?: number } = jwtDecode(authToken.accessToken);
+
+  const isExpired = dayjs().isAfter(dayjs.unix(decoded.exp ?? 0));
+
+  if (!isExpired) {
+    req.headers.Authorization = `Bearer ${authToken.accessToken}`;
+    return req;
+  }
+
+  // Refresh Logic
+
+  if (!refreshPromise) {
+    refreshPromise = axios
+      .post<AuthResponseDto>(
+        `${baseURL}/Auth/refresh`,
+        {},
+        { withCredentials: true },
+      )
+      .then((res) => {
+        localStorage.setItem("authToken", JSON.stringify(res.data));
+        return res.data;
+      })
+      .finally(() => {
+        refreshPromise = null;
+      });
+  }
+
+  const newToken = await refreshPromise;
+
+  req.headers.Authorization = `Bearer ${newToken.accessToken}`;
+  return req;
 });
-
-let isRefreshing = false;
-let failedQueue: {
-  resolve: (token: string) => void;
-  reject: (error: unknown) => void;
-}[] = [];
-
-const processQueue = (error: unknown, token: string | null) => {
-  failedQueue.forEach((p) => (error ? p.reject(error) : p.resolve(token!)));
-  failedQueue = [];
-};
 
 apiClient.interceptors.response.use(
   (response) => response.data,
 
   async (error) => {
-    const originalRequest = error.config;
-
     // Network error
     if (!error.response) {
-      return Promise.resolve<Result>({
+      return Promise.resolve({
         isSuccess: false,
-        message: "Network error. Please check your connection.",
+        message: "Network error. Plase check your connection.",
       });
     }
 
-    // Business errors + ASP.NET Model Validation
+    // Validation / business errors
     if (error.response.status !== 401) {
       const data = error.response.data;
+
       if (data?.errors) {
-        return Promise.resolve<Result>({
+        return Promise.resolve({
           isSuccess: false,
-          message: Object.values(data.errors as Record<string, string[]>)
-            .flat()
-            .join(", "),
+          message: Object.values(data.errors).flat().join(", "),
         });
       }
-      return Promise.resolve<Result>(data);
+
+      return Promise.resolve(data);
     }
 
-    // 401 — refresh token
-    if (
-      originalRequest._retry ||
-      originalRequest.url?.includes("Auth/login") ||
-      originalRequest.url?.includes("Auth/refresh")
-    ) {
-      return Promise.reject(error);
-    }
-
-    if (isRefreshing) {
-      return new Promise((resolve, reject) => {
-        failedQueue.push({ resolve, reject });
-      }).then((token) => {
-        originalRequest.headers.Authorization = `Bearer ${token}`;
-        return apiClient(originalRequest);
-      });
-    }
-
-    isRefreshing = true;
-    originalRequest._retry = true;
-
-    try {
-      const res: AuthResponseDto = await apiClient.post("Auth/refresh");
-      setToken(res.accessToken);
-      processQueue(null, res.accessToken);
-      originalRequest.headers.Authorization = `Bearer ${res.accessToken}`;
-      return apiClient(originalRequest);
-    } catch (refreshError) {
-      processQueue(refreshError, null);
-      setToken(null);
-      return Promise.reject(refreshError);
-    } finally {
-      isRefreshing = false;
-    }
+    return Promise.reject(error);
   },
 );
 

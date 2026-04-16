@@ -7,6 +7,7 @@ import { AuthProvider } from "./context/AuthContext";
 import UserManagement from "./pages/UserManagement";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import ServiceManagement from "./pages/ServiceManagement";
+import PrivateRoute from "./utils/PrivateRoute";
 
 const queryClient = new QueryClient();
 function App() {
@@ -14,11 +15,39 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
         <Routes>
-          <Route path="/" element={<Dashboard />} />
-          <Route path="request" element={<Request />} />
+          <Route
+            path="/"
+            element={
+              <PrivateRoute>
+                <Dashboard />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="request"
+            element={
+              <PrivateRoute>
+                <Request />
+              </PrivateRoute>
+            }
+          />
           <Route path="login" element={<Login />} />
-          <Route path="userManagement" element={<UserManagement />} />
-          <Route path="serviceManagement" element={<ServiceManagement />} />
+          <Route
+            path="userManagement"
+            element={
+              <PrivateRoute>
+                <UserManagement />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="serviceManagement"
+            element={
+              <PrivateRoute>
+                <ServiceManagement />
+              </PrivateRoute>
+            }
+          />
         </Routes>
       </AuthProvider>
     </QueryClientProvider>

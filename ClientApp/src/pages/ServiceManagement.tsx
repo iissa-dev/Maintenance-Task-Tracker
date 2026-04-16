@@ -6,7 +6,8 @@ import { useAuth } from "../hooks/useAuth";
 
 function ServiceManagement() {
   const [isOpenForm, setIsOpenForm] = useState(false);
-  const { user } = useAuth();
+  const { authToken } = useAuth();
+
   return (
     <main className="flex">
       <Sidebar />
@@ -26,7 +27,7 @@ function ServiceManagement() {
               Real-time status of your facility requests
             </p>
           </div>
-          {user?.role === "Admin" ? (
+          {authToken?.role === "Admin" ? (
             <button
               onClick={() => setIsOpenForm(true)}
               className="btn-primary px-4 py-2 rounded-lg font-medium transition"

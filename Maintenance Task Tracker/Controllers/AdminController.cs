@@ -4,7 +4,7 @@ using Core.Enums;
 using Core.Interfaces.Service;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations; 
 
 namespace Maintenance_Task_Tracker.Controllers
 {
@@ -27,7 +27,7 @@ namespace Maintenance_Task_Tracker.Controllers
 		{
 			var result = await _adminService.CreateEmployeeAsync(dto);
 
-			if (result.IsSuccess)
+			if (result.IsSuccess) 
 				return Ok(result);
 
 			return BadRequest(result);

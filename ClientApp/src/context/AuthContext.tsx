@@ -13,40 +13,54 @@ import type {
   Result,
 } from "../types";
 import { authService } from "../services/authService";
-import { setToken } from "../api/tokenRef";
+import { jwtDecode } from "jwt-decode";
 
 interface AuthContextType {
   user: AuthUser | null;
-  accessToken: string | null;
-  isAuthenticated: boolean;
+  authToken: AuthResponseDto | null;
   loading: boolean;
+  setAuthToken: (t: AuthResponseDto | null) => void;
+  setUser: (u: AuthUser | null) => void;
+
   login: (data: LoginDto) => Promise<Result>;
-  register: (data: RegisterDto) => Promise<Result>;
   logout: () => Promise<void>;
-  setAccessToken: (token: string) => void;
+  register: (data: RegisterDto) => Promise<Result>;
 }
 
-// eslint-disable-next-line react-refresh/only-export-components
-export const AuthContext = createContext<AuthContextType | null>(null);
+const AuthContext = createContext<AuthContextType | null>(null);
+export default AuthContext;
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [user, setUser] = useState<AuthUser | null>(null);
-  const [accessToken, setAccessToken] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
+  const [authToken, setAuthToken] = useState<AuthResponseDto | null>(() => {
+    const stored = localStorage.getItem("authToken");
+    return stored ? JSON.parse(stored) : null;
+  });
 
-  const isAuthenticated = !!accessToken;
+  const [user, setUser] = useState<AuthUser | null>(() => {
+    const stored = localStorage.getItem("authToken");
+    if (!stored) return null;
+
+    const parsed = JSON.parse(stored);
+    return parsed?.accessToken ? jwtDecode(parsed.accessToken) : null;
+  });
+  const [loading, setLoading] = useState(true);
 
   const login = useCallback(async (data: LoginDto): Promise<Result> => {
     try {
       setLoading(true);
       const res = await authService.Login(data);
       if (res.isSuccess && res.data) {
-        setAccessToken(res.data.accessToken);
-        setToken(res.data.accessToken);
-        setUser({
-          userName: res.data.userName,
-          role: res.data.role,
-        });
+        setAuthToken(res.data as AuthResponseDto);
+        setUser(jwtDecode(res.data.accessToken));
+        localStorage.setItem(
+          "authToken",
+          JSON.stringify(res.data as AuthResponseDto),
+        );
+
+        localStorage.setItem(
+          "authToken",
+          JSON.stringify(res.data as AuthResponseDto),
+        );
         return { message: "Login Success", isSuccess: true };
       }
 
@@ -65,9 +79,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     try {
       await authService.Logout();
     } finally {
+      localStorage.removeItem("authToken");
       setUser(null);
-      setAccessToken(null);
-      setToken(null);
+      setAuthToken(null);
     }
   }, []);
 
@@ -87,30 +101,28 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   useEffect(() => {
-    const refresh = async () => {
-      try {
-        const res: AuthResponseDto = await authService.Refresh();
-        setToken(res.accessToken);
-        setAccessToken(res.accessToken);
-        setUser({ userName: res.userName, role: res.role });
-      } catch {
-        setUser(null);
-        setAccessToken(null);
-      }
-    };
-    refresh();
+    const stored = localStorage.getItem("authToken");
+
+    if (stored) {
+      const parsed = JSON.parse(stored);
+      setAuthToken(parsed);
+      setUser(jwtDecode(parsed.accessToken));
+    }
+
+    setLoading(false);
   }, []);
+
   return (
     <AuthContext.Provider
       value={{
         user,
-        accessToken,
-        isAuthenticated,
+        authToken,
         loading,
+        setUser,
+        setAuthToken,
         login,
         logout,
         register,
-        setAccessToken,
       }}
     >
       {children}

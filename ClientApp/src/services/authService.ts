@@ -5,13 +5,14 @@ import type {
   LoginDto,
   RegisterDto,
   Result,
+  TokenResult,
 } from "../types/index";
 
 export const authService = {
   Register: async (data: RegisterDto): Promise<Result<boolean>> => {
     return await apiClient.post("/Auth/register", data);
   },
-  Login: async (data: LoginDto): Promise<Result<AuthResponseDto>> => {
+  Login: async (data: LoginDto): Promise<Result<TokenResult>> => {
     return await apiClient.post("/Auth/login", data);
   },
   Refresh: async (): Promise<AuthResponseDto> => {

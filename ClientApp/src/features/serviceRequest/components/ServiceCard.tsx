@@ -10,16 +10,12 @@ import { useAuth } from "../../../hooks/useAuth";
 import { useDeleteServiceReqeust } from "../api/serviceRequest.mutation";
 import { useAddRequest } from "../../requests/api/request.mutations";
 
-type CardState = { Role: "Client" } | { Role: "Admin" };
-
 function ServiceCard() {
   const pageSize = 6;
   const { confirm, alert, Modal } = usePopup();
   const [pageNumber, setPageNumber] = useState(1);
-  const { user } = useAuth();
-  const [cardState] = useState<CardState>({
-    Role: user?.role === "Admin" ? "Admin" : "Client",
-  });
+  const { authToken } = useAuth();
+  const role = authToken?.role;
   const [categoryId, setCategoryId] = useState<number | null>(null);
   const [isOpenForm, setIsOpenForm] = useState(false);
   const [selectedService, setSelectedService] =
@@ -143,7 +139,7 @@ function ServiceCard() {
                 </p>
                 <hr className="text-soft mb-6" />
                 <div className="flex justify-end gap-2">
-                  {cardState.Role === "Admin" ? (
+                  {role === "Admin" ? (
                     <>
                       <input
                         className="text-[14px] btn-ghost cursor-pointer"

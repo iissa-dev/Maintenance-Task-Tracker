@@ -110,6 +110,7 @@ app.UseExceptionHandler(appError =>
 
 			await context.Response.WriteAsJsonAsync(new
 			{
+				isSuccess = false,
 				message = contextFeature.Error.Message
 			});
 		}

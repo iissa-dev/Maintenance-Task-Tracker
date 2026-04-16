@@ -1,7 +1,5 @@
 ﻿using Core.DTOs.ServiceRequestDto;
-using Core.Entities;
 using Core.Interfaces.Service;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Maintenance_Task_Tracker.Controllers
@@ -79,6 +77,6 @@ namespace Maintenance_Task_Tracker.Controllers
 			return Ok(res);
 		}
 
-		
+
 	}
 }
