@@ -1,0 +1,46 @@
+C:\Users\Msi\OneDrive\Desktop\Maintenance Task Tracker\Application\bin\Debug\net10.0\Application.deps.json
+C:\Users\Msi\OneDrive\Desktop\Maintenance Task Tracker\Application\bin\Debug\net10.0\Application.dll
+C:\Users\Msi\OneDrive\Desktop\Maintenance Task Tracker\Application\bin\Debug\net10.0\Application.pdb
+C:\Users\Msi\OneDrive\Desktop\Maintenance Task Tracker\Application\bin\Debug\net10.0\Domain.dll
+C:\Users\Msi\OneDrive\Desktop\Maintenance Task Tracker\Application\bin\Debug\net10.0\Domain.pdb
+C:\Users\Msi\OneDrive\Desktop\Maintenance Task Tracker\Application\obj\Debug\net10.0\Application.csproj.AssemblyReference.cache
+C:\Users\Msi\OneDrive\Desktop\Maintenance Task Tracker\Application\obj\Debug\net10.0\Application.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Msi\OneDrive\Desktop\Maintenance Task Tracker\Application\obj\Debug\net10.0\Application.AssemblyInfoInputs.cache
+C:\Users\Msi\OneDrive\Desktop\Maintenance Task Tracker\Application\obj\Debug\net10.0\Application.AssemblyInfo.cs
+C:\Users\Msi\OneDrive\Desktop\Maintenance Task Tracker\Application\obj\Debug\net10.0\Application.csproj.CoreCompileInputs.cache
+C:\Users\Msi\OneDrive\Desktop\Maintenance Task Tracker\Application\obj\Debug\net10.0\Applicat.44B5EDA2.Up2Date
+C:\Users\Msi\OneDrive\Desktop\Maintenance Task Tracker\Application\obj\Debug\net10.0\Application.dll
+C:\Users\Msi\OneDrive\Desktop\Maintenance Task Tracker\Application\obj\Debug\net10.0\refint\Application.dll
+C:\Users\Msi\OneDrive\Desktop\Maintenance Task Tracker\Application\obj\Debug\net10.0\Application.pdb
+C:\Users\Msi\OneDrive\Desktop\Maintenance Task Tracker\Application\obj\Debug\net10.0\ref\Application.dll
+C:\Users\IIssa\OneDrive\Desktop\project\Maintenance-Task-Tracker-clean-\Application\bin\Debug\net10.0\Application.deps.json
+C:\Users\IIssa\OneDrive\Desktop\project\Maintenance-Task-Tracker-clean-\Application\bin\Debug\net10.0\Application.dll
+C:\Users\IIssa\OneDrive\Desktop\project\Maintenance-Task-Tracker-clean-\Application\bin\Debug\net10.0\Application.pdb
+C:\Users\IIssa\OneDrive\Desktop\project\Maintenance-Task-Tracker-clean-\Application\bin\Debug\net10.0\Domain.dll
+C:\Users\IIssa\OneDrive\Desktop\project\Maintenance-Task-Tracker-clean-\Application\bin\Debug\net10.0\Domain.pdb
+C:\Users\IIssa\OneDrive\Desktop\project\Maintenance-Task-Tracker-clean-\Application\obj\Debug\net10.0\Application.csproj.AssemblyReference.cache
+C:\Users\IIssa\OneDrive\Desktop\project\Maintenance-Task-Tracker-clean-\Application\obj\Debug\net10.0\Application.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\IIssa\OneDrive\Desktop\project\Maintenance-Task-Tracker-clean-\Application\obj\Debug\net10.0\Application.AssemblyInfoInputs.cache
+C:\Users\IIssa\OneDrive\Desktop\project\Maintenance-Task-Tracker-clean-\Application\obj\Debug\net10.0\Application.AssemblyInfo.cs
+C:\Users\IIssa\OneDrive\Desktop\project\Maintenance-Task-Tracker-clean-\Application\obj\Debug\net10.0\Application.csproj.CoreCompileInputs.cache
+C:\Users\IIssa\OneDrive\Desktop\project\Maintenance-Task-Tracker-clean-\Application\obj\Debug\net10.0\Application.sourcelink.json
+C:\Users\IIssa\OneDrive\Desktop\project\Maintenance-Task-Tracker-clean-\Application\obj\Debug\net10.0\Applicat.44B5EDA2.Up2Date
+C:\Users\IIssa\OneDrive\Desktop\project\Maintenance-Task-Tracker-clean-\Application\obj\Debug\net10.0\Application.dll
+C:\Users\IIssa\OneDrive\Desktop\project\Maintenance-Task-Tracker-clean-\Application\obj\Debug\net10.0\refint\Application.dll
+C:\Users\IIssa\OneDrive\Desktop\project\Maintenance-Task-Tracker-clean-\Application\obj\Debug\net10.0\Application.pdb
+C:\Users\IIssa\OneDrive\Desktop\project\Maintenance-Task-Tracker-clean-\Application\obj\Debug\net10.0\ref\Application.dll
+C:\Dev\Projects\Maintenance-Task-Tracker\Application\bin\Debug\net10.0\Application.deps.json
+C:\Dev\Projects\Maintenance-Task-Tracker\Application\bin\Debug\net10.0\Application.dll
+C:\Dev\Projects\Maintenance-Task-Tracker\Application\bin\Debug\net10.0\Application.pdb
+C:\Dev\Projects\Maintenance-Task-Tracker\Application\bin\Debug\net10.0\Domain.dll
+C:\Dev\Projects\Maintenance-Task-Tracker\Application\bin\Debug\net10.0\Domain.pdb
+C:\Dev\Projects\Maintenance-Task-Tracker\Application\obj\Debug\net10.0\Application.csproj.AssemblyReference.cache
+C:\Dev\Projects\Maintenance-Task-Tracker\Application\obj\Debug\net10.0\Application.GeneratedMSBuildEditorConfig.editorconfig
+C:\Dev\Projects\Maintenance-Task-Tracker\Application\obj\Debug\net10.0\Application.AssemblyInfoInputs.cache
+C:\Dev\Projects\Maintenance-Task-Tracker\Application\obj\Debug\net10.0\Application.AssemblyInfo.cs
+C:\Dev\Projects\Maintenance-Task-Tracker\Application\obj\Debug\net10.0\Application.csproj.CoreCompileInputs.cache
+C:\Dev\Projects\Maintenance-Task-Tracker\Application\obj\Debug\net10.0\Applicat.44B5EDA2.Up2Date
+C:\Dev\Projects\Maintenance-Task-Tracker\Application\obj\Debug\net10.0\Application.dll
+C:\Dev\Projects\Maintenance-Task-Tracker\Application\obj\Debug\net10.0\refint\Application.dll
+C:\Dev\Projects\Maintenance-Task-Tracker\Application\obj\Debug\net10.0\Application.pdb
+C:\Dev\Projects\Maintenance-Task-Tracker\Application\obj\Debug\net10.0\ref\Application.dll

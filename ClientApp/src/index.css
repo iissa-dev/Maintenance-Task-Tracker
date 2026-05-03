@@ -1,0 +1,135 @@
+/* Typography Imports
+  - Outfit: Used for bold, modern headings.
+  - Plus Jakarta Sans: Used for clean, readable body text.
+  - Fira Code: Used for technical data and code snippets.
+*/
+@import url("https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap");
+@import "tailwindcss";
+
+/* ── Custom Scrollbar Styling ── */
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: var(--color-border);
+    border-radius: 20px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background-color: var(--color-primary); /* Changes to primary color on hover */
+}
+
+::-webkit-scrollbar-track {
+    background-color: var(--color-background);
+}
+
+@layer base {
+    @theme {
+        /* Professional Dark Theme Palette (HSL based) */
+        --color-background: hsl(222 47% 4%);
+        --color-foreground: hsl(213 31% 91%);
+
+        /* Card System - Defines elevated surfaces */
+        --color-card: hsl(222 47% 7%);
+        --color-card-foreground: hsl(213 31% 91%);
+
+        /* Brand Colors */
+        --color-primary: hsl(199 89% 48%);
+        --color-primary-foreground: hsl(222 47% 4%);
+
+        /* Muted / Secondary elements */
+        --color-secondary: hsl(215 25% 27%);
+        --color-secondary-foreground: hsl(210 40% 98%);
+        --color-muted: hsl(222 47% 11%);
+        --color-muted-foreground: hsl(215 20% 65%);
+
+        /* Border System */
+        --color-border: hsl(217 32% 17%);
+
+        /* Semantic Status Colors */
+        --color-danger: hsl(0 84% 60%);
+        --color-warning: hsl(48 96% 53%);
+        --color-success: hsl(142 71% 45%);
+    }
+
+    body {
+        @apply bg-background text-foreground antialiased selection:bg-primary/30 selection:text-primary;
+        font-family: "Plus Jakarta Sans", sans-serif;
+
+        /* Sublte Ambient Background Gradients */
+        background-image:
+                radial-gradient(at 0% 0%, hsla(199, 89%, 48%, 0.03) 0, transparent 50%),
+                radial-gradient(at 50% 0%, hsla(215, 25%, 27%, 0.03) 0, transparent 50%);
+        background-attachment: fixed;
+    }
+
+    /* Headings Typography */
+    h1, h2, h3, h4, h5, h6 {
+        font-family: "Outfit", sans-serif;
+        @apply tracking-tight;
+    }
+
+    /* Monospace elements for code/ID data */
+    code, pre {
+        font-family: "Fira Code", monospace;
+    }
+}
+
+@layer utilities {
+    /* ── Component: Professional Cards ── */
+    .card {
+        @apply bg-card border border-border rounded-xl
+        shadow-sm
+        hover:border-primary/40
+        transition-all duration-300;
+    }
+
+    /* ── Component: Clean Interactive Buttons ── */
+    .btn-primary {
+        @apply bg-primary text-primary-foreground font-medium rounded-lg px-5 py-2.5
+        hover:opacity-90 active:scale-95
+        transition-all duration-200;
+    }
+
+    .btn-secondary {
+        @apply bg-secondary text-secondary-foreground rounded-lg px-5 py-2.5
+        hover:bg-secondary/80
+        transition-all duration-200;
+    }
+
+    .btn-ghost {
+        @apply bg-transparent border border-border text-muted-foreground rounded-lg px-5 py-2.5
+        hover:bg-muted hover:text-foreground
+        transition-all duration-200;
+    }
+
+    /* ── Component: Modern Data Tables ── */
+    .table-header {
+        @apply bg-muted/50 text-muted-foreground text-xs font-semibold uppercase tracking-wider border-b border-border;
+    }
+
+    .table-row {
+        @apply border-b border-border/40
+        hover:bg-muted/30
+        transition-all duration-150;
+    }
+
+    /* ── Text Utility Classes ── */
+
+    /* Branding Gradient Effect */
+    .gradient-text {
+        @apply text-transparent bg-clip-text bg-linear-to-r from-primary to-blue-400;
+    }
+
+    /* Soft shadow for specific highlight elements */
+    .soft-glow {
+        @apply shadow-[0_0_15px_rgba(0,0,0,0.1)] border-primary/20;
+    }
+
+    /* Mapping CSS Variables to Helper Classes */
+    .text-main { color: var(--color-primary); }           /* Highlight Color */
+    .text-sub { color: var(--color-muted-foreground); }  /* Secondary/Small Text */
+    .text-danger { color: var(--color-danger); }         /* Error/Danger Text */
+    .text-ok { color: var(--color-success); }            /* Success/Positive Text */
+}

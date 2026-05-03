@@ -1,0 +1,328 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\Msi\\OneDrive\\Desktop\\Maintenance Task Tracker\\Api\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{5B5EB631-9D5E-44D4-8E1D-EDFC9D5F6304}|..\\Application\\Application.csproj|c:\\users\\msi\\onedrive\\desktop\\maintenance task tracker\\application\\services\\requestservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C8C9DF7A-37B2-4E92-B4CA-7717F677E4E7}|..\\Infrastructure\\Infrastructure.csproj|c:\\users\\msi\\onedrive\\desktop\\maintenance task tracker\\infrastructure\\repositories\\refreshtokenrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C8C9DF7A-37B2-4E92-B4CA-7717F677E4E7}|..\\Infrastructure\\Infrastructure.csproj|c:\\users\\msi\\onedrive\\desktop\\maintenance task tracker\\infrastructure\\repositories\\servicerequestrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C8C9DF7A-37B2-4E92-B4CA-7717F677E4E7}|..\\Infrastructure\\Infrastructure.csproj|c:\\users\\msi\\onedrive\\desktop\\maintenance task tracker\\infrastructure\\repositories\\requestrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5B5EB631-9D5E-44D4-8E1D-EDFC9D5F6304}|..\\Application\\Application.csproj|c:\\users\\msi\\onedrive\\desktop\\maintenance task tracker\\application\\services\\categoryservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C8C9DF7A-37B2-4E92-B4CA-7717F677E4E7}|..\\Infrastructure\\Infrastructure.csproj|c:\\users\\msi\\onedrive\\desktop\\maintenance task tracker\\infrastructure\\repositories\\categoryrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5B5EB631-9D5E-44D4-8E1D-EDFC9D5F6304}|..\\Application\\Application.csproj|c:\\users\\msi\\onedrive\\desktop\\maintenance task tracker\\application\\dependencyinjection\\serviceextensions.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{844E1E8A-58B5-4372-A328-F5B9EF7CB0B3}|Api.csproj|c:\\users\\msi\\onedrive\\desktop\\maintenance task tracker\\api\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{844E1E8A-58B5-4372-A328-F5B9EF7CB0B3}|Api.csproj|solutionrelative:appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{844E1E8A-58B5-4372-A328-F5B9EF7CB0B3}|Api.csproj|c:\\users\\msi\\onedrive\\desktop\\maintenance task tracker\\api\\data\\dbinitializer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{844E1E8A-58B5-4372-A328-F5B9EF7CB0B3}|Api.csproj|solutionrelative:data\\dbinitializer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{844E1E8A-58B5-4372-A328-F5B9EF7CB0B3}|Api.csproj|c:\\users\\msi\\onedrive\\desktop\\maintenance task tracker\\api\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{844E1E8A-58B5-4372-A328-F5B9EF7CB0B3}|Api.csproj|solutionrelative:program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{844E1E8A-58B5-4372-A328-F5B9EF7CB0B3}|Api.csproj|c:\\users\\msi\\onedrive\\desktop\\maintenance task tracker\\api\\controllers\\admincontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{844E1E8A-58B5-4372-A328-F5B9EF7CB0B3}|Api.csproj|solutionrelative:controllers\\admincontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5B5EB631-9D5E-44D4-8E1D-EDFC9D5F6304}|..\\Application\\Application.csproj|c:\\users\\msi\\onedrive\\desktop\\maintenance task tracker\\application\\services\\adminservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5B5EB631-9D5E-44D4-8E1D-EDFC9D5F6304}|..\\Application\\Application.csproj|c:\\users\\msi\\onedrive\\desktop\\maintenance task tracker\\application\\services\\accountservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5B5EB631-9D5E-44D4-8E1D-EDFC9D5F6304}|..\\Application\\Application.csproj|c:\\users\\msi\\onedrive\\desktop\\maintenance task tracker\\application\\services\\servicerequestservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5B5EB631-9D5E-44D4-8E1D-EDFC9D5F6304}|..\\Application\\Application.csproj|c:\\users\\msi\\onedrive\\desktop\\maintenance task tracker\\application\\services\\userservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5B5EB631-9D5E-44D4-8E1D-EDFC9D5F6304}|..\\Application\\Application.csproj|c:\\users\\msi\\onedrive\\desktop\\maintenance task tracker\\application\\services\\tokenservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C8C9DF7A-37B2-4E92-B4CA-7717F677E4E7}|..\\Infrastructure\\Infrastructure.csproj|c:\\users\\msi\\onedrive\\desktop\\maintenance task tracker\\infrastructure\\infrastructure.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5B5EB631-9D5E-44D4-8E1D-EDFC9D5F6304}|..\\Application\\Application.csproj|c:\\users\\msi\\onedrive\\desktop\\maintenance task tracker\\application\\application.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C8C9DF7A-37B2-4E92-B4CA-7717F677E4E7}|..\\Infrastructure\\Infrastructure.csproj|c:\\users\\msi\\onedrive\\desktop\\maintenance task tracker\\infrastructure\\dependencyinjection\\repositoryserviceextensions.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 11,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "RefreshTokenRepository.cs",
+              "DocumentMoniker": "C:\\Users\\Msi\\OneDrive\\Desktop\\Maintenance Task Tracker\\Infrastructure\\Repositories\\RefreshTokenRepository.cs",
+              "RelativeDocumentMoniker": "..\\Infrastructure\\Repositories\\RefreshTokenRepository.cs",
+              "ToolTip": "C:\\Users\\Msi\\OneDrive\\Desktop\\Maintenance Task Tracker\\Infrastructure\\Repositories\\RefreshTokenRepository.cs",
+              "RelativeToolTip": "..\\Infrastructure\\Repositories\\RefreshTokenRepository.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABIAAAACAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-20T22:15:45.918Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "ServiceRequestRepository.cs",
+              "DocumentMoniker": "C:\\Users\\Msi\\OneDrive\\Desktop\\Maintenance Task Tracker\\Infrastructure\\Repositories\\ServiceRequestRepository.cs",
+              "RelativeDocumentMoniker": "..\\Infrastructure\\Repositories\\ServiceRequestRepository.cs",
+              "ToolTip": "C:\\Users\\Msi\\OneDrive\\Desktop\\Maintenance Task Tracker\\Infrastructure\\Repositories\\ServiceRequestRepository.cs",
+              "RelativeToolTip": "..\\Infrastructure\\Repositories\\ServiceRequestRepository.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-20T22:15:35.952Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "RequestRepository.cs",
+              "DocumentMoniker": "C:\\Users\\Msi\\OneDrive\\Desktop\\Maintenance Task Tracker\\Infrastructure\\Repositories\\RequestRepository.cs",
+              "RelativeDocumentMoniker": "..\\Infrastructure\\Repositories\\RequestRepository.cs",
+              "ToolTip": "C:\\Users\\Msi\\OneDrive\\Desktop\\Maintenance Task Tracker\\Infrastructure\\Repositories\\RequestRepository.cs",
+              "RelativeToolTip": "..\\Infrastructure\\Repositories\\RequestRepository.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABcAAAApAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-20T22:15:22.89Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "CategoryRepository.cs",
+              "DocumentMoniker": "C:\\Users\\Msi\\OneDrive\\Desktop\\Maintenance Task Tracker\\Infrastructure\\Repositories\\CategoryRepository.cs",
+              "RelativeDocumentMoniker": "..\\Infrastructure\\Repositories\\CategoryRepository.cs",
+              "ToolTip": "C:\\Users\\Msi\\OneDrive\\Desktop\\Maintenance Task Tracker\\Infrastructure\\Repositories\\CategoryRepository.cs",
+              "RelativeToolTip": "..\\Infrastructure\\Repositories\\CategoryRepository.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-20T18:49:54.515Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "ServiceExtensions.cs",
+              "DocumentMoniker": "C:\\Users\\Msi\\OneDrive\\Desktop\\Maintenance Task Tracker\\Application\\DependencyInjection\\ServiceExtensions.cs",
+              "RelativeDocumentMoniker": "..\\Application\\DependencyInjection\\ServiceExtensions.cs",
+              "ToolTip": "C:\\Users\\Msi\\OneDrive\\Desktop\\Maintenance Task Tracker\\Application\\DependencyInjection\\ServiceExtensions.cs",
+              "RelativeToolTip": "..\\Application\\DependencyInjection\\ServiceExtensions.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABcAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-20T18:25:54.062Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "appsettings.json",
+              "DocumentMoniker": "C:\\Users\\Msi\\OneDrive\\Desktop\\Maintenance Task Tracker\\Api\\appsettings.json",
+              "RelativeDocumentMoniker": "appsettings.json",
+              "ToolTip": "C:\\Users\\Msi\\OneDrive\\Desktop\\Maintenance Task Tracker\\Api\\appsettings.json",
+              "RelativeToolTip": "appsettings.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABMAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2026-04-20T18:25:32.276Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "DbInitializer.cs",
+              "DocumentMoniker": "C:\\Users\\Msi\\OneDrive\\Desktop\\Maintenance Task Tracker\\Api\\Data\\DbInitializer.cs",
+              "RelativeDocumentMoniker": "Data\\DbInitializer.cs",
+              "ToolTip": "C:\\Users\\Msi\\OneDrive\\Desktop\\Maintenance Task Tracker\\Api\\Data\\DbInitializer.cs",
+              "RelativeToolTip": "Data\\DbInitializer.cs",
+              "ViewState": "AgIAAB8AAAAAAAAAAAAAADAAAAAGAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-20T18:24:52.676Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "AdminController.cs",
+              "DocumentMoniker": "C:\\Users\\Msi\\OneDrive\\Desktop\\Maintenance Task Tracker\\Api\\Controllers\\AdminController.cs",
+              "RelativeDocumentMoniker": "Controllers\\AdminController.cs",
+              "ToolTip": "C:\\Users\\Msi\\OneDrive\\Desktop\\Maintenance Task Tracker\\Api\\Controllers\\AdminController.cs",
+              "RelativeToolTip": "Controllers\\AdminController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-20T18:20:47.65Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 14,
+              "Title": "UserService.cs",
+              "DocumentMoniker": "C:\\Users\\Msi\\OneDrive\\Desktop\\Maintenance Task Tracker\\Application\\Services\\UserService.cs",
+              "RelativeDocumentMoniker": "..\\Application\\Services\\UserService.cs",
+              "ToolTip": "C:\\Users\\Msi\\OneDrive\\Desktop\\Maintenance Task Tracker\\Application\\Services\\UserService.cs",
+              "RelativeToolTip": "..\\Application\\Services\\UserService.cs",
+              "ViewState": "AgIAABsAAAAAAAAAAAAowBEAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-20T18:16:02.266Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 15,
+              "Title": "TokenService.cs",
+              "DocumentMoniker": "C:\\Users\\Msi\\OneDrive\\Desktop\\Maintenance Task Tracker\\Application\\Services\\TokenService.cs",
+              "RelativeDocumentMoniker": "..\\Application\\Services\\TokenService.cs",
+              "ToolTip": "C:\\Users\\Msi\\OneDrive\\Desktop\\Maintenance Task Tracker\\Application\\Services\\TokenService.cs",
+              "RelativeToolTip": "..\\Application\\Services\\TokenService.cs",
+              "ViewState": "AgIAABUAAAAAAAAAAAAgwHAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-20T18:15:14.435Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 13,
+              "Title": "ServiceRequestService.cs",
+              "DocumentMoniker": "C:\\Users\\Msi\\OneDrive\\Desktop\\Maintenance Task Tracker\\Application\\Services\\ServiceRequestService.cs",
+              "RelativeDocumentMoniker": "..\\Application\\Services\\ServiceRequestService.cs",
+              "ToolTip": "C:\\Users\\Msi\\OneDrive\\Desktop\\Maintenance Task Tracker\\Application\\Services\\ServiceRequestService.cs",
+              "RelativeToolTip": "..\\Application\\Services\\ServiceRequestService.cs",
+              "ViewState": "AgIAABEAAAAAAAAAAIAwwB4AAAAUAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-20T18:14:21.845Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "RequestService.cs",
+              "DocumentMoniker": "C:\\Users\\Msi\\OneDrive\\Desktop\\Maintenance Task Tracker\\Application\\Services\\RequestService.cs",
+              "RelativeDocumentMoniker": "..\\Application\\Services\\RequestService.cs",
+              "ToolTip": "C:\\Users\\Msi\\OneDrive\\Desktop\\Maintenance Task Tracker\\Application\\Services\\RequestService.cs",
+              "RelativeToolTip": "..\\Application\\Services\\RequestService.cs",
+              "ViewState": "AgIAAHoAAAAAAAAAAAAwwIcAAAADAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-20T18:11:26.154Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "CategoryService.cs",
+              "DocumentMoniker": "C:\\Users\\Msi\\OneDrive\\Desktop\\Maintenance Task Tracker\\Application\\Services\\CategoryService.cs",
+              "RelativeDocumentMoniker": "..\\Application\\Services\\CategoryService.cs",
+              "ToolTip": "C:\\Users\\Msi\\OneDrive\\Desktop\\Maintenance Task Tracker\\Application\\Services\\CategoryService.cs",
+              "RelativeToolTip": "..\\Application\\Services\\CategoryService.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAFcAAABbAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-20T18:10:16.264Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "AdminService.cs",
+              "DocumentMoniker": "C:\\Users\\Msi\\OneDrive\\Desktop\\Maintenance Task Tracker\\Application\\Services\\AdminService.cs",
+              "RelativeDocumentMoniker": "..\\Application\\Services\\AdminService.cs",
+              "ToolTip": "C:\\Users\\Msi\\OneDrive\\Desktop\\Maintenance Task Tracker\\Application\\Services\\AdminService.cs",
+              "RelativeToolTip": "..\\Application\\Services\\AdminService.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAAeAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-20T18:10:07.658Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "AccountService.cs",
+              "DocumentMoniker": "C:\\Users\\Msi\\OneDrive\\Desktop\\Maintenance Task Tracker\\Application\\Services\\AccountService.cs",
+              "RelativeDocumentMoniker": "..\\Application\\Services\\AccountService.cs",
+              "ToolTip": "C:\\Users\\Msi\\OneDrive\\Desktop\\Maintenance Task Tracker\\Application\\Services\\AccountService.cs",
+              "RelativeToolTip": "..\\Application\\Services\\AccountService.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAYwBUAAAAeAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-20T18:09:54.743Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 16,
+              "Title": "Infrastructure",
+              "DocumentMoniker": "C:\\Users\\Msi\\OneDrive\\Desktop\\Maintenance Task Tracker\\Infrastructure\\Infrastructure.csproj",
+              "RelativeDocumentMoniker": "..\\Infrastructure\\Infrastructure.csproj",
+              "ToolTip": "C:\\Users\\Msi\\OneDrive\\Desktop\\Maintenance Task Tracker\\Infrastructure\\Infrastructure.csproj",
+              "RelativeToolTip": "..\\Infrastructure\\Infrastructure.csproj",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABwAAAAKAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2026-04-20T18:07:37.623Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 17,
+              "Title": "Application",
+              "DocumentMoniker": "C:\\Users\\Msi\\OneDrive\\Desktop\\Maintenance Task Tracker\\Application\\Application.csproj",
+              "RelativeDocumentMoniker": "..\\Application\\Application.csproj",
+              "ToolTip": "C:\\Users\\Msi\\OneDrive\\Desktop\\Maintenance Task Tracker\\Application\\Application.csproj",
+              "RelativeToolTip": "..\\Application\\Application.csproj",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABIAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2026-04-20T18:07:33.341Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 18,
+              "Title": "RepositoryServiceExtensions.cs",
+              "DocumentMoniker": "C:\\Users\\Msi\\OneDrive\\Desktop\\Maintenance Task Tracker\\Infrastructure\\DependencyInjection\\RepositoryServiceExtensions.cs",
+              "RelativeDocumentMoniker": "..\\Infrastructure\\DependencyInjection\\RepositoryServiceExtensions.cs",
+              "ToolTip": "C:\\Users\\Msi\\OneDrive\\Desktop\\Maintenance Task Tracker\\Infrastructure\\DependencyInjection\\RepositoryServiceExtensions.cs",
+              "RelativeToolTip": "..\\Infrastructure\\DependencyInjection\\RepositoryServiceExtensions.cs",
+              "ViewState": "AgIAAAYAAAAAAAAAAAAAACoAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-20T17:59:24.705Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\Msi\\OneDrive\\Desktop\\Maintenance Task Tracker\\Api\\Program.cs",
+              "RelativeDocumentMoniker": "Program.cs",
+              "ToolTip": "C:\\Users\\Msi\\OneDrive\\Desktop\\Maintenance Task Tracker\\Api\\Program.cs",
+              "RelativeToolTip": "Program.cs",
+              "ViewState": "AgIAACoAAAAAAAAAAAAwwEcAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-20T17:57:43.872Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

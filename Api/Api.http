@@ -1,0 +1,25 @@
+@Api_HostAddress = http://localhost:5143
+
+###
+GET {{Api_HostAddress}}/api/Admin/Users?roleId=3&pageNumber=1&pageSize=10
+Accept: application/json
+
+###
+GET {{Api_HostAddress}}/api/ServiceRequest/Services?pageNumber=1&pageSize=10
+Accept: application/json
+
+###
+GET {{Api_HostAddress}}/api/Category/GetAllCategories
+Accept: application/json
+
+###
+GET {{Api_HostAddress}}/api/Category/GetTopThreeCategories
+Accept: application/json
+
+###
+GET {{Api_HostAddress}}/api/Request/recentActivity
+Accept: application/json
+
+###
+GET {{Api_HostAddress}}/api/Request/GetAllRequest?categoryId=4&pageNumber=1&pageSize=10
+Accept: application/json

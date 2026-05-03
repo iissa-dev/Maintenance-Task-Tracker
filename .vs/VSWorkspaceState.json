@@ -1,0 +1,13 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\Application",
+    "\\Application\\Features",
+    "\\Application\\Features\\Admin",
+    "\\Application\\Features\\Admin\\Commands",
+    "\\Domain",
+    "\\Domain\\Entities"
+  ],
+  "SelectedNode": "\\Application\\Features\\Admin\\Commands\\AdminServiceCommand.cs",
+  "PreviewInSolutionExplorer": false
+}
