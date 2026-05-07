@@ -1,9 +1,8 @@
-import {useState} from "react";
-import ServiceCard from "../features/serviceRequest/components/ServiceCard";
-import Sidebar from "../layouts/Sidebar";
-import ServiceHandled from "../features/serviceRequest/components/HandleServiceRequest";
-
-import Header from "../layouts/Header.tsx";
+import { useState } from "react";
+import Header from "../../../layouts/Header";
+import ServiceCard from "../components/ServiceCard";
+import ServiceHandled from "../components/HandleServiceRequest"
+import Sidebar from "../../../layouts/Sidebar";
 
 function ServiceManagement() {
     const [isOpenForm, setIsOpenForm] = useState(false);

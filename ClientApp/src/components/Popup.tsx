@@ -3,10 +3,10 @@ import {
     faXmark,
     faTriangleExclamation,
 } from "@fortawesome/free-solid-svg-icons";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {useState} from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useState } from "react";
 import "./Popup.css";
-import {createPortal} from "react-dom";
+import { createPortal } from "react-dom";
 
 export const PopupType = {
     INFO: "info",
@@ -27,12 +27,12 @@ type PopupState = {
 };
 
 function handleTypeIcon(type: PopupTypeValue) {
-    if (type === PopupType.INFO) return <FontAwesomeIcon icon={faCircleInfo}/>;
+    if (type === PopupType.INFO) return <FontAwesomeIcon icon={faCircleInfo} />;
 
     if (type === PopupType.WARNING)
-        return <FontAwesomeIcon icon={faTriangleExclamation}/>;
+        return <FontAwesomeIcon icon={faTriangleExclamation} />;
 
-    if (type === PopupType.DANGER) return <FontAwesomeIcon icon={faXmark}/>;
+    if (type === PopupType.DANGER) return <FontAwesomeIcon icon={faXmark} />;
 
     return null;
 }
@@ -42,13 +42,13 @@ export function usePopup() {
 
     const confirm = (message: string, title: string, type: PopupTypeValue): Promise<boolean> => {
         return new Promise<boolean>((resolve) => {
-            setState({message, title, type, resolve, mode: "confirm"});
+            setState({ message, title, type, resolve, mode: "confirm" });
         });
     };
 
     const alert = (message: string, title: string, type: PopupTypeValue): Promise<boolean> => {
         return new Promise<boolean>((resolve) => {
-            setState({message, title, type, resolve, mode: "alert"});
+            setState({ message, title, type, resolve, mode: "alert" });
         });
     };
 
@@ -67,7 +67,7 @@ export function usePopup() {
         return createPortal(
             <>
                 <div className="fixed inset-0 bg-background/80 backdrop-blur-sm z-2000"
-                     onClick={() => handle(false)}/>
+                    onClick={() => handle(false)} />
 
                 <div className="fixed inset-0 flex justify-center items-center z-2001 pointer-events-none p-4">
                     <div
@@ -98,11 +98,10 @@ export function usePopup() {
 
                             <button
                                 onClick={() => handle(true)}
-                                className={`flex-1 px-4 py-2.5 rounded-xl font-bold text-sm shadow-lg transition-all ${
-                                    state.type === "danger"
+                                className={`flex-1 px-4 py-2.5 rounded-xl font-bold text-sm shadow-lg transition-all ${state.type === "danger"
                                         ? "bg-danger text-white shadow-danger/20 hover:bg-danger/90"
                                         : "bg-primary text-white shadow-primary/20 hover:bg-primary/90"
-                                }`}
+                                    }`}
                             >
                                 {state.mode === "confirm" ? "Confirm" : "Understood"}
                             </button>
@@ -114,5 +113,5 @@ export function usePopup() {
         );
     };
 
-    return {confirm, alert, Modal};
+    return { confirm, alert, Modal };
 }

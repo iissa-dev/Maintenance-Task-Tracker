@@ -1,13 +1,13 @@
-import React, {useState} from "react";
-import Table from "../components/Table";
-import Sidebar from "../layouts/Sidebar";
-import type {UpdateUserDto} from "../types";
-import {ThreeDot} from "react-loading-indicators";
-import {PopupType, usePopup} from "../components/Popup.tsx";
-import {HandleUser} from "../features/users/components/HandleUser.tsx";
-import {useDeleteUser, useUsers} from "../features/users/api/user.mutation.ts";
-import {Search, Filter} from "lucide-react"; 
-import Header from "../layouts/Header.tsx";
+import { Filter, Search } from "lucide-react";
+import { useState } from "react";
+import { ThreeDot } from "react-loading-indicators";
+import { usePopup, PopupType } from "../../../components/Popup";
+import Header from "../../../layouts/Header";
+import type { UpdateUserDto } from "../../../types";
+import { useDeleteUser, useUsers } from "../api/user.mutation";
+import { HandleUser } from "../components/HandleUser";
+import Table from "../../../components/Table";
+import Sidebar from "../../../layouts/Sidebar";
 
 type FormState =
     | { Mode: "Add"; id: null; data: null }

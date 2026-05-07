@@ -10,7 +10,7 @@ type FormValues = {
 
 export const useRequestForm = <M extends "Add" | "Edit">(
     isOpen: boolean,
-    mode: "Add" | "Edit",
+    mode: M,
     data?: null | UpdateRequestDto | undefined,
     serviceId?: number,
     categoryId?: number

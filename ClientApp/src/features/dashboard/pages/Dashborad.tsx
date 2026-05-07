@@ -1,5 +1,5 @@
-import Sidebar from "../layouts/Sidebar";
-import DashboardContainer from "../components/DdashboradContainer";
+import Sidebar from "../../../layouts/Sidebar";
+import DashboardContainer from "../../../features/dashboard/components/DdashboradContainer";
 
 function Dashboard() {
     return (

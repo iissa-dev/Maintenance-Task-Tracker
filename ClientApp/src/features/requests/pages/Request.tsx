@@ -1,13 +1,12 @@
-import {useCallback, useState} from "react";
-import Sidebar from "../layouts/Sidebar";
-import "./Request.css";
-import {PopupType, usePopup} from "../components/Popup";
-import {ThreeDot} from "react-loading-indicators";
-import Header from "../layouts/Header.tsx";
-import RequestCard from "../features/requests/components/RequestCard.tsx";
-import {useAssignToEmployee, useDeleteRequest, useRequests} from "../features/requests/api/request.mutations.ts";
-import {useUsers} from "../features/users/api/user.mutation.ts";
-
+import { useCallback, useState } from "react";
+import { PopupType, usePopup } from "../../../components/Popup";
+import { useAssignToEmployee, useDeleteRequest, useRequests } from "../api/request.mutations";
+import { useUsers } from "../../users/api/user.mutation";
+import { ThreeDot } from "react-loading-indicators";
+import Header from "../../../layouts/Header";
+import RequestCard from "../components/RequestCard";
+import "./Request.css"
+import Sidebar from "../../../layouts/Sidebar";
 
 function Request() {
     const [pageNumber, setPageNumber] = useState(1);

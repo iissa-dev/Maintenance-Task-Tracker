@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import {
   BarChart,
   Bar,
@@ -8,30 +7,10 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
-import type { CategoryWithRequestCountDto } from "../types";
-import { categoryService } from "../services/categoryService";
+import { useTopThreeCategories } from "../api/dashboard.mutations";
 
 function DashboardChart() {
-  const [categories, setCategories] = useState<CategoryWithRequestCountDto[]>(
-    [],
-  );
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const res = await categoryService.getTopThreeCategories();
-        if (res.isSuccess) {
-          setCategories(res.data || []);
-        } else {
-          console.error(res);
-        }
-      } catch (err) {
-        console.error(err);
-      } 
-    };
-
-    fetchData();
-  }, []);
+  const { categories } = useTopThreeCategories();
 
   const chartData = categories.map((c) => ({
     name: c.name,
