@@ -6,9 +6,10 @@ import {
 import type {RegisterDto} from "../types";
 import React, {useState} from "react";
 import {useAuth} from "../hooks/useAuth";
-import {PopupType, usePopup} from "../components/Popup";
+import { usePopup} from "../components/Popup";
 import {ArrowLeft, ArrowRight} from "lucide-react";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import { PopupType } from "../types/popup.types";
 
 const INPUTS = [
     {

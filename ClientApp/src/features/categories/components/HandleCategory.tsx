@@ -7,11 +7,12 @@ import { INPUTS } from "../utils/category.constants";
 type BaseProps = {
   isOpen: boolean;
   onClose: () => void;
+  data?: CategoryDto | null;
 };
 
 type Props =
-  | ({ Mode: "Add"; data?: null } & BaseProps)
-  | ({ Mode: "Edit"; data: CategoryDto } & BaseProps);
+  | ({ Mode: "Add"; } & BaseProps)
+  | ({ Mode: "Edit"; } & BaseProps);
 
 const HandleCategory = ({ isOpen, onClose, Mode, data }: Props) => {
   const { alert, Modal } = usePopup();
@@ -26,7 +27,7 @@ const HandleCategory = ({ isOpen, onClose, Mode, data }: Props) => {
     if (Mode === "Add") {
       addCategoryMutation.mutate(formValue.category.name);
     } else {
-      updateCategoryMutaion.mutate({id: data.id, name: formValue.category.name})
+      updateCategoryMutaion.mutate({id: data?.id ?? 0, name: formValue.category.name})
     }
   });
 
@@ -60,7 +61,7 @@ const HandleCategory = ({ isOpen, onClose, Mode, data }: Props) => {
                   {input.placeholder}
                 </label>
                 <input
-                  {...register(input.name === "name" ? "category.name": input.name as any , { required: true })}
+                  {...register(input.name === "name" ? "category.name": input.name , { required: true })}
                   type={input.type}
                   id={input.id}
                   placeholder={`Enter ${input.placeholder.toLocaleLowerCase()}...`}

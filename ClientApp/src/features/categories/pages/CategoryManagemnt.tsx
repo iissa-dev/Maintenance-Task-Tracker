@@ -4,8 +4,9 @@ import Header from "../../../layouts/Header";
 import Sidebar from "../../../layouts/Sidebar";
 import HandleCategory from "../components/HandleCategory";
 import { useState } from "react";
-import { PopupType, usePopup } from "../../../components/Popup";
+import {  usePopup } from "../../../components/Popup";
 import type { CategoryDto } from "../../../types";
+import { PopupType } from "../../../types/popup.types";
 
 function CategoryManagemnt() {
   const { confirm, alert, Modal } = usePopup();
@@ -16,11 +17,10 @@ function CategoryManagemnt() {
       name: category.name,
     })) ?? [];
 
-  const [categoryModal, setCategoryModal] = useState<{
-    isOpen: boolean;
-    mode: "Add" | "Edit";
-    data?: CategoryDto;
-  }>({ isOpen: false, mode: "Add" });
+const [categoryModal, setCategoryModal] = useState<
+  | { isOpen: boolean; mode: "Add"; data?: null }
+  | { isOpen: boolean; mode: "Edit"; data: CategoryDto }
+>({ isOpen: false, mode: "Add" });
 
   const deleteCategoryMutation = useDeleteCategory({alert});
 
@@ -48,7 +48,7 @@ function CategoryManagemnt() {
         isOpen={categoryModal.isOpen}
         onClose={() => setCategoryModal(prev=> ({...prev, isOpen: false}))}
         Mode={categoryModal.mode}
-        data={categoryModal.data as any}
+        data={categoryModal.data ?? null}
       />
 
       <div className="p-8 flex-1 flex flex-col max-w-400 mx-auto w-full">

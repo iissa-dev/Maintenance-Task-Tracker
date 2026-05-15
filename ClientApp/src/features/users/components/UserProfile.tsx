@@ -67,6 +67,7 @@ const UserProfile = () => {
     : [];
 
     const handleEdit = () => {
+      if(!user) return;
       setUpdateUserData(prepareUserDataForEdit(user));
       setIsOpenEditForm(true);
     } 

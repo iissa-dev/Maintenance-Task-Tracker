@@ -1,14 +1,15 @@
 import { Filter, Search } from "lucide-react";
 import { useState } from "react";
-import { usePopup, PopupType } from "../../../components/Popup";
+import { usePopup } from "../../../components/Popup";
 import Header from "../../../layouts/Header";
-import type { UpdateUserDto } from "../../../types";
+import type { UpdateUserDto, UserResponseDto } from "../../../types";
 import { useDeleteUser, useUsers } from "../api/user.mutation";
 import { HandleUser } from "../components/HandleUser";
 import Table from "../../../components/Table";
 import Sidebar from "../../../layouts/Sidebar";
 import { LoadingScreen } from "../../../utils/LoadingScreen";
 import { prepareUserDataForEdit } from "../utils/userHelpers";
+import { PopupType } from "../../../types/popup.types";
 
 type FormState =
   | { Mode: "Add"; id: null; data: null }
@@ -72,7 +73,7 @@ function UserManagement() {
     await alert("User deleted successfully.", "Delete", PopupType.INFO);
   };
 
-  const handleOpenEdit = (row: any) => {
+  const handleOpenEdit = (row: UserResponseDto) => {
     setFormState({
       Mode: "Edit",
       id: row.id,

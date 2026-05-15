@@ -82,7 +82,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [queryClient]);
 
   const logout = useCallback(async () => {
     try {
@@ -93,7 +93,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       setUser(null);
       setAuthToken(null);
     }
-  }, []);
+  }, [queryClient]);
 
   const register = useCallback(async (data: RegisterDto): Promise<Result> => {
     try {

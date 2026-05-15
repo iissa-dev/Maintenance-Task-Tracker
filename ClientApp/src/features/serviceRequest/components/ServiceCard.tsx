@@ -1,173 +1,178 @@
-import {useState} from "react";
+import { useState } from "react";
 import ServiceHandled from "./HandleServiceRequest";
-import type { ServiceRequestResponseDto} from "../../../types";
-import {PopupType, usePopup} from "../../../components/Popup";
-import {useAuth} from "../../../hooks/useAuth";
-import {useDeleteServiceReqeust, useServices} from "../api/serviceRequest.mutation";
-import {useCategory} from "../../categories/api/category.mutaions.ts";
+import type { ServiceRequestResponseDto } from "../../../types";
+import { usePopup } from "../../../components/Popup";
+import { useAuth } from "../../../hooks/useAuth";
+import {
+  useDeleteServiceReqeust,
+  useServices,
+} from "../api/serviceRequest.mutation";
+import { useCategory } from "../../categories/api/category.mutaions.ts";
 import HandleRequest from "../../requests/components/HandleRequest.tsx";
 import { LoadingScreen } from "../../../utils/LoadingScreen.tsx";
+import { PopupType } from "../../../types/popup.types.ts";
 
 function ServiceCard() {
-    const pageSize = 6;
-    const {confirm, alert, Modal} = usePopup();
-    const [pageNumber, setPageNumber] = useState(1);
-    const {authToken} = useAuth();
-    const role = authToken?.role;
-    const [categoryId, setCategoryId] = useState<number | null>(null);
-    const [isOpenForm, setIsOpenForm] = useState(false);
-    const [selectedService, setSelectedService] =
-        useState<ServiceRequestResponseDto | null>(null);
-    const [isRequestFormOpen, setIsRequestFormOpen] = useState(false);
+  const pageSize = 6;
+  const { confirm, alert, Modal } = usePopup();
+  const [pageNumber, setPageNumber] = useState(1);
+  const { authToken } = useAuth();
+  const role = authToken?.role;
+  const [categoryId, setCategoryId] = useState<number | null>(null);
+  const [isOpenForm, setIsOpenForm] = useState(false);
+  const [selectedService, setSelectedService] =
+    useState<ServiceRequestResponseDto | null>(null);
+  const [isRequestFormOpen, setIsRequestFormOpen] = useState(false);
 
-    const {services, totalPages, isLoading, isFetching} = useServices({pageNumber, pageSize, categoryId});
+  const { services, totalPages, isLoading, isFetching } = useServices({
+    pageNumber,
+    pageSize,
+    categoryId,
+  });
 
-    const categories = useCategory();
+  const categories = useCategory();
 
+  const deleteMutation = useDeleteServiceReqeust({ alert });
 
-    const deleteMutation = useDeleteServiceReqeust({alert});
+  if (isLoading) {
+    return <LoadingScreen />;
+  }
+  const goNext = () => {
+    if (!isFetching && pageNumber < totalPages)
+      setPageNumber((prev) => prev + 1);
+  };
 
-    if (isLoading) {
-        return <LoadingScreen/>
-    }
-    const goNext = () => {
-        if (!isFetching && pageNumber < totalPages)
-            setPageNumber((prev) => prev + 1);
-    };
+  const handleDelete = async (id: number) => {
+    const ok = await confirm(
+      "Are you sure you want to delete this Service? ",
+      "Delete",
+      PopupType.WARNING,
+    );
+    if (!ok) return;
 
-    const handleDelete = async (id: number) => {
-        const ok = await confirm(
-            "Are you sure you want to delete this Service? ",
-            "Delete",
-            PopupType.WARNING,
-        );
-        if (!ok) return;
+    deleteMutation.mutate(id);
+  };
 
-        deleteMutation.mutate(id);
-    };
+  return (
+    <>
+      {selectedService && (
+        <ServiceHandled
+          onClose={() => setIsOpenForm(false)}
+          isOpen={isOpenForm}
+          Mode="Edit"
+          data={selectedService}
+        />
+      )}
 
-    return (
-        <>
-            {selectedService && (
-                <ServiceHandled
-                    onClose={() => setIsOpenForm(false)}
-                    isOpen={isOpenForm}
-                    Mode="Edit"
-                    data={selectedService}
-                />
-            )}
+      <HandleRequest
+        Mode={"Add"}
+        isOpen={isRequestFormOpen}
+        onClose={() => setIsRequestFormOpen(false)}
+        serviceId={selectedService?.serviceId}
+        categoryId={selectedService?.categoryDto.id}
+      />
 
-            <HandleRequest
-                Mode={"Add"}
-                isOpen={isRequestFormOpen}
-                onClose={() => setIsRequestFormOpen(false)}
-                serviceId={selectedService?.serviceId}
-                categoryId={selectedService?.categoryDto.id}
+      <div>
+        <div className="mb-10 flex justify-between items-center">
+          <div>
+            <label htmlFor="category">Categories</label>
+            <select
+              className="ml-3"
+              id="category"
+              onChange={(e) => {
+                const value = Number(e.target.value);
+                setCategoryId(value === 0 ? null : value);
+              }}
+              value={categoryId ?? 0}
+            >
+              <option value={0} className="bg-background">
+                All
+              </option>
+              {categories &&
+                categories.map((category) => (
+                  <option
+                    key={category.id}
+                    value={category.id}
+                    className="bg-background"
+                  >
+                    {category.name}
+                  </option>
+                ))}
+            </select>
+          </div>
+          <div className="flex gap-2.5">
+            <input
+              className="btn-ghost cursor-pointer"
+              type="button"
+              value="Prev"
+              onClick={() => setPageNumber((prev) => Math.max(prev - 1, 1))}
             />
+            <input
+              className="btn-ghost cursor-pointer"
+              type="button"
+              value="Next"
+              disabled={isFetching || pageNumber === totalPages}
+              onClick={goNext}
+            />
+          </div>
+        </div>
 
-            <div>
-                <div className="mb-10 flex justify-between items-center">
-                    <div>
-                        <label htmlFor="category">Categories</label>
-                        <select
-                            className="ml-3"
-                            id="category"
-                            onChange={(e) => {
-                                const value = Number(e.target.value);
-                                setCategoryId(value === 0 ? null : value);
-                            }}
-                            value={categoryId ?? 0}
-                        >
-                            <option value={0} className="bg-background">
-                                All
-                            </option>
-                            {categories &&
-                                categories.map((category) => (
-                                    <option
-                                        key={category.id}
-                                        value={category.id}
-                                        className="bg-background"
-                                    >
-                                        {category.name}
-                                    </option>
-                                ))}
-                        </select>
-                    </div>
-                    <div className="flex gap-2.5">
-                        <input
-                            className="btn-ghost cursor-pointer"
-                            type="button"
-                            value="Prev"
-                            onClick={() => setPageNumber((prev) => Math.max(prev - 1, 1))}
-                        />
-                        <input
-                            className="btn-ghost cursor-pointer"
-                            type="button"
-                            value="Next"
-                            disabled={isFetching || pageNumber === totalPages}
-                            onClick={goNext}
-                        />
-                    </div>
-                </div>
-
-                <div className="grid gap-2.5 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-                    {services &&
-                        services.map((service) => (
-                            <div
-                                key={service.serviceId}
-                                className="p-5 bg-card rounded-md relative neon-border"
-                            >
+        <div className="grid gap-2.5 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+          {services &&
+            services.map((service) => (
+              <div
+                key={service.serviceId}
+                className="p-5 bg-card rounded-md relative neon-border"
+              >
                 <span className="text-xs absolute top-2 right-2">
                   {service.categoryDto.name}
                 </span>
-                                <p className="my-2 text-2xl text-soft">{service.name}</p>
-                                <p className="my-2">{service.description}</p>
-                                <p className="my-2">
-                                    <span>Price: </span>
-                                    {service.price}
-                                    <span>$</span>
-                                </p>
-                                <hr className="text-soft mb-6"/>
-                                <div className="flex justify-end gap-2">
-                                    {role === "Admin" ? (
-                                        <>
-                                            <input
-                                                className="text-[14px] btn-ghost cursor-pointer"
-                                                type="button"
-                                                value="Edit"
-                                                onClick={() => {
-                                                    setSelectedService(service);
-                                                    setIsOpenForm(true);
-                                                }}
-                                            />
-                                            <input
-                                                className="text-[14px] btn-danger cursor-pointer"
-                                                type="button"
-                                                value="Delete"
-                                                onClick={() => handleDelete(service.serviceId)}
-                                            />
-                                        </>
-                                    ) : (
-                                        <input
-                                            className="text-[14px] btn-secondary cursor-pointer"
-                                            type="button"
-                                            value="Request"
-                                            onClick={() => {
-                                                setSelectedService(service);
-                                                setIsRequestFormOpen(true);
-
-                                            }
-                                            }
-                                        />
-                                    )}
-                                </div>
-                            </div>
-                        ))}
+                <p className="my-2 text-2xl text-soft">{service.name}</p>
+                <p className="my-2">{service.description}</p>
+                <p className="my-2">
+                  <span>Price: </span>
+                  {service.price}
+                  <span>$</span>
+                </p>
+                <hr className="text-soft mb-6" />
+                <div className="flex justify-end gap-2">
+                  {role === "Admin" ? (
+                    <>
+                      <input
+                        className="text-[14px] btn-ghost cursor-pointer"
+                        type="button"
+                        value="Edit"
+                        onClick={() => {
+                          setSelectedService(service);
+                          setIsOpenForm(true);
+                        }}
+                      />
+                      <input
+                        className="text-[14px] btn-danger cursor-pointer"
+                        type="button"
+                        value="Delete"
+                        onClick={() => handleDelete(service.serviceId)}
+                      />
+                    </>
+                  ) : (
+                    <input
+                      className="text-[14px] btn-secondary cursor-pointer"
+                      type="button"
+                      value="Request"
+                      onClick={() => {
+                        setSelectedService(service);
+                        setIsRequestFormOpen(true);
+                      }}
+                    />
+                  )}
                 </div>
-            </div>
-            <Modal/>
-        </>
-    );
+              </div>
+            ))}
+        </div>
+      </div>
+      <Modal />
+    </>
+  );
 }
 
 export default ServiceCard;

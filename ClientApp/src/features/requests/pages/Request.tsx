@@ -1,5 +1,5 @@
 import { useCallback, useState } from "react";
-import { PopupType, usePopup } from "../../../components/Popup";
+import { usePopup } from "../../../components/Popup";
 import {
   useAssignToEmployee,
   useDeleteRequest,
@@ -11,6 +11,7 @@ import RequestCard from "../components/RequestCard";
 import "./Request.css";
 import Sidebar from "../../../layouts/Sidebar";
 import { LoadingScreen } from "../../../utils/LoadingScreen";
+import { PopupType } from "../../../types/popup.types";
 
 function Request() {
   const [pageNumber, setPageNumber] = useState(1);
@@ -37,7 +38,7 @@ function Request() {
       );
       if (!ok) return;
 
-      var deleted = await deleteRequest.mutateAsync(id);
+      const deleted = await deleteRequest.mutateAsync(id);
       if(deleted.isSuccess)
       {
          await alert("Request deleted successfully.", "Delete", PopupType.INFO);

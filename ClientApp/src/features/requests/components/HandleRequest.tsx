@@ -1,7 +1,8 @@
-import {PopupType, usePopup} from "../../../components/Popup";
+import { usePopup} from "../../../components/Popup";
 import {useRequestForm} from "../hooks/useRequestForm";
 import {useAddRequest, useEditRequest} from "../api/request.mutations";
 import type { UpdateRequestDto} from "../../../types";
+import { PopupType } from "../../../types/popup.types";
 
 type BaseProps = {
     isOpen: boolean;

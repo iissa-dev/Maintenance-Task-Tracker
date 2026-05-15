@@ -7,24 +7,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
 import "./Popup.css";
 import { createPortal } from "react-dom";
-
-export const PopupType = {
-    INFO: "info",
-    DANGER: "danger",
-    WARNING: "warning",
-} as const;
-
-export type PopupTypeValue = (typeof PopupType)[keyof typeof PopupType];
-
-type Mode = "confirm" | "alert";
-
-type PopupState = {
-    message: string;
-    title: string;
-    type: PopupTypeValue;
-    resolve: (value: boolean) => void;
-    mode: Mode;
-};
+import  {type PopupState, type PopupTypeValue, PopupType } from "../types/popup.types";
 
 function handleTypeIcon(type: PopupTypeValue) {
     if (type === PopupType.INFO) return <FontAwesomeIcon icon={faCircleInfo} />;

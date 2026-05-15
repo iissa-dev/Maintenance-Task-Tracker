@@ -1,4 +1,6 @@
-export const prepareUserDataForEdit = (user: any) => {
+import type { UserResponseDto } from "../../../types";
+
+export const prepareUserDataForEdit = (user: UserResponseDto) => {
   const [firstName, ...rest] = user?.fullName?.split(" ") ?? [];
   return {
     firstName,

@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import type { Result } from "../types";
-import { PopupType, type PopupTypeValue } from "../components/Popup";
+import  {type PopupTypeValue, PopupType } from "../types/popup.types";
 
 export type alertType = {
   alert: (
@@ -26,7 +26,7 @@ export const useGenericMutation = <TData, TResponse>(
       if(onSuccessCallback) onSuccessCallback();
       await alert(onSuccessMessage, "Success", PopupType.INFO);
     },
-    onError: async (error: any) => {
+    onError: async (error: Error) => {
       await alert(
         error.message || "Something went wrong",
         "Error",

@@ -2,8 +2,9 @@ import {useState} from "react";
 import {useAuth} from "../hooks/useAuth";
 import type {LoginDto} from "../types";
 import {useNavigate} from "react-router-dom";
-import {PopupType, usePopup} from "../components/Popup";
+import { usePopup} from "../components/Popup";
 import {User, Lock, Eye, EyeOff} from "lucide-react";
+import { PopupType } from "../types/popup.types";
 
 type Params = {
     onSignupClick: () => void;

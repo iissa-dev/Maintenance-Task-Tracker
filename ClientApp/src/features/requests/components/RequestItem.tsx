@@ -4,8 +4,9 @@ import {
   type RequestItemProps,
 } from "../utils/request.constants.ts";
 import { Calendar, LayersPlus, Tag, Trash2, User } from "lucide-react";
-import { PopupType, usePopup } from "../../../components/Popup.tsx";
+import { usePopup } from "../../../components/Popup.tsx";
 import { useUpdateStatusRequest } from "../api/request.mutations.ts";
+import { PopupType } from "../../../types/popup.types.ts";
 
 const RequestItem = React.memo(
   ({
