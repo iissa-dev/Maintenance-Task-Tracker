@@ -1,113 +1,91 @@
-import {PopupType, type PopupTypeValue} from "../../../components/Popup";
-import type {AddUserDto, Result, UpdateUserDto} from "../../../types";
-import {useMutation, useQuery, useQueryClient, keepPreviousData} from "@tanstack/react-query";
-import {userService} from "../../../services/userService";
+import type { AddUserDto, UpdateUserDto } from "../../../types";
+import {
+  useQuery,
+  keepPreviousData,
+} from "@tanstack/react-query";
+import { userService } from "../../../services/userService";
+import { handleResponse } from "../../../utils/handleResponse";
+import { useGenericMutation, type alertType } from "../../../utils/mutationFactory";
 
-type Props = {
-    onClose?: () => void;
-    alert: (
-        message: string,
-        title: string,
-        type: PopupTypeValue,
-    ) => Promise<boolean>;
-};
-const handleResponse = async <T>(
-    promise: Promise<Result<T>>,
-): Promise<Result<T>> => {
-    const res = await promise;
-    if (!res.isSuccess) throw new Error(res.message);
-    return res;
+type userProps = {
+  PageNumber: number;
+  PageSize: number;
+  role: number;
+  appliedSearch?: string;
 };
 
-type userProps =
-    {
-        PageNumber: number;
-        PageSize: number;
-        role: number;
-        appliedSearch?: string;
-    }
+export const useUsers = ({
+  PageNumber,
+  PageSize,
+  role,
+  appliedSearch,
+}: userProps) => {
+  const { data, isLoading, isPlaceholderData } = useQuery({
+    queryKey: ["users", appliedSearch, PageNumber, role],
+    queryFn: () =>
+      userService.users({
+        PageNumber,
+        PageSize,
+        role,
+        searchByUserName: appliedSearch,
+      }),
+    placeholderData: keepPreviousData,
+    staleTime: 1000 * 60 * 5,
+  });
 
-export const useUsers = ({PageNumber, PageSize, role, appliedSearch}: userProps) => {
-    const {data, isLoading, isPlaceholderData} = useQuery({
-        queryKey: ["users", appliedSearch, PageNumber, role],
-        queryFn: () =>
-            userService.users({
-                PageNumber,
-                PageSize,
-                role,
-                searchByUserName: appliedSearch,
-            }),
-        placeholderData: keepPreviousData,
-        staleTime: 1000 * 60 * 5,
-    });
-
-    return {users: data?.data?.items ?? [], totalCount: data?.data?.totalPages ?? 0, isLoading, isPlaceholderData};
-}
-
-export const useUpdateUser = ({onClose, alert}: Props) => {
-    const queryClient = useQueryClient();
-
-    return useMutation({
-        mutationFn: async ({id, data}: { id: number; data: UpdateUserDto }) =>
-            handleResponse(userService.updateUser(id, data)),
-
-        onSuccess: () => {
-            queryClient.invalidateQueries({queryKey: ["users"]});
-            queryClient.invalidateQueries({queryKey: ["user-profile"]});
-            onClose?.();
-        },
-
-        onError: async (error: Error) => {
-            await alert(error.message, "Error", PopupType.WARNING);
-        },
-    });
+  return {
+    users: data?.data?.items ?? [],
+    totalCount: data?.data?.totalPages ?? 0,
+    isLoading,
+    isPlaceholderData,
+  };
 };
 
-export const useAddUser = ({onClose, alert}: Props) => {
-    const queryClient = useQueryClient();
-
-    return useMutation({
-        mutationFn: async (data: AddUserDto) =>
-            handleResponse(userService.addNewEmployee(data)),
-
-        onSuccess: () => {
-            queryClient.invalidateQueries({queryKey: ["users"]});
-            onClose?.();
-        },
-
-        onError: async (error: Error) => {
-            await alert(error.message, "Error", PopupType.WARNING);
-        },
-    });
+export const useUpdateUser = (onClose : () => void, {alert}: alertType ) => {
+  const mutation = useGenericMutation<
+    { id: number; data: UpdateUserDto },
+    void
+  >(
+    (data) => handleResponse(userService.updateUser(data.id, data.data)),
+    ["users"],
+    {alert},
+    "User Updated Successfully",
+    onClose,
+  );
+  return mutation;
 };
 
-export const useDeleteUser = ({alert}: Props) => {
-    const queryClient = useQueryClient();
+export const useAddUser = (onClose : () => void, {alert}: alertType ) => {
+  const mutation = useGenericMutation<AddUserDto, void>(
+    (data) => handleResponse(userService.addNewEmployee(data)),
+    ["users"],
+    {alert},
+    "User Added Successfully",
+    onClose,
+  );
+  return mutation;
+};
 
-    return useMutation({
-        mutationFn: async (id: number) =>
-            handleResponse(userService.deleteUser(id)),
-
-        onSuccess: () => {
-            queryClient.invalidateQueries({queryKey: ["users"]});
-        },
-
-        onError: async (error: Error) => {
-            await alert(error.message, "Error", PopupType.WARNING);
-        },
-    });
+export const useDeleteUser = ({ alert }: alertType) => {
+  const mutation = useGenericMutation<number, void>(
+    (data) => handleResponse(userService.deleteUser(data)),
+    ["users"],
+    {alert},
+    "User Deleted Successfully",
+  );
+  return mutation;
 };
 
 export const useProfile = () => {
-    const {data, isLoading, error} = useQuery({
-        queryKey: ["user-profile"],
-        queryFn: async () => await userService.getProfile(),
-        staleTime: 1000 * 60 * 10,
-    });
+  const { data, isLoading, error } = useQuery({
+    queryKey: ["user-profile"],
+    queryFn: async () => await userService.getProfile(),
+    staleTime: 1000 * 60 * 10,
+  });
 
-    return {
-        user: data?.data,
-        isLoading,
-        error
-    }
-}
+  return {
+    user: data?.data,
+    isLoading,
+    error,
+  };
+};

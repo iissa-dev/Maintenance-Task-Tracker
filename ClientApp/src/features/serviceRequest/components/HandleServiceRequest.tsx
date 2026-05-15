@@ -26,8 +26,8 @@ const HandleServiceRequest = ({ isOpen, onClose, Mode, data }: Props) => {
 
   const categories = useCategory() ?? [];
 
-  const addMutation = useAddServiceRequest(alert, onClose);
-  const editMutation = useUpdateServiceRequest(onClose, alert);
+  const addMutation = useAddServiceRequest({alert}, onClose);
+  const editMutation = useUpdateServiceRequest(onClose, {alert});
 
   const { register, handleSubmit } = useServiceRequestForm(
     isOpen,

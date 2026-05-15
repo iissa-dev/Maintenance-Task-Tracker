@@ -1,20 +1,16 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { categoryService } from "../../../services/categoryService";
-import type { CategoryDto, Result } from "../../../types";
-import { PopupType, type PopupTypeValue } from "../../../components/Popup";
+import type { CategoryDto } from "../../../types";
+import { useGenericMutation, type alertType } from "../../../utils/mutationFactory";
+import { handleResponse } from "../../../utils/handleResponse";
 
-const handleResponse = async <T>(promise: Promise<Result<T>>) => {
-  const res = await promise;
-  if (!res.isSuccess) throw new Error(res?.message);
-  return res;
-};
 
 export const useCategory = () => {
   const { data: categories } = useQuery({
     queryKey: ["categories"],
     queryFn: categoryService.getAll,
     staleTime: Infinity,
-    gcTime: 1000 * 60 * 60 * 24,
+    gcTime: 1000 * 60 * 30,
     select: (res) => res.data ?? [],
   });
 
@@ -22,74 +18,43 @@ export const useCategory = () => {
 };
 
 export const useAddCategory = (
-  alert: (
-    message: string,
-    title: string,
-    type: PopupTypeValue,
-  ) => Promise<boolean>,
-  onClose?: () => void | null,
+  {alert} : alertType,
+  onClose? : () => void | null
 ) => {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationKey: ["categories"],
-    mutationFn: (name: string) =>
-      handleResponse(categoryService.addNewCategory(name)),
-
-    onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: ["categories"] });
-      await alert("Category added successfully", "Success", PopupType.INFO);
-      onClose?.();
-    },
-    onError: async (error: Error) => {
-      await alert(error.message, "Error", PopupType.DANGER);
-    },
-  });
+  const mutation = useGenericMutation<string, CategoryDto>(
+    (data) => handleResponse(categoryService.addNewCategory(data)),
+    ["catetgories"],
+    {alert},
+    "Category added successfully",
+    onClose,
+  );
+  return mutation;
 };
 
 export const useDeleteCategory = (
-  alert: (
-    message: string,
-    title: string,
-    type: PopupTypeValue,
-  ) => Promise<boolean>,
+  {alert}: alertType,
 ) => {
-  const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: (categoryId: number) =>
-      handleResponse(categoryService.deleteCategory(categoryId)),
+  const mutation = useGenericMutation<number, boolean>(
+    (data) => handleResponse(categoryService.deleteCategory(data)),
+    ["categories"],
+    {alert},
+    "Category Deleted Successfully",
+  );
 
-    onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: ["categories"] });
-      await alert("Category Deleted successfully", "Success", PopupType.INFO);
-    },
-    onError: async (error: Error) => {
-      await alert(error.message, "Error", PopupType.DANGER);
-    },
-  });
+  return mutation;
 };
 
 export const useUpdateCategory = (
-  alert: (
-    message: string,
-    title: string,
-    type: PopupTypeValue,
-  ) => Promise<boolean>,
+  {alert}: alertType,
   onClose?: () => void | null,
 ) => {
-  const queryClient = useQueryClient();
+  const mutation = useGenericMutation<CategoryDto, void>(
+    (data) => handleResponse(categoryService.updateCategory(data)),
+    ["categories"],
+    {alert},
+    "Category Updated Successfully",
+    onClose,
+  );
 
-  return useMutation({
-    mutationFn: (data: CategoryDto) =>
-      handleResponse(categoryService.updateCategory(data)),
-
-    onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: ["categories"] });
-      await alert("Category updated successfully", "Success", PopupType.INFO);
-      onClose?.();
-    },
-    onError: async (error: Error) => {
-      await alert(error.message, "Error", PopupType.DANGER);
-    },
-  });
+  return mutation;
 };

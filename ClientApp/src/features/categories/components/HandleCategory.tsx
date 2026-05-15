@@ -20,8 +20,8 @@ const HandleCategory = ({ isOpen, onClose, Mode, data }: Props) => {
     mode: Mode,
     data,
   });
-  const addCategoryMutation = useAddCategory(alert, onClose);
-  const updateCategoryMutaion = useUpdateCategory(alert, onClose);
+  const addCategoryMutation = useAddCategory({alert}, onClose);
+  const updateCategoryMutaion = useUpdateCategory({alert}, onClose);
   const onSubmit = handleSubmit((formValue) => {
     if (Mode === "Add") {
       addCategoryMutation.mutate(formValue.category.name);

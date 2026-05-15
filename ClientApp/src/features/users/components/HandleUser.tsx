@@ -24,8 +24,8 @@ export const HandleUser = ({ isOpen, onClose, Mode, data, userId }: Props) => {
         data ?? undefined,
     );
 
-    const addMutation = useAddUser({ onClose, alert });
-    const updateMutation = useUpdateUser({ onClose, alert });
+    const addMutation = useAddUser( onClose, {alert} );
+    const updateMutation = useUpdateUser( onClose, {alert});
 
     const onSubmit = (formData: AddUserDto | UpdateUserDto) => {
         if (Mode === "Add") {

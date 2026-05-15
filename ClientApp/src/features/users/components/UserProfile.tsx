@@ -2,10 +2,11 @@ import Header from "../../../layouts/Header";
 import Sidebar from "../../../layouts/Sidebar";
 import { AtSign, Mail, Phone, ShieldCheck, User } from "lucide-react";
 import { useProfile } from "../api/user.mutation";
-import { ThreeDot } from "react-loading-indicators";
 import { useState } from "react";
 import { HandleUser } from "./HandleUser";
 import type { UpdateUserDto } from "../../../types";
+import { LoadingScreen } from "../../../utils/LoadingScreen";
+import { prepareUserDataForEdit } from "../utils/userHelpers";
 
 const formatUser = (userName: string) => {
   if (!userName) return "";
@@ -19,17 +20,7 @@ const UserProfile = () => {
   const { user, isLoading } = useProfile();
 
   if (isLoading) {
-    return (
-      <div className="fixed inset-0 flex items-center justify-center bg-background">
-        <ThreeDot
-          variant="bounce"
-          color="var(--color-primary)"
-          size="medium"
-          text="LOADING"
-          textColor="var(--color-primary)"
-        />
-      </div>
-    );
+    return <LoadingScreen/>
   }
 
   const displayFields = user
@@ -75,20 +66,10 @@ const UserProfile = () => {
       ]
     : [];
 
-
     const handleEdit = () => {
-      const [firstName, ...rest] = user?.fullName.split(" ") ?? [];
-      setUpdateUserData({
-        firstName,
-        lastName: rest.join(" "),
-        email: user?.email ?? "",
-        userName: user?.userName ?? "",
-        phoneNumber: user?.phoneNumber ?? ""
-      });
-
+      setUpdateUserData(prepareUserDataForEdit(user));
       setIsOpenEditForm(true);
     } 
-
 
   return (
     <div className="flex min-h-screen bg-background">

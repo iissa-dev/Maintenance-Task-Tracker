@@ -1,13 +1,7 @@
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
-import type { Result } from "../../../types";
 import { requestService } from "../../../services/requestService";
 import { categoryService } from "../../../services/categoryService";
-
-const handleResponse = async <T>(promise: Promise<Result<T>>) => {
-  const res = await promise;
-  if (!res.isSuccess) throw new Error(res.message);
-  return res;
-};
+import { handleResponse } from "../../../utils/handleResponse";
 
 export const useRecentRequest = () => {
   const { data, isLoading } = useQuery({

@@ -1,6 +1,5 @@
 import { Filter, Search } from "lucide-react";
 import { useState } from "react";
-import { ThreeDot } from "react-loading-indicators";
 import { usePopup, PopupType } from "../../../components/Popup";
 import Header from "../../../layouts/Header";
 import type { UpdateUserDto } from "../../../types";
@@ -8,6 +7,8 @@ import { useDeleteUser, useUsers } from "../api/user.mutation";
 import { HandleUser } from "../components/HandleUser";
 import Table from "../../../components/Table";
 import Sidebar from "../../../layouts/Sidebar";
+import { LoadingScreen } from "../../../utils/LoadingScreen";
+import { prepareUserDataForEdit } from "../utils/userHelpers";
 
 type FormState =
   | { Mode: "Add"; id: null; data: null }
@@ -30,15 +31,7 @@ function UserManagement() {
 
   if (usersData.isLoading) {
     return (
-      <div className="fixed inset-0 flex items-center justify-center bg-background">
-        <ThreeDot
-          variant="bounce"
-          color="var(--color-primary)"
-          size="medium"
-          text="LOADING"
-          textColor="var(--color-primary)"
-        />
-      </div>
+      <LoadingScreen />
     );
   }
 
@@ -80,16 +73,10 @@ function UserManagement() {
   };
 
   const handleOpenEdit = (row: any) => {
-    const [firstName, ...rest] = row.fullName.split(" ");
     setFormState({
       Mode: "Edit",
       id: row.id,
-      data: {
-        firstName,
-        lastName: rest.join(" "),
-        email: row.email,
-        userName: row.userName,
-      },
+      data: prepareUserDataForEdit(row)
     });
     setOpen(true);
   };

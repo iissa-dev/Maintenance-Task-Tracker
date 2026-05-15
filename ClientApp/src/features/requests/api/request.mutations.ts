@@ -1,19 +1,11 @@
-import {keepPreviousData, useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
+import {keepPreviousData, useQuery} from "@tanstack/react-query";
 import {requestService} from "../../../services/requestService";
 import type {
     RequestDto,
-    Result,
     UpdateRequestDto,
 } from "../../../types";
-import {PopupType, type PopupTypeValue} from "../../../components/Popup";
-
-const handleResponse = async <T>(
-    promise: Promise<Result<T>>,
-): Promise<Result<T>> => {
-    const res = await promise;
-    if (!res.isSuccess) throw new Error(res.message);
-    return res;
-};
+import { useGenericMutation, type alertType } from "../../../utils/mutationFactory";
+import { handleResponse } from "../../../utils/handleResponse";
 
 type requestProps =
     {
@@ -43,120 +35,67 @@ export const useRequests = ({pageNumber, pageSize, categoryId}: requestProps) =>
 }
 
 export const useAddRequest = (
-    alert: (    
-        message: string,
-        title: string,
-        type: PopupTypeValue,
-        onClose?: () => void | null,
-    ) => Promise<boolean>,
+    {alert}: alertType,
     onClose?: () => void,
 ) => {
-    const queryClient = useQueryClient();
-
-    return useMutation({
-        mutationFn: (data: RequestDto) =>
-            handleResponse(requestService.addNewRequest(data)),
-
-        onSuccess: () => {
-            queryClient.invalidateQueries({queryKey: ["requests"]});
-            onClose?.();
-        },
-
-        onError: async (error: Error) => {
-            await alert(error.message, "Error", PopupType.WARNING);
-        },
-    });
+    const mutation = useGenericMutation<RequestDto, boolean>(
+        (data) => handleResponse((requestService.addNewRequest(data))),
+        ["requests"],
+        {alert},
+        "Request Added Successfully",
+        onClose
+    )
+    return mutation;
 };
 
 export const useEditRequest = (
     onClose: () => void,
-    alert: (
-        message: string,
-        title: string,
-        type: PopupTypeValue,
-    ) => Promise<boolean>,
+    {alert}: alertType
 ) => {
-    const queryClient = useQueryClient();
 
-    return useMutation({
-        mutationFn: (data: UpdateRequestDto) =>
-            handleResponse(requestService.updateRequest(data.id, data)),
-
-        onSuccess: () => {
-            queryClient.invalidateQueries({queryKey: ["requests"]});
-            onClose();
-        },
-
-        onError: async (error: Error) => {
-            await alert(error.message, "Error", PopupType.WARNING);
-        },
-    });
+    const mutation = useGenericMutation<UpdateRequestDto, boolean> (
+        (data) => handleResponse(requestService.updateRequest(data.id, data)),
+        ["requests"],
+        {alert}, 
+        "Reqeust Updated Successfully",
+        onClose
+    )
+   return mutation;
 };
 
 export const useAssignToEmployee = (
-    alert: (
-        message: string,
-        title: string,
-        type: PopupTypeValue,
-    ) => Promise<boolean>,
+    {alert}: alertType
 ) => {
-    const queryClient = useQueryClient();
 
-    return useMutation({
-        mutationFn: ({requestId, employeeId}: { requestId: number, employeeId: number }) =>
-            handleResponse(requestService.assignToEmployee(requestId, employeeId))
-        ,
-        onSuccess: () => {
-            queryClient.invalidateQueries({queryKey: ["requests"]});
-        },
-        onError: async (error: Error) => {
-            await alert(error.message, "Assignment Error", PopupType.WARNING);
-        },
-    })
+    const mutation = useGenericMutation<{requestId: number, employeeId: number}, boolean>(
+        (data) => handleResponse(requestService.assignToEmployee(data.requestId, data.employeeId)),
+        ["requests"],
+        {alert},
+        "Request Assigned Successfully"
+    )
+    return mutation;
 };
 
 export const useDeleteRequest = (
-    alert: (
-        message: string,
-        title: string,
-        type: PopupTypeValue,
-    ) => Promise<boolean>,
+    {alert}: alertType ,
 ) => {
-    const queryClient = useQueryClient();
 
-    return useMutation({
-        mutationFn: async (id: number) => {
-            const res = await requestService.delete(id);
-            if (!res.isSuccess) throw new Error(res.message);
-            return res;
-        },
-        onSuccess: () => {
-            queryClient.invalidateQueries({queryKey: ["requests"]});
-        },
-        onError: async (error: Error) => {
-            await alert(error.message, "Error", PopupType.DANGER);
-        }
-    });
-
+    const mutation = useGenericMutation<number, boolean>(
+        (data) => handleResponse(requestService.delete(data)),
+        ["requests"],
+        {alert},
+        "Request Deleted Successfully"
+    )
+    return mutation;
 }
 
-export const useUpdateStatusRequest = (alert: (
-    message: string,
-    title: string,
-    type: PopupTypeValue,
-) => Promise<boolean>) => {
-    const queryClient = useQueryClient();
+export const useUpdateStatusRequest = ({alert}:alertType)=> {
 
-    return useMutation({
-        mutationFn: (requestId: number) =>
-            handleResponse(requestService.updateStatusRequest(requestId)),
-
-        onSuccess: async () => {
-            await queryClient.invalidateQueries({queryKey: ["requests"]});
-        },
-
-        onError: async (error: Error) => {
-            await alert(error.message, "Error", PopupType.DANGER);
-        }
-    })
+    const mutation = useGenericMutation<number, boolean>(
+        (data) => handleResponse(requestService.updateStatusRequest(data)),
+        ["requests"],
+        {alert},
+        "Update Status Request Successfully"
+    )
+    return mutation;
 }

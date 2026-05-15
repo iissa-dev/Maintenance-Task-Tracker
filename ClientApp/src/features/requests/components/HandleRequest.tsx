@@ -17,8 +17,8 @@ type Props =
 function HandleRequest({isOpen, onClose, Mode, data, categoryId, serviceId}: Props) {
     const {confirm, alert, Modal} = usePopup();
 
-    const addMutation = useAddRequest(alert, onClose);
-    const editMutation = useEditRequest(onClose, alert);
+    const addMutation = useAddRequest({alert}, onClose);
+    const editMutation = useEditRequest(onClose, {alert});
 
     const {register, handleSubmit} = useRequestForm(
         isOpen,

@@ -1,5 +1,4 @@
 import {useState} from "react";
-import {ThreeDot} from "react-loading-indicators";
 import ServiceHandled from "./HandleServiceRequest";
 import type { ServiceRequestResponseDto} from "../../../types";
 import {PopupType, usePopup} from "../../../components/Popup";
@@ -7,6 +6,7 @@ import {useAuth} from "../../../hooks/useAuth";
 import {useDeleteServiceReqeust, useServices} from "../api/serviceRequest.mutation";
 import {useCategory} from "../../categories/api/category.mutaions.ts";
 import HandleRequest from "../../requests/components/HandleRequest.tsx";
+import { LoadingScreen } from "../../../utils/LoadingScreen.tsx";
 
 function ServiceCard() {
     const pageSize = 6;
@@ -25,20 +25,10 @@ function ServiceCard() {
     const categories = useCategory();
 
 
-    const deleteMutation = useDeleteServiceReqeust(alert);
+    const deleteMutation = useDeleteServiceReqeust({alert});
 
     if (isLoading) {
-        return (
-            <div className="fixed top-[50%] left-[50%] -translate-[50%]">
-                <ThreeDot
-                    variant="bounce"
-                    color="#239c8c"
-                    size="medium"
-                    text="LOADING"
-                    textColor="#0d8988"
-                />
-            </div>
-        );
+        return <LoadingScreen/>
     }
     const goNext = () => {
         if (!isFetching && pageNumber < totalPages)

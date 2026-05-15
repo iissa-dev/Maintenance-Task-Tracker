@@ -22,7 +22,7 @@ function CategoryManagemnt() {
     data?: CategoryDto;
   }>({ isOpen: false, mode: "Add" });
 
-  const deleteCategoryMutation = useDeleteCategory(alert);
+  const deleteCategoryMutation = useDeleteCategory({alert});
 
   const handleDelete = async (id: number) => {
     const ok = await confirm(

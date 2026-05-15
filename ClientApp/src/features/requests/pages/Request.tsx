@@ -6,16 +6,16 @@ import {
   useRequests,
 } from "../api/request.mutations";
 import { useUsers } from "../../users/api/user.mutation";
-import { ThreeDot } from "react-loading-indicators";
 import Header from "../../../layouts/Header";
 import RequestCard from "../components/RequestCard";
 import "./Request.css";
 import Sidebar from "../../../layouts/Sidebar";
+import { LoadingScreen } from "../../../utils/LoadingScreen";
 
 function Request() {
   const [pageNumber, setPageNumber] = useState(1);
   const { confirm, alert, Modal } = usePopup();
-  const assignMutation = useAssignToEmployee(alert);
+  const assignMutation = useAssignToEmployee({alert});
   const [categoryId, setCategoryId] = useState<number | null>(null);
 
   const employees = useUsers({ PageNumber: 1, PageSize: 100, role: 2 });
@@ -26,7 +26,7 @@ function Request() {
     categoryId,
   });
 
-  const deleteRequest = useDeleteRequest(alert);
+  const deleteRequest = useDeleteRequest({alert});
 
   const handleDelete = useCallback(
     async (id: number) => {
@@ -91,18 +91,9 @@ function Request() {
     setCategoryId(catId);
     setPageNumber(1);
   }, []);
+
   if (isLoading) {
-    return (
-      <div className="fixed top-[50%] left-[50%] -translate-[50%]">
-        <ThreeDot
-          variant="bounce"
-          color="#239c8c"
-          size="medium"
-          text="LOADING"
-          textColor="#0d8988"
-        />
-      </div>
-    );
+    return <LoadingScreen/>
   }
   return (
     <div className="flex">
@@ -124,7 +115,6 @@ function Request() {
           onCategoryIdSelect={handleCategorySelect}
         />
       </div>
-
       <Modal />
     </div>
   );
