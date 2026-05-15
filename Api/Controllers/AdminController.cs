@@ -5,86 +5,99 @@ using Application.Results;
 using Domain.Enums;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
+using Api.Extensions;
 
 namespace Api.Controllers
 {
-	[Route("api/[controller]")]
-	[ApiController]
-	public class AdminController : ControllerBase
-	{
-		private readonly IAdminServiceQuery _query;
-		private readonly IAdminServiceCommand _command;
+    [Route("api/[controller]")]
+    [ApiController]
+    public class AdminController : ControllerBase
+    {
+        private readonly IAdminServiceQuery _query;
+        private readonly IAdminServiceCommand _command;
 
-		public AdminController(IAdminServiceQuery query, IAdminServiceCommand command)
-		{
-			_query = query;
-			_command = command;
-		}
+        public AdminController(IAdminServiceQuery query, IAdminServiceCommand command)
+        {
+            _query = query;
+            _command = command;
+        }
 
-		[HttpPost("CreateEmployeeAsync")]
-		[ProducesResponseType(StatusCodes.Status200OK)]
-		[ProducesResponseType(StatusCodes.Status400BadRequest)]
-		public async Task<IActionResult> CreateEmployeeAsync([FromBody] RegisterDto dto)
-		{
-			var result = await _command.CreateEmployeeAsync(dto);
+        [HttpPost("CreateEmployeeAsync")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> CreateEmployeeAsync([FromBody] RegisterDto dto)
+        {
+            var result = await _command.CreateEmployeeAsync(dto);
 
-			if (result.IsSuccess)
-				return Ok(result);
+            if (result.IsSuccess)
+                return Ok(result);
 
-			return BadRequest(result);
-		}
+            return BadRequest(result);
+        }
 
-		[HttpGet("Users")]
-		[ProducesResponseType(StatusCodes.Status200OK)]
-		[ProducesResponseType(StatusCodes.Status400BadRequest)]
-		//[Authorize]
-		public async Task<IActionResult> GetAllUsersAsync(int roleId, int pageNumber, int pageSize, string? searchByUserName)
-		{
+        [HttpGet("Users")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        //[Authorize]
+        public async Task<IActionResult> GetAllUsersAsync(int roleId, int pageNumber, int pageSize,
+            string? searchByUserName)
+        {
+            if (!Enum.IsDefined((RoleName)roleId))
+            {
+                return BadRequest(Result.Failure("Invalid Role", AppError.BadRequest));
+            }
 
-			if (!Enum.IsDefined((RoleName)roleId))
-			{
-				return BadRequest(Result.Failure("Invalid Role", AppError.BadRequest));
-			}
-			var result = await _query.GetAllUsersByRoleAsync((RoleName)roleId, pageNumber, pageSize, searchByUserName);
-			if (result.IsSuccess)
-				return Ok(result);
+            var result = await _query.GetAllUsersByRoleAsync((RoleName)roleId, pageNumber, pageSize, searchByUserName);
+            if (result.IsSuccess)
+                return Ok(result);
 
-			return BadRequest(result);
-		}
-		[HttpPut("request/{requestId}/assign/{employeeId}")]
-		[ProducesResponseType(StatusCodes.Status200OK)]
-		[ProducesResponseType(StatusCodes.Status400BadRequest)]
-		public async Task<IActionResult> AssignEmployee(int requestId, int employeeId)
-		{
-			var result = await _command.AssignEmployee(requestId, employeeId);
-			if (result.IsSuccess)
-				return Ok(result);
+            return BadRequest(result);
+        }
 
-			return BadRequest(result);
-		}
+        [HttpPut("request/{requestId}/assign/{employeeId}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> AssignEmployee(int requestId, int employeeId)
+        {
+            var result = await _command.AssignEmployee(requestId, employeeId);
+            if (result.IsSuccess)
+                return Ok(result);
 
-		[HttpDelete("Delete/{userId}")]
-		[ProducesResponseType(StatusCodes.Status200OK)]
-		[ProducesResponseType(StatusCodes.Status404NotFound)]
-		public async Task<IActionResult> DeleteUserAsync([Range(1, int.MaxValue)] int userId)
-		{
-			var result = await _command.DeleteUserAsync(userId);
-			if (result.IsSuccess) return Ok(result);
-			return NotFound(result);
-		}
+            return BadRequest(result);
+        }
 
-		[HttpPut("UpdateUser/{id}")]
-		[ProducesResponseType(StatusCodes.Status200OK)]
-		[ProducesResponseType(StatusCodes.Status400BadRequest)]
-		[ProducesResponseType(StatusCodes.Status404NotFound)]
-		public async Task<IActionResult> UpdateUser(int id, [FromBody] UpdateUserDto dto)
-		{
-			var result = await _command.UpdateUserAsync(id, dto);
-			if (result.IsSuccess)
-				return Ok(result);
+        [HttpDelete("Delete/{userId}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> DeleteUserAsync([Range(1, int.MaxValue)] int userId)
+        {
+            var result = await _command.DeleteUserAsync(userId);
+            if (result.IsSuccess) return Ok(result);
+            return NotFound(result);
+        }
 
-			return BadRequest(result);
-		}
-	}
+        [HttpPut("UpdateUser/{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> UpdateUser(int id, [FromBody] UpdateUserDto dto)
+        {
+            var result = await _command.UpdateUserAsync(id, dto);
+            if (result.IsSuccess)
+                return Ok(result);
 
+            return BadRequest(result);
+        }
+
+        [HttpGet("me")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> GetUserAsync()
+        {
+            var roleName = Enum.Parse<RoleName>(User.GetRole());
+            var result = await _query.GetUserByIdAsync(User.GetUserId(), roleName);
+
+            return result.IsSuccess ? Ok(result) : NotFound(result);
+        }
+    }
 }

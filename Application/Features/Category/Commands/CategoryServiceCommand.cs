@@ -18,7 +18,7 @@ public class CategoryServiceCommand : ICategoryServiceCommand
         _context = context;
     }
     
-    public async Task<Result> AddAsync(CategoryResponseDto category)
+    public async Task<Result> AddAsync(CategoryRequestDto category)
     {
         if (await _repository.ExistsAsync(c => c.Name == category.Name))
         {

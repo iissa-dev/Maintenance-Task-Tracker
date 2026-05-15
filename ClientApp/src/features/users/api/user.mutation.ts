@@ -53,6 +53,7 @@ export const useUpdateUser = ({onClose, alert}: Props) => {
 
         onSuccess: () => {
             queryClient.invalidateQueries({queryKey: ["users"]});
+            queryClient.invalidateQueries({queryKey: ["user-profile"]});
             onClose?.();
         },
 
@@ -96,3 +97,17 @@ export const useDeleteUser = ({alert}: Props) => {
         },
     });
 };
+
+export const useProfile = () => {
+    const {data, isLoading, error} = useQuery({
+        queryKey: ["user-profile"],
+        queryFn: async () => await userService.getProfile(),
+        staleTime: 1000 * 60 * 10,
+    });
+
+    return {
+        user: data?.data,
+        isLoading,
+        error
+    }
+}

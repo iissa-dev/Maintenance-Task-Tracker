@@ -10,7 +10,7 @@ type formValues = {
     categoryId: number;
 };
 
-export const useServiceRequestForm = (
+export const    useServiceRequestForm = (
     isOpen: boolean,
     mode: "Add" | "Edit",
     categories: CategoryDto[],
@@ -21,7 +21,7 @@ export const useServiceRequestForm = (
             name: "",
             description: "",
             price: 0,
-            categoryId: 3,
+            categoryId: 0,
         },
     });
 
@@ -37,14 +37,14 @@ export const useServiceRequestForm = (
                 name: data?.name,
                 description: data?.description,
                 price: data?.price ?? 0,
-                categoryId: categoryId ?? 3,
+                categoryId: categoryId ?? 0,
             });
         } else {
             reset({
                 name: "",
                 description: "",
                 price: 0,
-                categoryId: 3,
+                categoryId: 0,
             });
         }
     }, [isOpen, mode, categories, data, reset]);

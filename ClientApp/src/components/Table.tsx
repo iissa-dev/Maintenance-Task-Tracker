@@ -5,6 +5,7 @@ type Prop<T> = {
   tableHeader: string[];
   tableData: T[];
   pageInfo: { PageNumber: number; PageSize: number };
+  showId?: boolean;
   onDelete: (id: number) => void;
   onEdit: (data: T) => void;
   onNext: () => void;
@@ -51,6 +52,7 @@ function Table<T extends Record<string, unknown> & { id: number }>({
   tableHeader,
   tableData,
   pageInfo = { PageNumber: 1, PageSize: 10 },
+  showId= false,
   onDelete,
   onEdit,
   onNext,
@@ -79,7 +81,7 @@ function Table<T extends Record<string, unknown> & { id: number }>({
                   const status = getStatusStyle(String(cell));
                   const value = formatValue(key, String(cell));
 
-                  if (key === "id") return null;
+                  if (!showId && key === "id") return null;
 
                   return (
                     <td key={j} className="px-6 py-4 text-sm font-medium">

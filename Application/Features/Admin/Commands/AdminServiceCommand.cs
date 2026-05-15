@@ -80,11 +80,11 @@ namespace Application.Features.Admin.Commands
 
                 person.FirstName = dto.FirstName;
                 person.LastName = dto.LastName;
-
+                
                 _personRepository.Update(person);
                 await _context.SaveChangesAsync();
 
-                var identityUpdate = await _identityService.UpdateAccountAsync(id, dto.Email, dto.UserName);
+                var identityUpdate = await _identityService.UpdateAccountAsync(id, dto.Email, dto.UserName, dto.PhoneNumber ?? "");
 
                 if (!identityUpdate.IsSuccess)
                 {

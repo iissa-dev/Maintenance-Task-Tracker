@@ -38,7 +38,6 @@ export const HandleUser = ({ isOpen, onClose, Mode, data, userId }: Props) => {
     if (!isOpen || (Mode === "Edit" && !data)) return null;
 
     const isPending = addMutation.isPending || updateMutation.isPending;
-
     return (
         <>
             <div

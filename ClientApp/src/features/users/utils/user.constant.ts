@@ -1,5 +1,6 @@
 import {
     faEnvelope,
+    faPhone,
     faUnlock,
     faUser,
 } from "@fortawesome/free-solid-svg-icons";
@@ -35,6 +36,14 @@ const INPUTS = [
         id: "username",
         placeholder: "User Name",
         icon: faUser,
+        showOnEdit: true,
+    },
+    {
+        type: "tel",
+        name: "phoneNumber",
+        id: "phoneNumber",
+        placeholder: "Phone Number",
+        icon: faPhone,
         showOnEdit: true,
     },
     {

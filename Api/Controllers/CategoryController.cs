@@ -1,4 +1,5 @@
-﻿using Application.DTOs.CategoryDto;
+﻿using Api.Extensions;
+using Application.DTOs.CategoryDto;
 using Application.Interfaces.IServices;
 using Microsoft.AspNetCore.Mvc;
 
@@ -21,7 +22,7 @@ namespace Api.Controllers
 		[HttpPost("AddCategory")]
 		[ProducesResponseType(StatusCodes.Status200OK)]
 		[ProducesResponseType(StatusCodes.Status400BadRequest)]
-		public async Task<IActionResult> AddCategory(CategoryResponseDto category)
+		public async Task<IActionResult> AddCategory([FromBody]CategoryRequestDto category)
 		{
 			var result = await _command.AddAsync(category);
 			if (result.IsSuccess)
@@ -78,7 +79,7 @@ namespace Api.Controllers
 		[ProducesResponseType(StatusCodes.Status200OK)]
 		public async Task<IActionResult> GetTopThreeCategories()
 		{
-			var result = await _query.GetTopThreeCategory();
+			var result = await _query.GetTopThreeCategory(User.GetUserId(), User.GetRole());
 			return Ok(result);
 		}
 	}

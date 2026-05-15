@@ -6,17 +6,16 @@ using Application.Interfaces.IRepository;
 using Application.Interfaces.IServices;
 using Application.Mapper;
 using Application.Results;
+using Microsoft.EntityFrameworkCore;
 
 namespace Application.Features.ServiceRequest.Queries;
 
 public class ServiceRequestQuery :  IServiceRequestQuery
 {
-    private readonly IServiceRequestRepository _repository;
     private readonly IAppDbContext _context;
 
-    public ServiceRequestQuery(IServiceRequestRepository repository, IAppDbContext context)
+    public ServiceRequestQuery(IAppDbContext context)
     {
-        _repository = repository;
         _context = context;
     }
     public async Task<Result<ResultPage<ServiceRequestResponseDto>>> GetAllServiceAsync(
@@ -25,7 +24,7 @@ public class ServiceRequestQuery :  IServiceRequestQuery
         int? categoryId = null,
         string? searchByName = null)
     {
-        var query = _repository.GetAllWithIncludesAsync();
+        var query = _context.ServiceRequests.AsNoTracking();
 
         // Filter
         if (categoryId != null)

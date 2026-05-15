@@ -134,7 +134,7 @@ export const useDeleteRequest = (
             queryClient.invalidateQueries({queryKey: ["requests"]});
         },
         onError: async (error: Error) => {
-            await alert(error.message, "Error", PopupType.WARNING);
+            await alert(error.message, "Error", PopupType.DANGER);
         }
     });
 

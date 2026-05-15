@@ -14,7 +14,7 @@ namespace Application.Mapper
 				UserName = u.UserName!,
 				Email = u.Email!,
 				FullName = u.Person.FirstName + " " + u.Person.LastName,
-				PhoneNumber = u.Person.PhoneNumber ?? "",
+				PhoneNumber = u.PhoneNumber ?? "",
 				Role = roleName.ToString()
 			});
 		}

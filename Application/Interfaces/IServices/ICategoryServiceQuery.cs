@@ -6,6 +6,6 @@ namespace Application.Interfaces.IServices;
 public interface ICategoryServiceQuery
 {
     Task<Result<IEnumerable<CategoryResponseDto>>> GetAllAsync();
-    Task<Result<IEnumerable<CategoryWithRequestCountDto>>> GetTopThreeCategory();
+    Task<Result<IEnumerable<CategoryWithRequestCountDto>>> GetTopThreeCategory(int userId, string role);
     Task<Result<CategoryResponseDto>> GetByIdAsync(int id);
 }

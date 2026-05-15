@@ -72,6 +72,7 @@ export interface AuthResponseDto {
     accessToken: string;
     userName: string;
     role: string;
+    userId: number;
 }
 
 // Store in Context
@@ -85,7 +86,7 @@ export interface UserResponseDto {
     fullName: string;
     userName: string;
     email: string;
-    phoneNumber?: string;
+    phoneNumber?: string | null;
     role: string;
 }
 
@@ -94,6 +95,7 @@ export interface TokenResult {
     refreshToken: string;
     role: string;
     userName: string;
+    userId: number;
 }
 
 export interface UpdateUserDto {
@@ -101,6 +103,7 @@ export interface UpdateUserDto {
     lastName: string;
     email: string;
     userName: string;
+    phoneNumber?: string;
 }
 
 export interface AddUserDto extends UpdateUserDto {

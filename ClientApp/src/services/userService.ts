@@ -39,4 +39,7 @@ export const userService = {
             },
         });
     },
+    getProfile: async(): Promise<Result<UserResponseDto>> => {
+        return apiClient.get("/Admin/me");
+    }
 };

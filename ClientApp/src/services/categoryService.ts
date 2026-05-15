@@ -14,5 +14,13 @@ export const categoryService = {
   > => {
     return await apiClient.get("Category/GetTopThreeCategories");
   },
+  addNewCategory: async (name: string): Promise<Result<CategoryDto>> => {
+    return await apiClient.post("Category/AddCategory", {name: name});
+  },
+  deleteCategory: async (categoryId: number): Promise<Result<boolean>> => {
+    return await apiClient.delete(`Category/DeleteCategory/${categoryId}`)
+  },
+  updateCategory: async (data: CategoryDto): Promise<Result> => {
+    return await apiClient.put("Category/UpdateCategory", data)
+  }
 };
-  

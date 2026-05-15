@@ -22,6 +22,7 @@ function ServiceManagement() {
                 <Header title={"Service Requests"}
                         subtitle={"Monitor and manage all facility maintenance requests in real-time"}
                         buttonText={"Create Request"}
+                        allowadRoles={["Admin"]}
                         addButton={() => setIsOpenForm(true)}/>
 
                 {/* Content Section */}

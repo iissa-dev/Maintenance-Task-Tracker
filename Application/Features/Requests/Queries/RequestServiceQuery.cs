@@ -19,17 +19,20 @@ public class RequestServiceQuery : IRequestServiceQuery
         _context = context;
     }
 
-    public async Task<Result<ResultPage<ResponseRequestDto>>> GetAllAsync(int? categoryId, int pageNumber, int pageSize)
+    public async Task<Result<ResultPage<ResponseRequestDto>>> GetAllAsync(int? categoryId, int pageNumber, int pageSize,
+        int userId, string role)
     {
         var query = _context.MaintenanceRequest
             .AsNoTracking()
-            .ToResponseDto();
+            .FilterByRole(userId, role);
 
-        if (categoryId != null && categoryId.Value > 0)
+        if (categoryId > 0)
             query = query.Where(s => s.CategoryId == categoryId.Value);
 
+
         var data = await query
-            .OrderBy(q => q.Id)
+            .OrderByDescending(q => q.CreatedAt)
+            .ToResponseDto()
             .ToPagedResultAsync(pageNumber, pageSize);
 
         return Result<ResultPage<ResponseRequestDto>>.Success(data);
@@ -48,10 +51,13 @@ public class RequestServiceQuery : IRequestServiceQuery
             : Result<ResponseRequestDto>.Success(existing);
     }
 
-    public async Task<Result<DashboardStatsDto>> GetDashboardStatsAsync()
+    public async Task<Result<DashboardStatsDto>> GetDashboardStatsAsync(int userId, string role)
     {
-        var grouped = await _context.MaintenanceRequest
+        var query = _context.MaintenanceRequest
             .AsNoTracking()
+            .FilterByRole(userId, role);
+
+        var grouped = await query
             .GroupBy(r => r.Status)
             .Select(g => new
             {
@@ -71,10 +77,13 @@ public class RequestServiceQuery : IRequestServiceQuery
         return Result<DashboardStatsDto>.Success(status);
     }
 
-    public async Task<Result<IEnumerable<ResponseRequestDto>>> GetRecentActivity()
+    public async Task<Result<IEnumerable<ResponseRequestDto>>> GetRecentActivity(int userId, string role)
     {
-        var data = await _context.MaintenanceRequest
+        var query = _context.MaintenanceRequest
             .AsNoTracking()
+            .FilterByRole(userId, role);
+
+        var data = await query
             .ToResponseDto()
             .OrderByDescending(q => q.CreatedAt)
             .Take(4)

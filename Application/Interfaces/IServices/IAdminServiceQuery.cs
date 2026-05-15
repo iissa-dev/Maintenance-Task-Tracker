@@ -12,5 +12,7 @@ namespace Application.Interfaces.IServices
 		int pageNumber = 1,
 		int pageSize = 10,
 		string? searchByUserName = null);
+
+		Task<Result<UserResponseDto>> GetUserByIdAsync(int userId, RoleName roleName);
 	}
 }

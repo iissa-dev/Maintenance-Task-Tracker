@@ -19,7 +19,7 @@ namespace Application.Interfaces.IServices
 		Task<Result> RevokeTokenAsync(string refreshToken);
 		Task<Result<TokenResult>> RefreshTokenAsync(string refreshToken);
 
-		Task<Result> UpdateAccountAsync(int id, string email, string userName);
+		Task<Result> UpdateAccountAsync(int id, string email, string userName, string phoneNumber);
 		Task<bool> IsInRoleAsync(int userId, RoleName role);
 	}
 

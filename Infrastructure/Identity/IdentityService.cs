@@ -168,8 +168,7 @@ namespace Infrastructure.Identity
 			var roles = await _userManager.GetRolesAsync(user);
 
 			var accessToken = GenerateJwtToken(user, roles.FirstOrDefault() ?? "Client");
-
-
+			
 			var refreshToken = new UserRefreshToken
 			{
 				RefreshToken = Guid.NewGuid().ToString(),
@@ -183,6 +182,7 @@ namespace Infrastructure.Identity
 
 			return Result<TokenResult>.Success(new TokenResult
 			{
+				UserId = user.Id,
 				AccessToken = accessToken,
 				RefreshToken = refreshToken.RefreshToken,
 				UserName = user.UserName!,
@@ -224,7 +224,7 @@ namespace Infrastructure.Identity
 			return await GenerateFullTokenResult(token.User); // Save all Update here
 		}
 
-		public async Task<Result> UpdateAccountAsync(int id, string email, string userName)
+		public async Task<Result> UpdateAccountAsync(int id, string email, string userName, string phoneNumber)
 		{
 			var user = await _userManager.FindByIdAsync(id.ToString());
 
@@ -233,7 +233,8 @@ namespace Infrastructure.Identity
 
 			user.Email = email;
 			user.UserName = userName;
-
+			user.PhoneNumber = phoneNumber;
+			
 			var updatedResult = await _userManager.UpdateAsync(user);
 			return !updatedResult.Succeeded 
 				? Result.Failure("Failed to update user info", AppError.BadRequest) 
@@ -245,5 +246,6 @@ namespace Infrastructure.Identity
 				.AnyAsync(ur => ur.UserId == userId &&
 					_context.Roles.Any(r => r.Id == ur.RoleId && r.Name == role.ToString()));
 		}
+		
 	}
 }

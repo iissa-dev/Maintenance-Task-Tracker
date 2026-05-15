@@ -7,6 +7,7 @@ type FormValue = {
     lastName: string;
     email: string;
     userName: string;
+    phoneNumber: string;
     password?: string;
 };
 
@@ -28,6 +29,7 @@ export const useUserForm = (
             lastName: "",
             email: "",
             userName: "",
+            phoneNumber: "",
             password: "",
         },
     });
@@ -40,6 +42,7 @@ export const useUserForm = (
                 firstName: data.firstName,
                 lastName: data.lastName,
                 email: data.email,
+                phoneNumber: data.phoneNumber,
                 userName: data.userName,
             });
         } else {
@@ -48,6 +51,7 @@ export const useUserForm = (
                 lastName: "",
                 email: "",
                 userName: "",
+                phoneNumber: "",
                 password: "",
             });
         }

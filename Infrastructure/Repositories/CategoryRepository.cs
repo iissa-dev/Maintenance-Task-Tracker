@@ -4,8 +4,7 @@ using Infrastructure.Data;
 
 namespace Infrastructure.Repositories
 {
-	public class CategoryRepository(AppDbContext context) : GenericRepository<Category>(context), ICategoryRepository
-	{
-		
-	}
+    public class CategoryRepository(AppDbContext context) : GenericRepository<Category>(context), ICategoryRepository
+    {
+    }
 }

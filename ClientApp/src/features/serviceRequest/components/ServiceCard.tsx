@@ -5,7 +5,7 @@ import type { ServiceRequestResponseDto} from "../../../types";
 import {PopupType, usePopup} from "../../../components/Popup";
 import {useAuth} from "../../../hooks/useAuth";
 import {useDeleteServiceReqeust, useServices} from "../api/serviceRequest.mutation";
-import useCategory from "../../../hooks/useCategory.ts";
+import {useCategory} from "../../categories/api/category.mutaions.ts";
 import HandleRequest from "../../requests/components/HandleRequest.tsx";
 
 function ServiceCard() {

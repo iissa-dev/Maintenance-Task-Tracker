@@ -2,9 +2,7 @@
 
 namespace Application.Interfaces.IRepository
 {
-	public interface IServiceRequestRepository : IGenericRepository<ServiceRequest>
-	{
-		IQueryable<ServiceRequest> GetAllWithIncludesAsync();
-
-	}
+    public interface IServiceRequestRepository : IGenericRepository<ServiceRequest>
+    {
+    }
 }

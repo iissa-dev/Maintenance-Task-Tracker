@@ -1,7 +1,7 @@
 ﻿import {useAuth} from "../../../hooks/useAuth.ts";
 import {type RequestCardProps} from "../utils/request.constants.ts"
 import {ChevronLeft, ChevronRight} from "lucide-react";
-import UseCategory from "../../../hooks/useCategory.ts";
+import {useCategory} from "../../categories/api/category.mutaions.ts";
 import RequestItem from "./RequestItem.tsx";
 import React from "react";
 
@@ -17,7 +17,7 @@ const RequestCard = React.memo(({
                                 }: RequestCardProps) => {
     const {authToken} = useAuth();
     const role = authToken?.role ?? "Client";
-    const categories = UseCategory() ?? [];
+    const categories = useCategory() ?? [];
 
     return (
         <div className="space-y-8">

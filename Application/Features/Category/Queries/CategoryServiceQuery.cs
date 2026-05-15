@@ -43,18 +43,26 @@ public class CategoryServiceQuery : ICategoryServiceQuery
         return Result<CategoryResponseDto>.Success(dto);
     }
 
-    public async Task<Result<IEnumerable<CategoryWithRequestCountDto>>> GetTopThreeCategory()
+    public async Task<Result<IEnumerable<CategoryWithRequestCountDto>>> GetTopThreeCategory(int userId, string role)
     {
-        var topThreeCategories = await _context.Category
-            .Include(c => c.MaintenanceRequests)
-            .OrderByDescending(c => c.MaintenanceRequests.Count)
-            .Take(3)
+        var query = _context.Category
+            .AsNoTracking();
+        
+           var topThreeCategories = await query
             .Select(c => new CategoryWithRequestCountDto
             {
                 Id = c.Id,
                 Name = c.Name,
-                RequestCount = c.MaintenanceRequests.Count
+                RequestCount = role == nameof(RoleName.Client) 
+                ? c.MaintenanceRequests.Count(r => r.CreatedByUserId == userId)
+                : role == nameof(RoleName.Employee)
+                ? c.MaintenanceRequests.Count(r => r.AssignedToUserId == userId)
+                : c.MaintenanceRequests.Count
+                
             })
+            .Where(x => x.RequestCount > 0)
+            .OrderByDescending(c => c.RequestCount)
+            .Take(3)
             .ToListAsync();
 
         return Result<IEnumerable<CategoryWithRequestCountDto>>.Success(topThreeCategories);

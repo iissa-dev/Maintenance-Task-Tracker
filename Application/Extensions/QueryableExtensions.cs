@@ -1,8 +1,8 @@
 ﻿using Application.DTOs.Page;
 using Microsoft.EntityFrameworkCore;
 
-namespace Application.Extensions
-{
+namespace Application.Extensions;
+
 	/// <summary>
 	/// Provides extension methods for querying and manipulating data using IQueryable sources.
 	/// </summary>
@@ -42,4 +42,3 @@ namespace Application.Extensions
 			};
 		}
 	}
-}

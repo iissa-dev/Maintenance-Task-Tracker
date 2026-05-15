@@ -6,15 +6,15 @@ import {
   type ReactNode,
 } from "react";
 import type {
-  AuthResponseDto,
   AuthUser,
+  AuthResponseDto,
   LoginDto,
   RegisterDto,
   Result,
 } from "../types";
 import { authService } from "../services/authService";
 import { jwtDecode } from "jwt-decode";
-
+import { useQueryClient } from "@tanstack/react-query";
 interface AuthContextType {
   user: AuthUser | null;
   authToken: AuthResponseDto | null;
@@ -44,6 +44,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     return parsed?.accessToken ? jwtDecode(parsed.accessToken) : null;
   });
   const [loading, setLoading] = useState(true);
+  const queryClient = useQueryClient();
 
   const login = useCallback(async (data: LoginDto): Promise<Result> => {
     try {
@@ -51,28 +52,24 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       const res = await authService.Login(data);
       if (res.isSuccess && res.data) {
         setAuthToken({
+          userId: res.data.userId,
           accessToken: res.data.accessToken,
           role: res.data.role,
           userName: res.data.userName,
         });
         setUser(jwtDecode(res.data.accessToken));
+
         localStorage.setItem(
           "authToken",
           JSON.stringify({
+            userId: res.data.userId,
             accessToken: res.data.accessToken,
             role: res.data.role,
             userName: res.data.userName,
           }),
         );
 
-        localStorage.setItem(
-          "authToken",
-          JSON.stringify({
-            accessToken: res.data.accessToken,
-            role: res.data.role,
-            userName: res.data.userName,
-          }),
-        );
+        queryClient.clear();
         return { message: "Login Success", isSuccess: true };
       }
 
@@ -90,6 +87,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const logout = useCallback(async () => {
     try {
       await authService.Logout();
+      queryClient.clear();
     } finally {
       localStorage.removeItem("authToken");
       setUser(null);
@@ -101,9 +99,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     try {
       setLoading(true);
       const res = await authService.Register(data);
-      if(res.isSuccess)
-      return { message: "Register Success", isSuccess: true };
-      
+      if (res.isSuccess)
+        return { message: "Register Success", isSuccess: true };
+
       return { message: res.message, isSuccess: false };
     } catch {
       return {
@@ -127,6 +125,26 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setLoading(false);
   }, []);
 
+  // Listener for whatch the changes in memory
+  useEffect(() => {
+    const handleStorageChange = (e: StorageEvent) => {
+      if(e.key === "authToken" )
+      {
+        if(e.newValue === null)
+        {
+          setUser(null);
+          setAuthToken(null);
+          queryClient.clear();
+        } else {
+          // If someone change the token manually
+          window.location.reload();
+        }
+      }
+    }
+
+    window.addEventListener("storage", handleStorageChange);
+    return () => window.removeEventListener("storage", handleStorageChange);
+  }, [queryClient])
   return (
     <AuthContext.Provider
       value={{

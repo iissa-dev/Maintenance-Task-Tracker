@@ -16,6 +16,7 @@ namespace Application.DTOs.UserDto
 		public string Email { get; set; } = string.Empty;
 		[MinLength(6)]
 		public string UserName { get; set; } = string.Empty;
-
+		
+		public string? PhoneNumber { get; set; }
 	}
 }
