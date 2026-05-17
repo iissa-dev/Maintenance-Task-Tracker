@@ -10,6 +10,7 @@ import PrivateRoute from "./utils/PrivateRoute";
 import Request from "./features/requests/pages/Request";
 import CategoryManagemnt from "./features/categories/pages/CategoryManagemnt";
 import UserProfile from "./features/users/components/UserProfile";
+import { NotificationProvider } from "./context/NotificationContext";
 
 const queryClient = new QueryClient();
 
@@ -17,7 +18,8 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
-        <Routes>
+        <NotificationProvider>
+          <Routes>
           <Route
             path="/"
             element={
@@ -68,6 +70,7 @@ function App() {
             }
           />
         </Routes>
+        </NotificationProvider>
       </AuthProvider>
     </QueryClientProvider>
   );

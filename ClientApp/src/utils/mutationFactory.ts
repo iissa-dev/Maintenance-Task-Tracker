@@ -22,9 +22,11 @@ export const useGenericMutation = <TData, TResponse>(
   return useMutation({
     mutationFn,
     onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey });
-      if(onSuccessCallback) onSuccessCallback();
+      await Promise.all(
+        queryKey.map(key => queryClient.invalidateQueries({queryKey: [key]}))
+      )
       await alert(onSuccessMessage, "Success", PopupType.INFO);
+      if(onSuccessCallback) onSuccessCallback();
     },
     onError: async (error: Error) => {
       await alert(

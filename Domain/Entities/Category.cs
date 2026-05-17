@@ -1,18 +1,18 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Domain.Interfaces;
 
 namespace Domain.Entities
 {
-	public class Category
-	{
-		public int Id { get; set; }
+    public class Category : ISoftDeleteable
+    {
+        public int Id { get; set; }
 
-		[Required]
-		[MaxLength(50)]
-		public string Name { get; set; } = string.Empty;
+        public string Name { get; set; } = string.Empty;
 
-		public ICollection<MaintenanceRequest> MaintenanceRequests { get; set; }
-			= new List<MaintenanceRequest>();
+        public ICollection<MaintenanceRequest> MaintenanceRequests { get; set; }
+            = new List<MaintenanceRequest>();
 
-		public ICollection<ServiceRequest> ServiceRequests { get; set; } = new List<ServiceRequest>();
-	}
+        public ICollection<ServiceRequest> ServiceRequests { get; set; } = new List<ServiceRequest>();
+        public bool IsDeleted { get; set; }
+        public DateTime? DeletedAt { get; set; }
+    }
 }

@@ -51,7 +51,7 @@ const [categoryModal, setCategoryModal] = useState<
         data={categoryModal.data ?? null}
       />
 
-      <div className="p-8 flex-1 flex flex-col max-w-400 mx-auto w-full">
+      <div className="p-4 md:p-6 flex-1 flex flex-col max-w-400 mx-auto w-full">
         <Header
           title={"Category Management"}
           subtitle={"Manage and view service categories"}

@@ -1,4 +1,5 @@
 ﻿using Application.DTOs.AuthDtos;
+using Application.DTOs.MessageDto;
 using Application.DTOs.UserDto;
 using Application.Interfaces.Common;
 using Application.Interfaces.IRepository;
@@ -18,17 +19,20 @@ namespace Application.Features.Admin.Commands
         private readonly IPersonRepository _personRepository;
         private readonly IAppDbContext _context;
         private readonly IIdentityService _identityService;
+        private readonly INotificationService _notificationService;
 
         public AdminServiceCommand(
             IRequestRepository requestRepository,
             IPersonRepository personRepository,
             IAppDbContext context,
-            IIdentityService identityService)
+            IIdentityService identityService,
+            INotificationService notificationService)
         {
             _requestRepository = requestRepository;
             _personRepository = personRepository;
             _context = context;
             _identityService = identityService;
+            _notificationService = notificationService;
         }
 
         public async Task<Result> AssignEmployee(int requestId, int employeeId)
@@ -48,6 +52,19 @@ namespace Application.Features.Admin.Commands
             _requestRepository.Update(request);
             await _context.SaveChangesAsync();
 
+            var employeeMes = new MessageDto{
+                Title = "New Task Assigned",
+                Message = "You have been assigned a new task!"
+            };
+            await _notificationService.SendToUserAsync(employeeId, "ReceiveAssignedTask", employeeMes);
+
+            var clientMes = new MessageDto
+            {
+                Title = "Employee Assigned",
+                Message = "An employee has been assigned to your request."
+            };
+
+            await _notificationService.SendToUserAsync(request.CreatedByUserId, "ReceiveRequestStatusUpdate", clientMes);
             return Result.Success("Employee assigned successfully");
         }
 

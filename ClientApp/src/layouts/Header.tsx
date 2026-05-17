@@ -1,5 +1,6 @@
 import {Plus} from "lucide-react";
 import {useAuth} from "../hooks/useAuth.ts";
+import { useRequestSignalR } from "../hooks/useRequestSignalR.ts";
 
 type Props = {
     title: string;
@@ -13,7 +14,7 @@ type Props = {
 function Header({title, subtitle, showAddButton = true, buttonText, allowadRoles, addButton}: Props) {
     const {authToken} = useAuth();
     const role = authToken?.role;
-
+    useRequestSignalR();
     const canShow = allowadRoles && allowadRoles.includes(role?? "");
 
     return (

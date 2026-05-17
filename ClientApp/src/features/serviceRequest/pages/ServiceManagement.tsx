@@ -10,7 +10,7 @@ function ServiceManagement() {
     return (
         <main className="flex min-h-screen bg-background">
             <Sidebar/>
-            <div className="flex-1 p-6 md:p-10 max-w-400 mx-auto w-full">
+            <div className="flex-1 p-4 md:p-6 max-w-400 mx-auto w-full">
                 {/* Modal Handling */}
                 <ServiceHandled
                     onClose={() => setIsOpenForm(false)}
@@ -21,7 +21,7 @@ function ServiceManagement() {
                 {/* Header Section */}
                 <Header title={"Service Requests"}
                         subtitle={"Monitor and manage all facility maintenance requests in real-time"}
-                        buttonText={"Create Request"}
+                        buttonText={"Create Service"}
                         allowadRoles={["Admin"]}
                         addButton={() => setIsOpenForm(true)}/>
 

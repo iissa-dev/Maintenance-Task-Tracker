@@ -1,13 +1,7 @@
-﻿using Domain.Interfaces;
-using Microsoft.AspNetCore.Identity;
-
-namespace Domain.Entities
+﻿namespace Domain.Interfaces
 {
-    public class ApplicationUser : IdentityUser<int>, ISoftDeleteable
-	{
-		public int PersonId { get; set; }
-
-		public Person Person { get; set; } = null!;
+    public interface ISoftDeleteable
+    {
         public bool IsDeleted { get; set; }
         public DateTime? DeletedAt { get; set; }
 

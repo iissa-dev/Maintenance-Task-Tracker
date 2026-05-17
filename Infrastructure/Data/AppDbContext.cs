@@ -19,6 +19,8 @@ namespace Infrastructure.Data
 		{
 			base.OnModelCreating(builder);
 			builder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
+
+			builder.Entity<ApplicationRole>().ToTable("Roles");
 		}
 		public async Task<IDbContextTransaction> BeginTransactionAsync()
 			=> await Database.BeginTransactionAsync();

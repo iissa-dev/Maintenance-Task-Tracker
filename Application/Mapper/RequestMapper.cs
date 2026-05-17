@@ -16,8 +16,9 @@ namespace Application.Mapper
 				CreatedAt = request.CreatedAt,
 				CategoryName = request.Category.Name,
 				CategoryId = request.CategoryId,
-				CustomerName = request.CreatedBy.UserName ?? "UnKnown"
-			});
+				CustomerName = request.CreatedBy.UserName ?? "UnKnown",
+				employeeId = request.AssignedToUserId
+            });
 		}
 	}
 }

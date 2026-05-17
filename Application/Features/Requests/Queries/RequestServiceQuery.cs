@@ -31,6 +31,7 @@ public class RequestServiceQuery : IRequestServiceQuery
 
 
         var data = await query
+            .IgnoreQueryFilters()
             .OrderByDescending(q => q.CreatedAt)
             .ToResponseDto()
             .ToPagedResultAsync(pageNumber, pageSize);
@@ -58,6 +59,7 @@ public class RequestServiceQuery : IRequestServiceQuery
             .FilterByRole(userId, role);
 
         var grouped = await query
+            .IgnoreQueryFilters()
             .GroupBy(r => r.Status)
             .Select(g => new
             {
@@ -84,9 +86,10 @@ public class RequestServiceQuery : IRequestServiceQuery
             .FilterByRole(userId, role);
 
         var data = await query
-            .ToResponseDto()
+            .IgnoreQueryFilters()
             .OrderByDescending(q => q.CreatedAt)
             .Take(4)
+            .ToResponseDto()
             .ToListAsync();
 
         return Result<IEnumerable<ResponseRequestDto>>.Success(data);

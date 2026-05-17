@@ -117,7 +117,7 @@ namespace Infrastructure.Identity
 				if(!userResult.IsSuccess)
 				{
 					await transaction.RollbackAsync();
-					return Result.Failure("Failed to create user", AppError.InternalServerError);
+					return Result.Failure(userResult.Message ??"Failed to create user", AppError.InternalServerError);
 				}
 
 				var roleResult = await AddToRoleAsync(userResult.Data, role);

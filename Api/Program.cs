@@ -2,6 +2,7 @@ using Api.Data;
 using Application.DependencyInjection;
 using Domain.Exceptions;
 using Infrastructure.DependencyInjection;
+using Infrastructure.RealTime;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.IdentityModel.Tokens;
@@ -13,13 +14,14 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddCors(options =>
 {
-	options.AddPolicy("ReactAppPolicy", policy =>
-	{
-		policy.WithOrigins("http://localhost:5173", "http://localhost:5174")
-			  .AllowAnyMethod()
-			  .AllowAnyHeader()
-			  .AllowCredentials();
-	});
+    options.AddPolicy("ReactAppPolicy", policy =>
+    {
+        //policy.AllowAnyOrigin();
+        policy.WithOrigins("http://localhost:5173", "https://barstool-grower-churn.ngrok-free.dev")
+            .AllowAnyMethod()
+            .AllowAnyHeader()
+            .AllowCredentials();
+    });
 });
 
 // Add services to the container.
@@ -28,14 +30,15 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
-	options.SwaggerDoc("v1", new OpenApiInfo
-	{
-		Version = "v1",
-		Title = "Maintenance Task Tracker",
-		Description = "An ASP.NET Core Web API for managing Maintenance Task Tracker items",
-	});
+    options.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Version = "v1",
+        Title = "Maintenance Task Tracker",
+        Description = "An ASP.NET Core Web API for managing Maintenance Task Tracker items",
+    });
 });
 
+builder.Services.AddSignalR();
 
 builder.Services.AddRepositoriesServiceExtensions(builder.Configuration);
 builder.Services.AddApplicationsServices();
@@ -46,59 +49,72 @@ builder.Services.AddOpenApi();
 
 
 builder.Services.AddAuthentication(options =>
-{
-	options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-	options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-})
-.AddJwtBearer(options =>
-{
-	options.TokenValidationParameters = new TokenValidationParameters
-	{
-		ValidateIssuer = true,
-		ValidateAudience = true,
-		ValidateLifetime = true,
-		ValidateIssuerSigningKey = true,
-		ValidIssuer = builder.Configuration["Jwt:Issuer"],
-		ValidAudience = builder.Configuration["Jwt:Audience"],
-		IssuerSigningKey = new SymmetricSecurityKey(
-			Encoding.UTF8.GetBytes(builder.Configuration["Jwt:SecretKey"]!))
-	};
-});
+    {
+        options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+        options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    })
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = builder.Configuration["Jwt:Issuer"],
+            ValidAudience = builder.Configuration["Jwt:Audience"],
+            IssuerSigningKey = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(builder.Configuration["Jwt:SecretKey"]!))
+        };
+
+        options.Events = new JwtBearerEvents
+        {
+            OnMessageReceived = context =>
+            {
+                var accessToken = context.Request.Query["access_token"];
+                var path = context.HttpContext.Request.Path;
+                if (!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/requestHub", StringComparison.OrdinalIgnoreCase))
+                {
+                    context.Token = accessToken;
+                }
+                return Task.CompletedTask;
+            }
+        };
+    });
 
 var app = builder.Build();
 
 await app.Services.SeedAsync();
 
 
-
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-	app.UseSwagger();
-	app.UseSwaggerUI();
+    app.UseSwagger();
+    app.UseSwaggerUI();
 }
 
 app.UseExceptionHandler(appError =>
 {
-	appError.Run(async context =>
-	{
-		context.Response.ContentType = "application/json";
-		var contextFeature = context.Features.Get<IExceptionHandlerFeature>();
-		if (contextFeature != null)
-		{
-			context.Response.StatusCode = contextFeature.Error switch
-			{
-				AppException ex => (int)ex.ErrorCode,
-				_ => StatusCodes.Status500InternalServerError
-			};
+    appError.Run(async context =>
+    {
+        context.Response.ContentType = "application/json";
+        var contextFeature = context.Features.Get<IExceptionHandlerFeature>();
+        if (contextFeature != null)
+        {
+            context.Response.StatusCode = contextFeature.Error switch
+            {
+                AppException ex => (int)ex.ErrorCode,
+                _ => StatusCodes.Status500InternalServerError
+            };
 
-			await context.Response.WriteAsJsonAsync(new
-			{
-				isSuccess = false,
-				message = contextFeature.Error.Message
-			});
-		}
-	});
+            await context.Response.WriteAsJsonAsync(new
+            {
+                isSuccess = false,
+                message = contextFeature.Error.Message
+            });
+        }
+    });
 });
 
 app.UseDefaultFiles();
@@ -116,6 +132,8 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.MapHub<RequestHub>("/requestHub");
 
 app.MapFallbackToFile("index.html");
 

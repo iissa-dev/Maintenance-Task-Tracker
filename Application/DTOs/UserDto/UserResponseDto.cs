@@ -1,9 +1,12 @@
-﻿namespace Application.DTOs.UserDto;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Application.DTOs.UserDto;
 
 public class UserResponseDto
 {
     public int Id { get; set; }
     public string FullName { get; set; } = string.Empty;
+    [MinLength(6)]
     public string UserName { get; set; } = string.Empty;
     public string Email { get; set; } = string.Empty;
     public string PhoneNumber { get; set; } = string.Empty;

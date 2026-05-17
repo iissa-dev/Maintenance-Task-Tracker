@@ -16,7 +16,7 @@ import { PopupType } from "../../../types/popup.types";
 function Request() {
   const [pageNumber, setPageNumber] = useState(1);
   const { confirm, alert, Modal } = usePopup();
-  const assignMutation = useAssignToEmployee({alert});
+  const assignMutation = useAssignToEmployee({ alert });
   const [categoryId, setCategoryId] = useState<number | null>(null);
 
   const employees = useUsers({ PageNumber: 1, PageSize: 100, role: 2 });
@@ -27,7 +27,7 @@ function Request() {
     categoryId,
   });
 
-  const deleteRequest = useDeleteRequest({alert});
+  const deleteRequest = useDeleteRequest({ alert });
 
   const handleDelete = useCallback(
     async (id: number) => {
@@ -38,11 +38,7 @@ function Request() {
       );
       if (!ok) return;
 
-      const deleted = await deleteRequest.mutateAsync(id);
-      if(deleted.isSuccess)
-      {
-         await alert("Request deleted successfully.", "Delete", PopupType.INFO);
-      }
+      await deleteRequest.mutateAsync(id);
     },
     [confirm, alert, deleteRequest],
   );
@@ -78,12 +74,7 @@ function Request() {
 
       if (!ok) return;
 
-      try {
-        await assignMutation.mutateAsync({ requestId, employeeId });
-        await alert("Task assigned successfully!", "Success", PopupType.INFO);
-      } catch (error) {
-        console.error(error);
-      }
+      await assignMutation.mutateAsync({ requestId, employeeId });
     },
     [confirm, alert, assignMutation],
   );
@@ -94,13 +85,13 @@ function Request() {
   }, []);
 
   if (isLoading) {
-    return <LoadingScreen/>
+    return <LoadingScreen />;
   }
   return (
     <div className="flex">
       <Sidebar />
 
-      <div className="p-8 flex-1 flex flex-col max-w-400 mx-auto w-full">
+      <div className="p-4 md:p-6 flex-1 flex flex-col max-w-400 mx-auto w-full">
         <Header
           title={"Request Management"}
           subtitle={"Every thing you need to manage Requests"}

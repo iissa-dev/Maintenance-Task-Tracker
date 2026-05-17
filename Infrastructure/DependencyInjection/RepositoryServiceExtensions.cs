@@ -1,14 +1,16 @@
 ﻿using Application.Interfaces.Common;
-using Domain.Entities;
 using Application.Interfaces.IRepository;
+using Application.Interfaces.IServices;
+using Domain.Entities;
 using Infrastructure.Data;
+using Infrastructure.Identity;
+using Infrastructure.Interceptors;
+using Infrastructure.RealTime;
 using Infrastructure.Repositories;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Application.Interfaces.IServices;
-using Infrastructure.Identity;
 
 namespace Infrastructure.DependencyInjection;
 
@@ -23,7 +25,8 @@ public static class RepositoryServiceExtensions
 
         services.AddDbContext<AppDbContext>(options =>
             options.UseSqlServer(connectionString,
-                b => b.MigrationsAssembly("Infrastructure")));
+                b => b.MigrationsAssembly("Infrastructure"))
+            .AddInterceptors(new SoftDeleteInterceptor()));
 
         services.AddScoped<IAppDbContext>(provider => provider.GetRequiredService<AppDbContext>());
 
@@ -34,7 +37,7 @@ public static class RepositoryServiceExtensions
         services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
         services.AddScoped<IPersonRepository, PersonRepository>();
         services.AddScoped<IIdentityService, IdentityService>();
-
+        services.AddScoped<INotificationService, NotificationService>();
 
         services.AddIdentity<ApplicationUser, ApplicationRole>(options =>
             {

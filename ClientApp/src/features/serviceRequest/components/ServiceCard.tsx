@@ -11,6 +11,14 @@ import { useCategory } from "../../categories/api/category.mutaions.ts";
 import HandleRequest from "../../requests/components/HandleRequest.tsx";
 import { LoadingScreen } from "../../../utils/LoadingScreen.tsx";
 import { PopupType } from "../../../types/popup.types.ts";
+import {
+  ChevronLeft,
+  ChevronRight,
+  DollarSign,
+  LayersPlus,
+  Tag,
+  Trash2,
+} from "lucide-react";
 
 function ServiceCard() {
   const pageSize = 6;
@@ -50,7 +58,7 @@ function ServiceCard() {
     );
     if (!ok) return;
 
-    deleteMutation.mutate(id);
+    deleteMutation.mutateAsync(id);
   };
 
   return (
@@ -72,12 +80,17 @@ function ServiceCard() {
         categoryId={selectedService?.categoryDto.id}
       />
 
-      <div>
-        <div className="mb-10 flex justify-between items-center">
-          <div>
-            <label htmlFor="category">Categories</label>
+      <div className="space-y-4">
+        <div className="flex flex-col md:flex-row gap-4 justify-between md:items-center bg-card/50 p-4 rounded-2xl border border-border">
+          <div className="flex flex-col md:flex-row md:items-center gap-4 w-full md:w-auto">
+            <label
+              htmlFor="category"
+              className="text-sm font-bold text-sub uppercase tracking-widest whitespace-nowrap"
+            >
+              Categories
+            </label>
             <select
-              className="ml-3"
+              className="bg-background border border-border text-foreground text-sm rounded-xl px-4 py-2 outline-none focus:border-primary/50 transition-all w-full md:w-48"
               id="category"
               onChange={(e) => {
                 const value = Number(e.target.value);
@@ -100,20 +113,22 @@ function ServiceCard() {
                 ))}
             </select>
           </div>
-          <div className="flex gap-2.5">
-            <input
-              className="btn-ghost cursor-pointer"
-              type="button"
-              value="Prev"
+
+          <div className="flex gap-3">
+            <button
+              className="btn-ghost p-2 rounded-xl border border-border hover:bg-muted transition-all"
               onClick={() => setPageNumber((prev) => Math.max(prev - 1, 1))}
-            />
-            <input
-              className="btn-ghost cursor-pointer"
-              type="button"
-              value="Next"
+            >
+              <ChevronLeft size={20} />
+            </button>
+
+            <button
+              className="btn-ghost p-2 rounded-xl border border-border hover:bg-muted transition-all"
               disabled={isFetching || pageNumber === totalPages}
               onClick={goNext}
-            />
+            >
+              <ChevronRight size={20} />
+            </button>
           </div>
         </div>
 
@@ -122,39 +137,44 @@ function ServiceCard() {
             services.map((service) => (
               <div
                 key={service.serviceId}
-                className="p-5 bg-card rounded-md relative neon-border"
+                className="group bg-card border border-border rounded-2xl p-4 
+            hover:border-primary/40 transition-all duration-300 shadow-sm flex flex-col justify-between"
               >
-                <span className="text-xs absolute top-2 right-2">
-                  {service.categoryDto.name}
+                <span className="flex items-center mb-4 gap-1.5 text-[10px] font-black uppercase tracking-wider text-sub/60">
+                  <Tag size={12} /> {service.categoryDto.name}
                 </span>
-                <p className="my-2 text-2xl text-soft">{service.name}</p>
-                <p className="my-2">{service.description}</p>
-                <p className="my-2">
-                  <span>Price: </span>
-                  {service.price}
-                  <span>$</span>
+                <h3 className="text-xl mb-4 font-bold text-foreground group-hover:text-main transition-colors">
+                  {service.name}
+                </h3>
+                <p className="text-sub mb-4 text-sm line-clamp-2">
+                  {service.description}
                 </p>
-                <hr className="text-soft mb-6" />
-                <div className="flex justify-end gap-2">
+                <p className="flex items-center text-[14px] text-sub/80 pb-3">
+                  <span className="mr-2">Price: </span>
+                  {service.price}<DollarSign size={10}/>
+                </p>
+              
+                <div className="flex justify-end gap-2 pt-2 border-t border-border/50">
                   {role === "Admin" ? (
                     <>
-                      <input
-                        className="text-[14px] btn-ghost cursor-pointer"
-                        type="button"
-                        value="Edit"
+                      <button
+                        className="p-2 text-primary hover:bg-primary/5 rounded-lg transition-all"
                         onClick={() => {
                           setSelectedService(service);
                           setIsOpenForm(true);
                         }}
-                      />
-                      <input
-                        className="text-[14px] btn-danger cursor-pointer"
-                        type="button"
-                        value="Delete"
+                      >
+                        <LayersPlus size={16} />
+                      </button>
+
+                      <button
                         onClick={() => handleDelete(service.serviceId)}
-                      />
+                        className="p-2 text-danger hover:bg-danger/5 rounded-lg transition-all"
+                      >
+                        <Trash2 size={16} />
+                      </button>
                     </>
-                  ) : (
+                  ) : role === "Client" ? (
                     <input
                       className="text-[14px] btn-secondary cursor-pointer"
                       type="button"
@@ -164,7 +184,7 @@ function ServiceCard() {
                         setIsRequestFormOpen(true);
                       }}
                     />
-                  )}
+                  ) : ""}
                 </div>
               </div>
             ))}

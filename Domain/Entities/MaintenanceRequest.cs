@@ -24,7 +24,7 @@ namespace Domain.Entities
         public ServiceRequest ServiceRequest { get; set; } = null!;
 
         private bool IsAlreadyAssigned => AssignedToUserId != null;
-        public bool CanDelete => Status != RequestStatus.Completed;
+        public bool CanDelete => !(Status == RequestStatus.Completed || Status == RequestStatus.InProgress);
 
         public (bool, string) AssignEmployee(int employeeId)
         {

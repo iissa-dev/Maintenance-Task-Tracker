@@ -1,9 +1,16 @@
-﻿import React, { useState } from "react";
+﻿import React, { useEffect, useState } from "react";
 import {
   getStatusStyle,
   type RequestItemProps,
 } from "../utils/request.constants.ts";
-import { Calendar, LayersPlus, Tag, Trash2, User } from "lucide-react";
+import {
+  Calendar,
+  LayersPlus,
+  Tag,
+  Trash2,
+  User,
+  UserPlus,
+} from "lucide-react";
 import { usePopup } from "../../../components/Popup.tsx";
 import { useUpdateStatusRequest } from "../api/request.mutations.ts";
 import { PopupType } from "../../../types/popup.types.ts";
@@ -16,9 +23,11 @@ const RequestItem = React.memo(
     onRemoveRequest,
     onAssignTask,
   }: RequestItemProps) => {
-    const [selectedEmployeeId, setSelectedEmployeeId] = useState<number>(0);
-
+    const [selectedEmployeeId, setSelectedEmployeeId] = useState(request.employeeId ?? 0);
+    const isCompleted = request.status === "Completed";
+    
     const handleAssign = async () => {
+      if (!selectedEmployeeId || isCompleted) return;
       const selectedEmployee = employees.find(
         (e) => e.id === selectedEmployeeId,
       );
@@ -41,6 +50,10 @@ const RequestItem = React.memo(
       updateStatusMutation.mutate(id);
     };
 
+    
+    useEffect(() => {
+      setSelectedEmployeeId(request.employeeId || 0);
+    }, [request.employeeId])
     return (
       <div
         className="group bg-card border border-border rounded-2xl p-6 
@@ -73,9 +86,12 @@ const RequestItem = React.memo(
               <select
                 className="w-full bg-background border border-border rounded-lg px-3 py-1.5 text-xs outline-none focus:border-primary/50 transition-all"
                 value={selectedEmployeeId}
+                disabled={isCompleted}
                 onChange={(e) => setSelectedEmployeeId(Number(e.target.value))}
               >
-                <option value={0}>Select Employee</option>
+               {!request.employeeId && (
+                  <option value={0}>Select Employee</option>
+                )}
                 {employees?.map((employee) => (
                   <option value={employee.id} key={employee.id}>
                     {employee.fullName}
@@ -100,30 +116,35 @@ const RequestItem = React.memo(
           </div>
 
           <div className="flex justify-end gap-2">
-            {role === "Admin" ? (
-              <>
-                <button
-                  onClick={() => onRemoveRequest(request.id)}
-                  className="p-2 text-danger hover:bg-danger/5 rounded-lg transition-all"
-                >
-                  <Trash2 size={16} />
-                </button>
-                <button
-                  onClick={handleAssign}
-                  className="p-2 text-primary hover:bg-primary/5 rounded-lg transition-all"
-                >
-                  <LayersPlus size={16} />
-                </button>
-              </>
-            ) : (
-              role === "Employee" && (
-                <button
-                  onClick={() => handleUpdateStatus(request.id)}
-                  className="p-2 text-primary hover:bg-primary/5 rounded-lg transition-all"
-                >
-                  <LayersPlus size={16} />
-                </button>
-              )
+            {/* {Delete} */}
+            {(role === "Admin" || role === "Client") && (
+              <button
+                onClick={() => onRemoveRequest(request.id)}
+                className="p-2 text-danger hover:bg-danger/5 rounded-lg transition-all"
+                title="Delete Request"
+              >
+                <Trash2 size={16} />
+              </button>
+            )}
+            {/* {Update Status} */}
+            {(role === "Employee" || role === "Admin") && (
+              <button
+                onClick={() => handleUpdateStatus(request.id)}
+                className="p-2 text-primary hover:bg-primary/5 rounded-lg transition-all"
+                title="Finish"
+              >
+                <LayersPlus size={16} />
+              </button>
+            )}
+            {/* {Assign} */}
+            {role === "Admin" && (
+              <button
+                onClick={handleAssign}
+                className="p-2 text-primary hover:bg-primary/5 rounded-lg transition-all"
+                title="Assign"
+              >
+                <UserPlus size={16} />
+              </button>
             )}
           </div>
         </div>

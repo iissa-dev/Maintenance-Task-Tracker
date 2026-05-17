@@ -47,7 +47,7 @@ export const useUpdateUser = (onClose : () => void, {alert}: alertType ) => {
     void
   >(
     (data) => handleResponse(userService.updateUser(data.id, data.data)),
-    ["users"],
+    ["users", "user-profile"],
     {alert},
     "User Updated Successfully",
     onClose,

@@ -23,7 +23,7 @@ export const useAddCategory = (
 ) => {
   const mutation = useGenericMutation<string, CategoryDto>(
     (data) => handleResponse(categoryService.addNewCategory(data)),
-    ["catetgories"],
+    ["categories"],
     {alert},
     "Category added successfully",
     onClose,

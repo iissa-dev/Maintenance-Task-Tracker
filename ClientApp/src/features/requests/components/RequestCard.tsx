@@ -20,10 +20,10 @@ const RequestCard = React.memo(
     const categories = useCategory() ?? [];
 
     return (
-      <div className="space-y-8">
+      <div className="space-y-4">
         {/* Top Bar */}
-        <div className="flex flex-col md:flex-row gap-4 justify-between items-center bg-card/50 p-4 rounded-2xl border border-border">
-          <div className="flex items-center gap-4 w-full md:w-auto">
+        <div className="flex flex-col md:flex-row gap-4 justify-between md:items-center bg-card/50 p-4 rounded-2xl border border-border">
+          <div className="flex flex-col md:flex-row md:items-center gap-4 w-full md:w-auto">
             <label
               htmlFor="category"
               className="text-sm font-bold text-sub uppercase tracking-widest whitespace-nowrap"
@@ -52,6 +52,7 @@ const RequestCard = React.memo(
             >
               <ChevronLeft size={20} />
             </button>
+
             <button
               onClick={onGoNext}
               className="btn-ghost p-2 rounded-xl border border-border hover:bg-muted transition-all"

@@ -24,5 +24,14 @@ internal class ServiceRequestConfig : IEntityTypeConfiguration<ServiceRequest>
             .WithMany(c => c.ServiceRequests)
             .HasForeignKey(s => s.CategoryId)
             .OnDelete(DeleteBehavior.Restrict);
+
+        builder.Property(s => s.IsDeleted)
+            .HasDefaultValue(false)
+            .IsRequired();
+
+        builder.Property(s => s.DeletedAt)
+            .IsRequired(false);
+
+        builder.HasQueryFilter(s => !s.IsDeleted);
     }
 }

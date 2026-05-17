@@ -1,4 +1,5 @@
-﻿using Application.DTOs.RequestDto;
+﻿using Application.DTOs.MessageDto;
+using Application.DTOs.RequestDto;
 using Application.Interfaces.Common;
 using Application.Interfaces.IRepository;
 using Application.Interfaces.IServices;
@@ -11,18 +12,26 @@ namespace Application.Features.Requests.Commands
     public class RequestServiceCommand : IRequestServiceCommand
     {
         private readonly IRequestRepository _requestRepository;
+        private readonly IServiceRequestRepository _serviceRequestRepository;
         private readonly IAppDbContext _context;
+        private readonly INotificationService _notificationService;
 
-        public RequestServiceCommand(IRequestRepository requestRepository, IAppDbContext context)
+        public RequestServiceCommand(IRequestRepository requestRepository, IAppDbContext context, IServiceRequestRepository serviceRequestRepository, INotificationService notificationService)
         {
             _requestRepository = requestRepository;
             _context = context;
+            _serviceRequestRepository = serviceRequestRepository;
+            _notificationService = notificationService;
         }
 
         public async Task<Result> AddAsync(RequestDto? request, int userId)
         {
             if (request == null)
                 return Result.Failure("Invalid request data.", AppError.BadRequest);
+
+            if(!await _serviceRequestRepository.ExistsAsync(s => s.Id == request.ServiceRequestId && !s.IsDeleted))
+                return Result.Failure("Associated service request not found.", AppError.NotFound);
+
             var entity = new MaintenanceRequest
             {
                 Description = request.Description,
@@ -34,6 +43,14 @@ namespace Application.Features.Requests.Commands
 
             _requestRepository.Add(entity);
             await _context.SaveChangesAsync();
+
+            var data = new MessageDto
+            {
+                Title = "New Maintenance Request",
+                Message = $"A new maintenance request has been created with ID: {entity.Id}."
+            };
+
+            await _notificationService.SendNewOrderNotificationAsync(data);
             return Result.Success("Request added successfully.");
         }
 
@@ -48,7 +65,7 @@ namespace Application.Features.Requests.Commands
                 return Result.Failure("Request not found.", AppError.NotFound);
 
             if (!existing.CanDelete)
-                return Result.Failure("Cannot delete request of a completed status.", AppError.BadRequest);
+                return Result.Failure($"Cannot delete request of a {existing.Status} status.", AppError.BadRequest);
 
             _requestRepository.Delete(existing);
 

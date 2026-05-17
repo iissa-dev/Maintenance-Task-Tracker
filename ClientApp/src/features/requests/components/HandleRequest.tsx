@@ -48,10 +48,9 @@ function HandleRequest({isOpen, onClose, Mode, data, categoryId, serviceId}: Pro
         };
 
         if (Mode === "Add") {
-            addMutation.mutate(finalData);
-            onClose();
+          await  addMutation.mutateAsync(finalData);
         } else {
-            editMutation.mutate({
+           await editMutation.mutateAsync({
                 id: serviceId ?? 0,
                 description: finalData.description,
                 categoryId: finalData.categoryId,

@@ -4,7 +4,7 @@ import { useRecentRequest } from "../api/dashboard.mutations";
 const RecentActivitySection = () => {
   const { recentRequest } = useRecentRequest();
   return (
-    <div className="card p-6">
+    <div className="card p-4 md:p-6">
       <h3 className="font-bold text-main text-lg mb-8 flex items-center gap-2">
         <Clock size={20} className="text-primary" />
         Recent Activity

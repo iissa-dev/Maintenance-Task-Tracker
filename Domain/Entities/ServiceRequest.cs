@@ -1,6 +1,8 @@
-﻿namespace Domain.Entities
+﻿using Domain.Interfaces;
+
+namespace Domain.Entities
 {
-    public class ServiceRequest
+    public class ServiceRequest : ISoftDeleteable
     {
         public int Id { get; set; }
 
@@ -11,6 +13,8 @@
         public Category Category { get; set; } = null!;
 
         public ICollection<MaintenanceRequest> MaintenanceRequests { get; set; } = new List<MaintenanceRequest>();
+        public bool IsDeleted { get; set; }
+        public DateTime? DeletedAt { get; set; }
 
         public void UpdateDetails(string name, string description, decimal? price,
             int categoryId)
@@ -19,6 +23,18 @@
             Description = description;
             Price = price;
             CategoryId = categoryId;
+        }
+
+        public void Delete()
+        {
+            IsDeleted = true;
+            DeletedAt = DateTime.UtcNow;
+        }
+
+        public void UndoDelete()
+        {
+            IsDeleted = false; 
+            DeletedAt = null;
         }
     }
 }

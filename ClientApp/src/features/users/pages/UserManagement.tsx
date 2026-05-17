@@ -42,6 +42,7 @@ function UserManagement() {
       fullName: user.fullName,
       userName: user.userName,
       email: user.email,
+      phoneNumber: user?.phoneNumber ?? "Not Found",
       role: user.role,
     })) ?? [];
 
@@ -70,7 +71,6 @@ function UserManagement() {
     if (!ok) return;
 
     await deleteMutation.mutateAsync(id);
-    await alert("User deleted successfully.", "Delete", PopupType.INFO);
   };
 
   const handleOpenEdit = (row: UserResponseDto) => {
@@ -104,7 +104,7 @@ function UserManagement() {
           data={formState.data}
         />
 
-        <main className="p-8 flex-1 flex flex-col max-w-400 mx-auto w-full">
+        <main className="p-4 md:p-6 flex-1 flex flex-col max-w-400 mx-auto w-full">
           <Header
             title={"User Management"}
             subtitle={"Control access and user permissions"}
@@ -154,7 +154,7 @@ function UserManagement() {
           </div>
 
           <Table
-            tableHeader={["Full Name", "User Name", "Email", "Role"]}
+            tableHeader={["Full Name", "User Name", "Email", "Phone", "Role"]}
             tableData={tableRow}
             pageInfo={{ PageNumber, PageSize: usersData.totalCount ?? 0 }}
             onDelete={handleDelete}

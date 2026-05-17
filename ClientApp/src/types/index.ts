@@ -18,6 +18,7 @@ export interface ResponseRequestDto {
     categoryName: string;
     categoryId: number;
     customerName?: string;
+    employeeId?: number;
 }
 
 export interface RequestDto {
@@ -131,4 +132,9 @@ export interface ServiceRequestResponseDto {
     description: string;
     price?: number;
     categoryDto: CategoryDto;
+}
+
+export interface MessageDto {
+    title: string;
+    message: string;
 }
