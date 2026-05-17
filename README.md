@@ -2,6 +2,8 @@
 
 Maintenance Task Tracker is a full-stack application for tracking maintenance requests and service tasks. It uses a clean layered .NET backend (Domain / Application / Infrastructure / Api) and a React + Vite TypeScript frontend that builds into the API's wwwroot for production.
 
+![System Dashboard](./screenshot/dashboard.png)
+
 ## Architecture
 
 - Api: ASP.NET Core Web API (net10.0) exposing REST endpoints, SignalR hub (/requestHub), Swagger UI, authentication (JWT) and static files (wwwroot).
